@@ -1,0 +1,4 @@
+/home/rook/opengl_project/build/CMakeFiles/glad.dir
+/home/rook/opengl_project/build/CMakeFiles/simulator.dir
+/home/rook/opengl_project/build/CMakeFiles/edit_cache.dir
+/home/rook/opengl_project/build/CMakeFiles/rebuild_cache.dir
