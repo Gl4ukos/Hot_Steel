@@ -2,6 +2,11 @@
 #include <algorithm>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> //GLAD must be included before GLFW, because GLFW can include OpenGL headers internally
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <cmath>
+
 
 //resizes the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -14,6 +19,13 @@ void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) // Takes the window as input together with a key, returns if this key is currently being pressed
         glfwSetWindowShouldClose(window, true);
+}
+
+std::string load_file_to_string(std::string filename){
+    std::ifstream file(filename);
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return buffer.str();
 }
 
 float cycle_colour(float &value, float &increment){
@@ -29,19 +41,6 @@ float cycle_colour(float &value, float &increment){
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
-const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\n\0";
 
 int main()
 {
@@ -70,8 +69,14 @@ int main()
     }  
 
 
-    // build and compile the shaders
+    //loading shader code from .glsl files
+    std::string vertex_shader_source_str = load_file_to_string("Shaders/vertex_shader.glsl"); 
+    const char *vertexShaderSource = vertex_shader_source_str.c_str();
+    std::string fragment_shader_source_str = load_file_to_string("Shaders/fragment_shader.glsl"); 
+    const char *fragmentShaderSource = fragment_shader_source_str.c_str();
 
+
+    // build and compile the shaders
     //vertex shader
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -172,7 +177,15 @@ int main()
         // the entire color buffer will be filled with the color as configured by glClearColor. 
         // This will result in a dark green-blueish color. 
 
-        glUseProgram(shaderProgram);
+        glUseProgram(shaderProgram);  // "select" the mentioned shader program (bc there may be many)
+    
+
+        // update the uniform color
+        float timeValue = glfwGetTime();
+        float greenValue = sin(timeValue) / 2.0f + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+        
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
