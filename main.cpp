@@ -7,6 +7,8 @@
 #include <string>
 #include <cmath>
 
+#include "Shader.h"
+
 
 //resizes the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -198,7 +200,7 @@ int main()
         //update uniform position
         int vertexPosLocation = glGetUniformLocation(shaderProgram, "aPos_offset");
         glUniform3f(vertexPosLocation, 0.0f, -y_offset * 0.15, 0.0f);
-        std::cout<<y_offset<<"\n";
+
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 

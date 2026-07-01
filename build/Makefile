@@ -142,6 +142,30 @@ simulator/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/build
 .PHONY : simulator/fast
 
+Shader.o: Shader.cpp.o
+.PHONY : Shader.o
+
+# target to build an object file
+Shader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Shader.cpp.o
+.PHONY : Shader.cpp.o
+
+Shader.i: Shader.cpp.i
+.PHONY : Shader.i
+
+# target to preprocess a source file
+Shader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Shader.cpp.i
+.PHONY : Shader.cpp.i
+
+Shader.s: Shader.cpp.s
+.PHONY : Shader.s
+
+# target to generate assembly for a file
+Shader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Shader.cpp.s
+.PHONY : Shader.cpp.s
+
 external/glad/src/glad.o: external/glad/src/glad.c.o
 .PHONY : external/glad/src/glad.o
 
@@ -200,6 +224,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... glad"
 	@echo "... simulator"
+	@echo "... Shader.o"
+	@echo "... Shader.i"
+	@echo "... Shader.s"
 	@echo "... external/glad/src/glad.o"
 	@echo "... external/glad/src/glad.i"
 	@echo "... external/glad/src/glad.s"
