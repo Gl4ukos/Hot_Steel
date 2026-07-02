@@ -5,6 +5,7 @@
 #include <string>
 #include <cmath>
 
+
 #include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW AND SHADER
 
 //resizes the window
@@ -55,6 +56,7 @@ const unsigned int SCR_HEIGHT = 600;
 
 
 GLFWwindow* initialise_glfw();
+double lastFrameTime = glfwGetTime();
 int main()
 {
     //setting up
@@ -81,6 +83,15 @@ int main()
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the X button is pressed
         
+
+        //calculating FPS
+        double currentTime = glfwGetTime();
+        double frameTime = currentTime - lastFrameTime;
+        lastFrameTime = currentTime;
+        uint fps = 1 / frameTime;
+        std::cout << "\rFPS:"<<fps<<std::flush;
+
+
         // calculating a new colour
         r = cycle_colour(r, increment1);
         g = cycle_colour(g, increment2);
