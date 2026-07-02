@@ -142,6 +142,7 @@ int main()
         beacon.draw(shader);
 
         // drawing surface
+        // surface.transform.y_rotation = y_rotation;
 
         surface.colour.r = 1.0f - r;
         surface.colour.g = 1.0f - g;

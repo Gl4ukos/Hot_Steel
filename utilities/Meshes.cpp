@@ -136,7 +136,7 @@ void Rectangle::draw(Shader& shader){
     shader.set_vec4("another_color", colour.r, colour.g, colour.b, colour.a);
 
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
 void Rectangle::destroy(){

@@ -53,18 +53,45 @@ public:
 
 class Rectangle{
 private:
-    float vertices[24] = {
+    float vertices[48] = {
         //positions         //colors
-        -0.005f, -0.3f, 0.0f,  0.64f, 0.91f, 0.91f,     // top left
-        0.005f, -0.3f, 0.0f,   0.64f, 0.91f, 0.91f,     // top right
-        -0.95f, -1.0f, 0.0f,  0.03f, 0.1f, 0.1f,     // bottom left
-        0.95f, -1.0f, 0.0f,   0.03f, 0.1f, 0.1f     // bottom right
+        -0.3f, -0.6f, -0.2f,   0.0f, 0.0f, 0.0f, //top left
+         0.3f, -0.6f, -0.2f,   0.0f, 0.0f, 0.0f, //top right
+        -0.3f, -0.7f, -0.2f,  0.0f, 0.0f, 0.0f, //bot left
+        +0.3f, -0.7f, -0.2f,  0.0f, 0.0f, 0.0f, //bot right
+
+        -0.3f, -0.6f, 0.2f,   0.5f, 0.5f, 0.5f, //top left
+         0.3f, -0.6f, 0.2f,   0.5f, 0.5f, 0.5f, //top right
+        -0.3f, -0.7f, 0.2f,  0.5f, 0.5f, 0.5f, //bot left
+        +0.3f, -0.7f, 0.2f,  0.5f, 0.5f, 0.5f, //bot right     
+
     };
 
     //indices for rectangle
-    unsigned int indices[6] = {
-        0, 1, 2, // left triangle
-        1, 2, 3 // right triangle
+    unsigned int indices[36] = {
+        // Front
+        0, 1, 2,
+        1, 3, 2,
+
+        // Back
+        4, 6, 5,
+        5, 6, 7,
+
+        // Top
+        4, 5, 0,
+        5, 1, 0,
+
+        // Bottom
+        2, 3, 6,
+        3, 7, 6,
+
+        // Left
+        4, 0, 6,
+        0, 2, 6,
+
+        // Right
+        1, 5, 3,
+        5, 7, 3
     };
 
     unsigned int VBO;
@@ -73,7 +100,7 @@ private:
 
 public:
     struct Transform{
-        float x_rotation = 0.0;
+        float x_rotation = 0.5;
         float y_rotation = 0.0;
         float z_rotation = 0.0;
         float y_offset = 0.0;
