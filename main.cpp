@@ -8,6 +8,14 @@
 
 #include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW AND SHADER
 
+struct cameraPos{
+    float x =0.0;
+    float y =0.0;
+    float z =0.0;
+}cameraPos;
+float cameraSpeed = 0.0;
+
+
 //resizes the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -15,9 +23,21 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }  
 
 // checks for keystrokes
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow* window)
 {
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) // Takes the window as input together with a key, returns if this key is currently being pressed
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos.z -= cameraSpeed;
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos.z += cameraSpeed;
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos.x -= cameraSpeed;
+
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos.x += cameraSpeed;
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
@@ -50,10 +70,8 @@ float cycle_colour(float &value, float &increment){
     return value;
 }
 
-
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
 
 GLFWwindow* initialise_glfw();
 double lastFrameTime = glfwGetTime();
@@ -83,14 +101,13 @@ int main()
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
         
-
         //calculating FPS
         double currentTime = glfwGetTime();
         double frameTime = currentTime - lastFrameTime;
         lastFrameTime = currentTime;
         uint fps = 1 / frameTime;
+        cameraSpeed = 1.5 * frameTime;
         std::cout<< "\rFPS:"<<fps<<std::flush;
-
 
         // calculating a new colour
         r = cycle_colour(r, increment1);
@@ -110,6 +127,9 @@ int main()
         // equiping the current shader
         shader.use();
         
+        // sending camera pose data
+        shader.set_vec3("cameraPos", cameraPos.x , cameraPos.y, cameraPos.z);
+
         // drawing beacon
         beacon.transform.y_offset = -y_offset * 0.15f + 0.3;
         beacon.transform.y_rotation = y_rotation;
