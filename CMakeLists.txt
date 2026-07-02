@@ -12,7 +12,7 @@ target_include_directories(glad PUBLIC
     external/glad/include
 )
 
-add_executable(simulator main.cpp Shader.cpp)
+add_executable(simulator main.cpp utilities/Shader.cpp)
 
 target_include_directories(simulator PRIVATE
     external/glad/include

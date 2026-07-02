@@ -142,30 +142,6 @@ simulator/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/build
 .PHONY : simulator/fast
 
-Shader.o: Shader.cpp.o
-.PHONY : Shader.o
-
-# target to build an object file
-Shader.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Shader.cpp.o
-.PHONY : Shader.cpp.o
-
-Shader.i: Shader.cpp.i
-.PHONY : Shader.i
-
-# target to preprocess a source file
-Shader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Shader.cpp.i
-.PHONY : Shader.cpp.i
-
-Shader.s: Shader.cpp.s
-.PHONY : Shader.s
-
-# target to generate assembly for a file
-Shader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/Shader.cpp.s
-.PHONY : Shader.cpp.s
-
 external/glad/src/glad.o: external/glad/src/glad.c.o
 .PHONY : external/glad/src/glad.o
 
@@ -214,6 +190,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+utilities/Shader.o: utilities/Shader.cpp.o
+.PHONY : utilities/Shader.o
+
+# target to build an object file
+utilities/Shader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Shader.cpp.o
+.PHONY : utilities/Shader.cpp.o
+
+utilities/Shader.i: utilities/Shader.cpp.i
+.PHONY : utilities/Shader.i
+
+# target to preprocess a source file
+utilities/Shader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Shader.cpp.i
+.PHONY : utilities/Shader.cpp.i
+
+utilities/Shader.s: utilities/Shader.cpp.s
+.PHONY : utilities/Shader.s
+
+# target to generate assembly for a file
+utilities/Shader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Shader.cpp.s
+.PHONY : utilities/Shader.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -224,15 +224,15 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... glad"
 	@echo "... simulator"
-	@echo "... Shader.o"
-	@echo "... Shader.i"
-	@echo "... Shader.s"
 	@echo "... external/glad/src/glad.o"
 	@echo "... external/glad/src/glad.i"
 	@echo "... external/glad/src/glad.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... utilities/Shader.o"
+	@echo "... utilities/Shader.i"
+	@echo "... utilities/Shader.s"
 .PHONY : help
 
 
