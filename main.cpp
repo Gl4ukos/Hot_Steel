@@ -81,7 +81,7 @@ int main()
     Rectangle surface;
 
     // MAIN LOOP
-    while(!glfwWindowShouldClose(window)){ //loops until the X button is pressed
+    while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
         
 
         //calculating FPS
@@ -89,7 +89,7 @@ int main()
         double frameTime = currentTime - lastFrameTime;
         lastFrameTime = currentTime;
         uint fps = 1 / frameTime;
-        std::cout << "\rFPS:"<<fps<<std::flush;
+        std::cout<< "\rFPS:"<<fps<<std::flush;
 
 
         // calculating a new colour
@@ -111,21 +111,22 @@ int main()
         shader.use();
         
         // drawing beacon
-        beacon.transform.y_offset = -y_offset * 0.15f;
+        beacon.transform.y_offset = -y_offset * 0.15f + 0.3;
         beacon.transform.y_rotation = y_rotation;
 
         beacon.colour.r = 1.0f - r;
         beacon.colour.g = 1.0f - g;
         beacon.colour.b = 1.0f - b;
-        beacon.colour.a = 0.7f; //opacity
+        beacon.colour.a = 0.5f; //opacity
 
         beacon.draw(shader);
 
         // drawing surface
-        surface.colour.r = 1.0f;
-        surface.colour.g = 0.5f;
-        surface.colour.b = 0.2f;
-        surface.colour.a = 0.8f;
+
+        surface.colour.r = 1.0f - r;
+        surface.colour.g = 1.0f - g;
+        surface.colour.b = 1.0f - b;
+        surface.colour.a = 0.3f;
         surface.draw(shader);
 
         glfwSwapBuffers(window);

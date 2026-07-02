@@ -10,10 +10,10 @@ class Pyramid{
 private:
     float vertices[24] = {
         // positions         // colors
-        0.27f, 0.63f, 0.15f,  1.0f, 0.0f, 0.0f,   // top right front
-        -0.27f, 0.63f, 0.15f,  0.0f, 1.0f, 0.0f,  // top left front
-        0.0f,  -0.1f, 0.0f,  0.0f, 0.0f, 0.0f, // bottom mid
-        0.0f, 0.63f, -0.31f,  0.0f, 0.0f, 1.0f   // top mid back
+        0.135f, 0.315f, 0.07f,  1.0f, 0.5f, 0.5f,   // top right front
+        -0.135f, 0.315f, 0.07f,  0.5f, 1.0f, 0.5f,  // top left front
+        0.0f,  -0.05f, 0.0f,  0.0f, 0.0f, 0.0f, // bottom mid
+        0.0f, 0.315f, -0.15f,  0.5f, 0.5f, 1.0f   // top mid back
     };
 
     //indices for pyramid faces
@@ -31,7 +31,9 @@ private:
 public:
 
     struct Transform{
+        float x_rotation = -0.3;
         float y_rotation = 0.0;
+        float z_rotation = 0.0;
         float y_offset = 0.0;
     }transform;
 
@@ -53,10 +55,10 @@ class Rectangle{
 private:
     float vertices[24] = {
         //positions         //colors
-        -1.0f, -0.8f, 0.0f,  0.0f, 0.0f, 0.0f,     // top left
-        1.0f, -0.8f, 0.0f,  0.0f, 0.0f, 0.0f,     // top right
-        -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 0.0f,     // bottom left
-        1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 0.0f     // bottom right
+        -0.005f, -0.3f, 0.0f,  0.64f, 0.91f, 0.91f,     // top left
+        0.005f, -0.3f, 0.0f,   0.64f, 0.91f, 0.91f,     // top right
+        -0.95f, -1.0f, 0.0f,  0.03f, 0.1f, 0.1f,     // bottom left
+        0.95f, -1.0f, 0.0f,   0.03f, 0.1f, 0.1f     // bottom right
     };
 
     //indices for rectangle
@@ -71,7 +73,9 @@ private:
 
 public:
     struct Transform{
+        float x_rotation = 0.0;
         float y_rotation = 0.0;
+        float z_rotation = 0.0;
         float y_offset = 0.0;
     }transform;
 

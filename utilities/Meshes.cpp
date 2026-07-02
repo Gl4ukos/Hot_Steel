@@ -79,6 +79,7 @@ Pyramid::Pyramid(){
 void Pyramid::draw(Shader& shader){
     shader.setFloat("y_offset", transform.y_offset);
     shader.setFloat("y_rotation", transform.y_rotation);
+    shader.setFloat("x_rotation", transform.x_rotation);
     shader.set_vec4("another_color", colour.r, colour.g, colour.b, colour.a);
 
     glBindVertexArray(VAO);
@@ -93,8 +94,6 @@ void Pyramid::destroy(){
 unsigned int Pyramid::get_vao(){
     return VAO;
 }
-
-
 
 
 // **********************************
@@ -133,6 +132,7 @@ Rectangle::Rectangle(){
 void Rectangle::draw(Shader& shader){
     shader.setFloat("y_offset", transform.y_offset);
     shader.setFloat("y_rotation", transform.y_rotation);
+    shader.setFloat("x_rotation", transform.x_rotation);
     shader.set_vec4("another_color", colour.r, colour.g, colour.b, colour.a);
 
     glBindVertexArray(VAO);
