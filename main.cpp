@@ -1,14 +1,12 @@
 #include <iostream>
 #include <algorithm>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h> //GLAD must be included before GLFW, because GLFW can include OpenGL headers internally
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <cmath>
 
 #include "utilities/Shader.h"
-#include "utilities/Meshes.h"
+#include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW 
 
 //resizes the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -56,40 +54,12 @@ float cycle_colour(float &value, float &increment){
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+
+GLFWwindow* initialise_glfw();
 int main()
 {
-    // ************************
-    // INITIALIZING GLFW
-    // ************************
-
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // This means I want OpenGL 3.x
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); //This means I want OpenGL x.3
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //CORE PROFILE = modern OpenGL
-
-    // Creating window
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "MORPHEUS ENGINE", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window); //Creting GLFW context
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);// adding callback for each time the window gets fumbled with
-
-
-    // Initializing GLAD (MUST BE DONE AFTER CREATING GLFW CONTEXT)
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }  
-
-
-    // ************************
-
-
+    //setting up
+    GLFWwindow* window = initialise_glfw();
     Shader shader ("Shaders/vertex_shader.glsl", "Shaders/fragment_shader.glsl");
 
     // temp variables
@@ -150,4 +120,34 @@ int main()
     beacon.destroy();
     glfwTerminate(); //closes the window
     return 0;
+}
+
+GLFWwindow* initialise_glfw(){
+
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // This means I want OpenGL 3.x
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); //This means I want OpenGL x.3
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //CORE PROFILE = modern OpenGL
+
+    // Creating window
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "MORPHEUS ENGINE", NULL, NULL);
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        exit(-1);
+    }
+    glfwMakeContextCurrent(window); //Creting GLFW context
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);// adding callback for each time the window gets fumbled with
+
+
+    // Initializing GLAD (MUST BE DONE AFTER CREATING GLFW CONTEXT)
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        glfwTerminate();
+        exit(-1);
+    }
+
+    return window;
 }

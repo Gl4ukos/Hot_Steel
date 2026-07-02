@@ -190,6 +190,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+utilities/Meshes.o: utilities/Meshes.cpp.o
+.PHONY : utilities/Meshes.o
+
+# target to build an object file
+utilities/Meshes.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Meshes.cpp.o
+.PHONY : utilities/Meshes.cpp.o
+
+utilities/Meshes.i: utilities/Meshes.cpp.i
+.PHONY : utilities/Meshes.i
+
+# target to preprocess a source file
+utilities/Meshes.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Meshes.cpp.i
+.PHONY : utilities/Meshes.cpp.i
+
+utilities/Meshes.s: utilities/Meshes.cpp.s
+.PHONY : utilities/Meshes.s
+
+# target to generate assembly for a file
+utilities/Meshes.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Meshes.cpp.s
+.PHONY : utilities/Meshes.cpp.s
+
 utilities/Shader.o: utilities/Shader.cpp.o
 .PHONY : utilities/Shader.o
 
@@ -230,6 +254,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... utilities/Meshes.o"
+	@echo "... utilities/Meshes.i"
+	@echo "... utilities/Meshes.s"
 	@echo "... utilities/Shader.o"
 	@echo "... utilities/Shader.i"
 	@echo "... utilities/Shader.s"

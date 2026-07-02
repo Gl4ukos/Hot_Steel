@@ -158,11 +158,8 @@ CMakeFiles/simulator.dir/main.cpp.o: /home/rook/opengl_project/main.cpp \
  /usr/include/c++/9/bits/stl_uninitialized.h \
  /usr/include/c++/9/bits/stl_vector.h \
  /usr/include/c++/9/bits/stl_bvector.h /usr/include/c++/9/bits/vector.tcc \
- /usr/include/c++/9/pstl/execution_defs.h \
- /home/rook/opengl_project/external/glad/include/glad/glad.h \
- /home/rook/opengl_project/external/glad/include/KHR/khrplatform.h \
- /usr/include/GLFW/glfw3.h /usr/include/GL/gl.h \
- /usr/include/c++/9/fstream /usr/include/c++/9/bits/codecvt.h \
+ /usr/include/c++/9/pstl/execution_defs.h /usr/include/c++/9/fstream \
+ /usr/include/c++/9/bits/codecvt.h \
  /usr/include/x86_64-linux-gnu/c++/9/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/9/bits/c++io.h \
  /usr/include/c++/9/bits/fstream.tcc /usr/include/c++/9/sstream \
@@ -189,19 +186,7 @@ CMakeFiles/simulator.dir/main.cpp.o: /home/rook/opengl_project/main.cpp \
  /usr/include/c++/9/tr1/poly_laguerre.tcc \
  /usr/include/c++/9/tr1/riemann_zeta.tcc \
  /home/rook/opengl_project/utilities/Shader.h \
- /home/rook/opengl_project/utilities/Meshes.h \
- /home/rook/opengl_project/utilities/../external/stb_image.h \
- /usr/include/c++/9/stdlib.h /usr/include/string.h /usr/include/strings.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
- /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
- /usr/include/x86_64-linux-gnu/bits/uio_lim.h /usr/include/c++/9/math.h \
- /usr/include/assert.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/emmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/mm_malloc.h
+ /home/rook/opengl_project/external/glad/include/glad/glad.h \
+ /home/rook/opengl_project/external/glad/include/KHR/khrplatform.h \
+ /home/rook/opengl_project/utilities/Meshes.h /usr/include/GLFW/glfw3.h \
+ /usr/include/GL/gl.h
