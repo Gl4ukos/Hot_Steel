@@ -5,8 +5,7 @@
 #include <string>
 #include <cmath>
 
-#include "utilities/Shader.h"
-#include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW 
+#include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW AND SHADER
 
 //resizes the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -77,41 +76,46 @@ int main()
     float y_rotation_inc = 0.03;
 
     Pyramid beacon;
+    Rectangle surface;
+
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the X button is pressed
-        processInput(window);
         
+        // calculating a new colour
         r = cycle_colour(r, increment1);
         g = cycle_colour(g, increment2);
         b = cycle_colour(b, increment3);
-
         y_offset = cycle_colour(y_offset, y_offset_inc);
         y_rotation = cycle_rads_wrap(y_rotation, y_rotation_inc);
         y_rotation += y_rotation_inc;
 
+        // check for keystrokes
+        processInput(window);
+
+        // updating the background
         glClearColor(r,b,g, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // Note that we also specify the color to clear the screen with using glClearColor. 
-        // Whenever we call glClear and clear the color buffer, 
-        // the entire color buffer will be filled with the color as configured by glClearColor. 
-        // This will result in a dark green-blueish color. 
 
+        // equiping the current shader
         shader.use();
-
-        // update the uniform color
-        shader.set_vec4("another_color", 1.0f - r, 1.0f - g, 1.0f - b, 1.0f);
         
-        // int vertexColorLocation = glGetUniformLocation(shaderProgram, "another_color");
-        // glUniform4f(vertexColorLocation, 1.0f - r, 1.0f - g, 1.0f - b, 1.0f);
+        // drawing beacon
+        beacon.transform.y_offset = -y_offset * 0.15f;
+        beacon.transform.y_rotation = y_rotation;
 
-        //update uniform position
-        shader.setFloat("y_offset", -y_offset * 0.15f);
-        shader.setFloat("y_rotation", y_rotation);
-        // int vertexPosLocation = glGetUniformLocation(shaderProgram, "aPos_offset");
-        // glUniform3f(vertexPosLocation, 0.0f, -y_offset * 0.15, 0.0f);
+        beacon.colour.r = 1.0f - r;
+        beacon.colour.g = 1.0f - g;
+        beacon.colour.b = 1.0f - b;
+        beacon.colour.a = 0.7f; //opacity
 
-        glBindVertexArray(beacon.get_vao());
-        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+        beacon.draw(shader);
+
+        // drawing surface
+        surface.colour.r = 1.0f;
+        surface.colour.g = 0.5f;
+        surface.colour.b = 0.2f;
+        surface.colour.a = 0.8f;
+        surface.draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

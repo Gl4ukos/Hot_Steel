@@ -3,6 +3,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../external/stb_image.h"
 
+
+
+// **********************************
+// PYRAMID
+// **********************************
+
 Pyramid::Pyramid(){
     glGenBuffers(1, &VBO); // OpenGL creates one buffer object internally and gives its ID to VBO and so on below
     glGenVertexArrays(1, &VAO);
@@ -21,8 +27,17 @@ Pyramid::Pyramid(){
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    
     // color attribute
+    // explanation for agruments given:
+    // 1	attribute location in shader (layout(location = 1))
+    // 3	number of components (r,g,b)
+    // GL_FLOAT	data type
+    // GL_FALSE	don’t normalize
+    // 6*sizeof(float)	distance between TWO vertices
+    // 3*sizeof(float)	where color starts inside each vertex
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    
     glEnableVertexAttribArray(1);
     glEnable(GL_DEPTH_TEST); //enabling depth
 
@@ -59,11 +74,16 @@ Pyramid::Pyramid(){
     // }
     // stbi_image_free(data);
 
-
-
-
 }
 
+void Pyramid::draw(Shader& shader){
+    shader.setFloat("y_offset", transform.y_offset);
+    shader.setFloat("y_rotation", transform.y_rotation);
+    shader.set_vec4("another_color", colour.r, colour.g, colour.b, colour.a);
+
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+}
 
 void Pyramid::destroy(){
     glDeleteVertexArrays(1, &VAO);
@@ -73,3 +93,58 @@ void Pyramid::destroy(){
 unsigned int Pyramid::get_vao(){
     return VAO;
 }
+
+
+
+
+// **********************************
+// RECTANGLE
+// **********************************
+
+Rectangle::Rectangle(){
+    glGenBuffers(1, &VBO); // OpenGL creates one buffer object internally and gives its ID to VBO and so on below
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &EBO);
+
+    // bind the Vertex Array Object first
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO); // binds VBO as GL_ARRAY_BUFFER
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // copy the vertice into the buffer memory 
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glEnable(GL_DEPTH_TEST); //enabling depth
+
+    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    glBindVertexArray(0); 
+}
+
+void Rectangle::draw(Shader& shader){
+    shader.setFloat("y_offset", transform.y_offset);
+    shader.setFloat("y_rotation", transform.y_rotation);
+    shader.set_vec4("another_color", colour.r, colour.g, colour.b, colour.a);
+
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+}
+
+void Rectangle::destroy(){
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
+unsigned int Rectangle::get_vao(){
+    return VAO;
+}
+

@@ -11,7 +11,7 @@ void main()
 {
     vec3 Pos_inv = aPos; 
     float x = Pos_inv[0]*cos(y_rotation) + Pos_inv[2] * sin(y_rotation);
-    float y = Pos_inv[1] + 0.2;
+    float y = Pos_inv[1];
     float z = -Pos_inv[0]*sin(y_rotation) + Pos_inv[2]*cos(y_rotation);
     gl_Position = vec4(x, y+ y_offset, z, 1.0);
     ourColor = aColor; // set ourColor to the input color we got from the vertex data
