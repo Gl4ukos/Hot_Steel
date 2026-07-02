@@ -193,6 +193,7 @@ CMakeFiles/simulator.dir/main.cpp.o
  /home/rook/opengl_project/Shader.h
  /home/rook/opengl_project/external/glad/include/KHR/khrplatform.h
  /home/rook/opengl_project/external/glad/include/glad/glad.h
+ /home/rook/opengl_project/external/stb_image.h
  /usr/include/GL/gl.h
  /usr/include/GLFW/glfw3.h
  /usr/include/alloca.h
@@ -305,6 +306,7 @@ CMakeFiles/simulator.dir/main.cpp.o
  /usr/include/c++/9/pstl/pstl_config.h
  /usr/include/c++/9/sstream
  /usr/include/c++/9/stdexcept
+ /usr/include/c++/9/stdlib.h
  /usr/include/c++/9/streambuf
  /usr/include/c++/9/string
  /usr/include/c++/9/string_view

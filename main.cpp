@@ -7,6 +7,9 @@
 #include <string>
 #include <cmath>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "external/stb_image.h"
+
 #include "Shader.h"
 
 
@@ -106,6 +109,12 @@ int main()
         0, 3, 1
     };
 
+    float texCoords[] = {
+        0.0f, 0.0f,  // lower-left corner  
+        1.0f, 0.0f,  // lower-right corner
+        0.5f, 1.0f   // top-center corner
+    };
+
     unsigned int VBO; // a Vertex Buffer Object
     unsigned int VAO; // a Vertex Array Object
     unsigned int EBO; // element abuffer object
@@ -141,6 +150,33 @@ int main()
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
 
+
+    //loading textures
+    // creating a texture on gl
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load and generate the texture
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("textures/wall.jpeg", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+
+
     // temp variables
     float r = 0.4;
     float g = 0.0;
@@ -164,9 +200,8 @@ int main()
         b = cycle_colour(b, increment3);
 
         y_offset = cycle_colour(y_offset, y_offset_inc);
-        // y_rotation = cycle_rads_wrap(y_rotation, y_rotation_inc);
+        y_rotation = cycle_rads_wrap(y_rotation, y_rotation_inc);
         y_rotation += y_rotation_inc;
-        std::cout<<"\r"<<y_rotation<<std::flush;
 
         glClearColor(r,b,g, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

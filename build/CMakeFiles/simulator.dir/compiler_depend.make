@@ -191,6 +191,7 @@ CMakeFiles/simulator.dir/main.cpp.o: /home/rook/opengl_project/main.cpp \
   /home/rook/opengl_project/Shader.h \
   /home/rook/opengl_project/external/glad/include/KHR/khrplatform.h \
   /home/rook/opengl_project/external/glad/include/glad/glad.h \
+  /home/rook/opengl_project/external/stb_image.h \
   /usr/include/GL/gl.h \
   /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
@@ -303,6 +304,7 @@ CMakeFiles/simulator.dir/main.cpp.o: /home/rook/opengl_project/main.cpp \
   /usr/include/c++/9/pstl/pstl_config.h \
   /usr/include/c++/9/sstream \
   /usr/include/c++/9/stdexcept \
+  /usr/include/c++/9/stdlib.h \
   /usr/include/c++/9/streambuf \
   /usr/include/c++/9/string \
   /usr/include/c++/9/string_view \
@@ -558,6 +560,8 @@ CMakeFiles/simulator.dir/main.cpp.o: /home/rook/opengl_project/main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
 
+/home/rook/opengl_project/external/stb_image.h:
+
 /usr/include/c++/9/bits/cpp_type_traits.h:
 
 /usr/include/c++/9/pstl/glue_algorithm_defs.h:
@@ -669,6 +673,8 @@ CMakeFiles/simulator.dir/main.cpp.o: /home/rook/opengl_project/main.cpp \
 /usr/include/x86_64-linux-gnu/bits/types.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
+
+/usr/include/c++/9/stdlib.h:
 
 /usr/include/c++/9/bits/cxxabi_init_exception.h:
 
