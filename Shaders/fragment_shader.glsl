@@ -10,5 +10,4 @@ void main()
 {
     vec4 hom_ourColor = vec4(ourColor, 1.0f);
     FragColor = vec4(((another_color* another_color[3]) + hom_ourColor* (1.0 - another_color[3])));
-    // FragColor = texture(texture1, TexCoord);
 }

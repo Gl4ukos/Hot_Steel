@@ -6,6 +6,31 @@
 
 
 // **********************************
+// Mesh
+// **********************************
+
+glm::mat4 Mesh::getModelMatrix(){
+    glm::mat4 model = glm::mat4(1.0f);
+
+    model = glm::translate(model, transform.position);
+    model = glm::rotate(model, transform.rotation.x, glm::vec3(1,0,0));
+    model = glm::rotate(model, transform.rotation.y, glm::vec3(0,1,0));
+    model = glm::rotate(model, transform.rotation.z, glm::vec3(0,0,1));
+    model = glm::scale(model, transform.scale);
+
+    return model;
+}
+
+void Mesh::destroy(){
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
+unsigned int Mesh::get_vao(){
+    return VAO;
+}
+
+// **********************************
 // PYRAMID
 // **********************************
 
@@ -77,23 +102,13 @@ Pyramid::Pyramid(){
 }
 
 void Pyramid::draw(Shader& shader){
-    shader.setFloat("y_offset", transform.y_offset);
-    shader.setFloat("y_rotation", transform.y_rotation);
-    shader.setFloat("x_rotation", transform.x_rotation);
-    shader.set_vec4("another_color", colour.r, colour.g, colour.b, colour.a);
+    glm::mat4 model = getModelMatrix();
+    shader.set_mat4("model", model);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 }
 
-void Pyramid::destroy(){
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-}
-
-unsigned int Pyramid::get_vao(){
-    return VAO;
-}
 
 
 // **********************************
@@ -131,21 +146,9 @@ Rectangle::Rectangle(){
 }
 
 void Rectangle::draw(Shader& shader){
-    shader.setFloat("y_offset", transform.y_offset);
-    shader.setFloat("y_rotation", transform.y_rotation);
-    shader.setFloat("x_rotation", transform.x_rotation);
-    shader.set_vec4("another_color", colour.r, colour.g, colour.b, colour.a);
-
+    glm::mat4 model = getModelMatrix();
+    shader.set_mat4("model", model);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-}
-
-void Rectangle::destroy(){
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-}
-
-unsigned int Rectangle::get_vao(){
-    return VAO;
 }
 

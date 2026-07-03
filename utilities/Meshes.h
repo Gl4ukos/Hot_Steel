@@ -4,15 +4,44 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> //GLAD must be included before GLFW, because GLFW can include OpenGL headers internally
 #include "Shader.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 
 
 class Mesh{
-private:
-    
+
+public:
+    struct Transform {
+        glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 scale    = glm::vec3(1.0f, 1.0f, 1.0f);
+    }transform;
+
+    struct Colour{
+        float r = 0.0;
+        float g = 0.0;
+        float b = 0.0;
+        float a = 0.0;
+    }colour;
+
+    void draw(Shader& shader);
+    unsigned int get_vao();
+    void destroy(); // optional: de-allocate all resources once they've outlived their purpose
+
+
+protected:
+
+    unsigned int VBO; // a Vertex Buffer Object (stores all raw vertex data (coordinates, colors, etc))
+    unsigned int VAO; // a Vertex Array Object (stores all info about how the raw vertex data will be interpreted)
+    unsigned int EBO; // element buffer object (these will be the indices telling OpenGL which vertices form triangles)
+
+    glm::mat4 getModelMatrix();
 };
 
 
-class Pyramid{
+
+class Pyramid : public Mesh{
 
 private:
     float vertices[24] = {
@@ -29,36 +58,14 @@ private:
         1, 3, 2, // left
         3, 0, 2, // right
         0, 3, 1  // back
-    };
-
-    unsigned int VBO; // a Vertex Buffer Object (stores all raw vertex data (coordinates, colors, etc))
-    unsigned int VAO; // a Vertex Array Object (stores all info about how the raw vertex data will be interpreted)
-    unsigned int EBO; // element buffer object (these will be the indices telling OpenGL which vertices form triangles)
+    };  
 
 public:
-
-    struct Transform{
-        float x_rotation = -0.3;
-        float y_rotation = 0.0;
-        float z_rotation = 0.0;
-        float y_offset = 0.0;
-    }transform;
-
-    struct Colour{
-        float r = 0.0;
-        float g = 0.0;
-        float b = 0.0;
-        float a = 0.0;
-    }colour;
-
-
     Pyramid();
     void draw(Shader& shader);
-    unsigned int get_vao();
-    void destroy(); // optional: de-allocate all resources once they've outlived their purpose:
 };
 
-class Rectangle{
+class Rectangle : public Mesh{
 private:
     float vertices[48] = {
         //positions         //colors            //texture coords
@@ -74,33 +81,13 @@ private:
         1, 2, 3
     };
 
-    unsigned int VBO;
-    unsigned int VAO;
-    unsigned int EBO;
-
 public:
-    struct Transform{
-        float x_rotation = 0.2;
-        float y_rotation = 0.0;
-        float z_rotation = 0.0;
-        float y_offset = 0.0;
-    }transform;
-
-    struct Colour{
-        float r = 0.0;
-        float g = 0.0;
-        float b = 0.0;
-        float a = 0.0;
-    }colour;
-
     Rectangle();
     void draw(Shader& shader);
-    unsigned int get_vao();
-    void destroy();
 };
 
 
-class Kuv{
+class Kuv : public Mesh{
 private:
     float vertices[48] = {
         //positions         //colors            //texture coords
@@ -143,29 +130,9 @@ private:
         5, 7, 3
     };
 
-    unsigned int VBO;
-    unsigned int VAO;
-    unsigned int EBO;
-
 public:
-    struct Transform{
-        float x_rotation = 0.5;
-        float y_rotation = 0.2;
-        float z_rotation = 0.0;
-        float y_offset = 0.0;
-    }transform;
-
-    struct Colour{
-        float r = 0.0;
-        float g = 0.0;
-        float b = 0.0;
-        float a = 0.0;
-    }colour;
-
     Kuv();
     void draw(Shader& shader);
-    unsigned int get_vao();
-    void destroy();
 };
 
 #endif

@@ -145,8 +145,7 @@ int main()
         shader.set_vec3("cameraPos", cameraPos.x , cameraPos.y, cameraPos.z);
 
         // drawing beacon
-        beacon.transform.y_offset = -y_offset * 0.15f + 0.3;
-        beacon.transform.y_rotation = y_rotation;
+        beacon.transform.rotation.y = y_rotation;
 
         beacon.colour.r = 1.0f - r;
         beacon.colour.g = 1.0f - g;
@@ -156,7 +155,6 @@ int main()
         beacon.draw(shader);
 
         // drawing surface
-        // surface.transform.y_rotation = y_rotation;
 
         surface.colour.r = 1.0f - r;
         surface.colour.g = 1.0f - g;
