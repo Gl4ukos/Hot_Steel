@@ -5,6 +5,13 @@
 #include <GLFW/glfw3.h> //GLAD must be included before GLFW, because GLFW can include OpenGL headers internally
 #include "Shader.h"
 
+
+class Mesh{
+private:
+    
+};
+
+
 class Pyramid{
 
 private:
@@ -54,17 +61,59 @@ public:
 class Rectangle{
 private:
     float vertices[48] = {
-        //positions         //colors
-        -0.3f, -0.6f, -0.2f,   0.0f, 0.0f, 0.0f, //top left
-         0.3f, -0.6f, -0.2f,   0.0f, 0.0f, 0.0f, //top right
-        -0.3f, -0.7f, -0.2f,  0.0f, 0.0f, 0.0f, //bot left
-        +0.3f, -0.7f, -0.2f,  0.0f, 0.0f, 0.0f, //bot right
+        //positions         //colors            //texture coords
+        -0.5f, -0.3f, 0.2f,   0.6f, 0.6f, 0.9f,       //top left
+         0.5f, -0.3f, 0.2f,   0.9f, 0.6f, 0.6f ,       //top right
+        -0.5f, -0.7f, 0.2f,  0.0f, 0.0f, 0.0f   ,      //bot left
+        +0.5f, -0.7f, 0.2f,  0.0f, 0.0f, 0.0f     //bot right  
+    };
 
-        -0.3f, -0.6f, 0.2f,   0.5f, 0.5f, 0.5f, //top left
-         0.3f, -0.6f, 0.2f,   0.5f, 0.5f, 0.5f, //top right
-        -0.3f, -0.7f, 0.2f,  0.5f, 0.5f, 0.5f, //bot left
-        +0.3f, -0.7f, 0.2f,  0.5f, 0.5f, 0.5f, //bot right     
+    //indices for rectangle
+    unsigned int indices[6] = {
+        0, 1, 2,
+        1, 2, 3
+    };
 
+    unsigned int VBO;
+    unsigned int VAO;
+    unsigned int EBO;
+
+public:
+    struct Transform{
+        float x_rotation = 0.2;
+        float y_rotation = 0.0;
+        float z_rotation = 0.0;
+        float y_offset = 0.0;
+    }transform;
+
+    struct Colour{
+        float r = 0.0;
+        float g = 0.0;
+        float b = 0.0;
+        float a = 0.0;
+    }colour;
+
+    Rectangle();
+    void draw(Shader& shader);
+    unsigned int get_vao();
+    void destroy();
+};
+
+
+class Kuv{
+private:
+    float vertices[48] = {
+        //positions         //colors            //texture coords
+        -0.3f, -0.6f, -0.2f,   0.0f, 0.0f, 0.0f,       //top left
+         0.3f, -0.6f, -0.2f,   0.0f, 0.0f, 0.0f ,       //top right
+        -0.3f, -0.7f, -0.2f,  0.0f, 0.0f, 0.0f   ,      //bot left
+        +0.3f, -0.7f, -0.2f,  0.0f, 0.0f, 0.0f,     //bot right
+
+
+        -0.3f, -0.6f, 0.2f,   0.5f, 0.5f, 0.5f ,        //top left
+         0.3f, -0.6f, 0.2f,   0.5f, 0.5f, 0.5f,         //top right
+        -0.3f, -0.7f, 0.2f,  0.5f, 0.5f, 0.5f ,      //bot left
+        +0.3f, -0.7f, 0.2f,  0.5f, 0.5f, 0.5f         //bot right     
     };
 
     //indices for rectangle
@@ -101,7 +150,7 @@ private:
 public:
     struct Transform{
         float x_rotation = 0.5;
-        float y_rotation = 0.0;
+        float y_rotation = 0.2;
         float z_rotation = 0.0;
         float y_offset = 0.0;
     }transform;
@@ -113,13 +162,10 @@ public:
         float a = 0.0;
     }colour;
 
-    Rectangle();
+    Kuv();
     void draw(Shader& shader);
     unsigned int get_vao();
     void destroy();
 };
-
-
-
 
 #endif

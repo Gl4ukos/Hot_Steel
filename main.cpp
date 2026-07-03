@@ -9,11 +9,17 @@
 #include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW AND SHADER
 
 struct cameraPos{
-    float x =0.0;
-    float y =0.0;
-    float z =0.0;
+    float x = 0.0;
+    float y = 0.0;
+    float z = 0.0;
 }cameraPos;
-float cameraSpeed = 0.0;
+struct cameraRot{
+    float x = 0.0;
+    float y = 0.0;
+    float z = 0.0;
+}cameraRot;
+float cam_move_speed = 0.0;
+float cam_rot_speed =0.0;
 
 
 //resizes the window
@@ -26,16 +32,22 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos.z -= cameraSpeed;
+        cameraPos.z -= cam_move_speed;
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos.z += cameraSpeed;
+        cameraPos.z += cam_move_speed;
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos.x -= cameraSpeed;
+        cameraPos.x -= cam_move_speed;
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos.x += cameraSpeed;
+        cameraPos.x += cam_move_speed;
+
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        cameraRot.y -= cam_rot_speed;
+
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        cameraRot.y += cam_rot_speed;
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -106,7 +118,7 @@ int main()
         double frameTime = currentTime - lastFrameTime;
         lastFrameTime = currentTime;
         uint fps = 1 / frameTime;
-        cameraSpeed = 1.5 * frameTime;
+        cam_move_speed = 1.5 * frameTime;
         std::cout<< "\rFPS:"<<fps<<std::flush;
 
         // calculating a new colour
@@ -123,6 +135,8 @@ int main()
         // updating the background
         glClearColor(r,b,g, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 
         // equiping the current shader
         shader.use();
