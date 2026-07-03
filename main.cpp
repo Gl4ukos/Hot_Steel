@@ -39,16 +39,26 @@ void processInput(GLFWwindow* window)
         // entity_acc.y = +vertical_acc;
         entity_vel.y = jump_boost;
     }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        // entity_acc.y = +vertical_acc;
+        entity_vel.y = jump_boost;
+    }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
         entity_acc.y = -vertical_acc;
     }
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+        if(entity_vel.x > 0){
+            entity_vel.x =0;
+        }
         entity_acc.x = -horizontal_acc;
     }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
+        if(entity_vel.x < 0){
+            entity_vel.x =0;
+        }
         entity_acc.x = +horizontal_acc;
-
+    }
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
@@ -114,12 +124,12 @@ int main()
     float y_offset_inc = 0.01;
 
     float y_rotation = 0.0f;
-    float y_rotation_inc = 0.03;
+    float y_rotation_inc = 0.02;
 
     //creating the objects
     Pyramid beacon;
-    beacon.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
-    beacon.transform.rotation = glm::vec3(0.3f, 0.0f, 0.0f);
+    beacon.transform.position = glm::vec3(0.5f, 0.0f, 0.0f);
+    beacon.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     beacon.transform.scale = glm::vec3(0.4f, 0.4f, 0.4f);
 
     Rectangle surface;
@@ -157,12 +167,21 @@ int main()
         shader.use();
         
         // drawing beacon
-        beacon.transform.rotation.y = y_rotation;
 
         entity_pos = entity_pos + entity_vel * frameTime;
         entity_vel = (entity_vel + entity_acc * frameTime);
+
         entity_vel.x = std::max(std::min(entity_vel.x, horizontal_speed_cap), -horizontal_speed_cap);
         entity_vel.y = std::max(std::min(entity_vel.y, vertical_speed_cap), -vertical_speed_cap);
+
+        beacon.transform.rotation.z = std::max(std::min((entity_vel.x / horizontal_speed_cap), 0.8f),-0.8f);
+        beacon.transform.rotation.x = std::max(std::min((entity_vel.y / vertical_speed_cap), 0.6f), -0.6f);
+        
+        if(std::abs(entity_vel.x) > 0.5){
+            y_rotation = 0.0f;
+        }
+        beacon.transform.rotation.y = y_rotation;
+
         beacon.transform.position = entity_pos;
 
         beacon.colour.r = 1.0f - r;
