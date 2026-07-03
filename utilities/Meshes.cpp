@@ -110,6 +110,31 @@ void Pyramid::draw(Shader& shader){
     glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 }
 
+Hitbox Pyramid::get_hitbox() const
+{
+    Hitbox box;
+
+    // Local bounds of the pyramid
+    float min_x = vertices[6];
+    float min_y = vertices[13];
+    float min_z = vertices[20];
+    float max_x = vertices[0];
+    float max_y = vertices[1];
+    float max_z = vertices[2];
+
+    glm::vec3 localMin(min_x, min_y, min_z);
+    glm::vec3 localMax(max_x, max_y, max_z);
+
+    // Apply scale
+    localMin *= transform.scale;
+    localMax *= transform.scale;
+
+    // Apply translation
+    box.min = localMin + transform.position;
+    box.max = localMax + transform.position;
+
+    return box;
+}
 
 
 // **********************************
@@ -153,4 +178,31 @@ void Rectangle::draw(Shader& shader){
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
+
+Hitbox Rectangle::get_hitbox() const
+{
+    Hitbox box;
+
+    // Local bounds of the rectangle
+    float min_x = vertices[0];
+    float min_y = vertices[13];
+    float min_z = vertices[2];
+    float max_x = vertices[6];
+    float max_y = vertices[1];
+    float max_z = vertices[2];
+
+    glm::vec3 localMin(min_x, min_y, min_z);
+    glm::vec3 localMax(max_x, max_y, max_z);
+
+    // Apply scale
+    localMin *= transform.scale;
+    localMax *= transform.scale;
+
+    // Apply translation
+    box.min = localMin + transform.position;
+    box.max = localMax + transform.position;
+
+    return box;
+}
+
 

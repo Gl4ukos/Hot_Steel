@@ -9,6 +9,11 @@
 
 
 
+struct Hitbox {
+    glm::vec3 min;
+    glm::vec3 max;
+};
+
 class Mesh{
 
 public:
@@ -26,6 +31,7 @@ public:
     }colour;
 
     void draw(Shader& shader);
+    Hitbox get_hitbox() const;
     unsigned int get_vao();
     void destroy(); // optional: de-allocate all resources once they've outlived their purpose
 
@@ -46,10 +52,10 @@ class Pyramid : public Mesh{
 private:
     float vertices[24] = {
         // positions         // colors
-        0.135f, 0.315f, 0.07f,  1.0f, 0.5f, 0.5f,   // top right front
-        -0.135f, 0.315f, 0.07f,  0.5f, 1.0f, 0.5f,  // top left front
-        0.0f,  -0.05f, 0.0f,  0.0f, 0.0f, 0.0f, // bottom mid
-        0.0f, 0.315f, -0.15f,  0.5f, 0.5f, 1.0f   // top mid back
+        0.135f, 0.32f, 0.07f,  1.0f, 0.5f, 0.5f,   // top right front
+        -0.135f, 0.32f, 0.07f,  0.5f, 1.0f, 0.5f,  // top left front
+        0.0f,  0.00f, 0.0f,  0.0f, 0.0f, 0.0f, // bottom mid
+        0.0f, 0.32f, -0.15f,  0.5f, 0.5f, 1.0f   // top mid back
     };
 
     //indices for pyramid faces
@@ -61,7 +67,8 @@ private:
     };  
 
 public:
-    Pyramid();
+    Pyramid(); 
+    Hitbox get_hitbox()const;
     void draw(Shader& shader);
 };
 
@@ -69,8 +76,8 @@ class Rectangle : public Mesh{
 private:
     float vertices[48] = {
         //positions         //colors            //texture coords
-        -0.5f, -0.3f, 0.2f,   0.6f, 0.6f, 0.9f,       //top left
-         0.5f, -0.3f, 0.2f,   0.9f, 0.6f, 0.6f ,       //top right
+        -0.5f, -0.5f, 0.2f,   0.6f, 0.6f, 0.9f,       //top left
+         0.5f, -0.5f, 0.2f,   0.9f, 0.6f, 0.6f ,       //top right
         -0.5f, -0.7f, 0.2f,  0.0f, 0.0f, 0.0f   ,      //bot left
         +0.5f, -0.7f, 0.2f,  0.0f, 0.0f, 0.0f     //bot right  
     };
@@ -83,6 +90,7 @@ private:
 
 public:
     Rectangle();
+    Hitbox get_hitbox()const;
     void draw(Shader& shader);
 };
 

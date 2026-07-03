@@ -4,7 +4,6 @@ layout (location = 1) in vec3 aColor; // the color variable has attribute positi
 layout(location = 2) in vec2 aTexCoord; //texture coords, position 2
 
 uniform mat4 model;
-uniform vec3 cameraPos;
 
 out vec3 ourColor;
 out vec2 TexCoord;

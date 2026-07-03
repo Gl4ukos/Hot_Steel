@@ -10,6 +10,7 @@
 
 
 glm::vec3 entity_pos(0.0f, 0.0f, 0.0f);
+glm::vec3 entity_pos_future(0.0f, 0.0f, 0.0f);
 glm::vec3 entity_vel(0.0f, 0.0f, 0.0f);
 glm::vec3 entity_acc(0.0f, 0.0f, 0.0f);
 
@@ -66,10 +67,17 @@ void processInput(GLFWwindow* window)
         entity_acc.x = -(entity_vel.x*friction);
     }
 
-    if(entity_pos.y <= -0.8){
+    if(entity_pos.y <= -0.99){
         entity_vel.y = std::max(0.0f, entity_vel.y);
     }
 
+}
+
+
+bool check_collision_2d(const Hitbox& a, const Hitbox& b)
+{
+    return (a.min.x <= b.max.x && a.max.x >= b.min.x) &&
+           (a.min.y <= b.max.y && a.max.y >= b.min.y);
 }
 
 std::string load_file_to_string(std::string filename){
@@ -128,12 +136,13 @@ int main()
 
     //creating the objects
     Pyramid beacon;
+    Hitbox beacon_hitbox;
     beacon.transform.position = glm::vec3(0.5f, 0.0f, 0.0f);
     beacon.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-    beacon.transform.scale = glm::vec3(0.4f, 0.4f, 0.4f);
+    beacon.transform.scale = glm::vec3(0.2f, 0.2f, 0.2f);
 
     Rectangle surface;
-
+    Hitbox surface_hitbox;
 
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
@@ -168,11 +177,21 @@ int main()
         
         // drawing beacon
 
-        entity_pos = entity_pos + entity_vel * frameTime;
-        entity_vel = (entity_vel + entity_acc * frameTime);
+        entity_pos_future = entity_pos + entity_vel * frameTime;
+        beacon_hitbox = beacon.get_hitbox();
+        surface_hitbox = surface.get_hitbox();
+        
+        if(check_collision_2d(beacon_hitbox, surface_hitbox)){
+            entity_vel = glm::vec3(0.0f, 0.0f, 0.0f);            
+        }else{
+            entity_pos = entity_pos_future;
+            entity_vel = (entity_vel + entity_acc * frameTime);
+        }
+
+        std::cout<<"o: "<<entity_pos.y<<" beacon: "<< beacon_hitbox.min.y<<" surface: "<<surface_hitbox.max.y<<"\n";
 
         entity_vel.x = std::max(std::min(entity_vel.x, horizontal_speed_cap), -horizontal_speed_cap);
-        entity_vel.y = std::max(std::min(entity_vel.y, vertical_speed_cap), -vertical_speed_cap);
+        entity_vel.y = std::min(entity_vel.y, vertical_speed_cap);
 
         beacon.transform.rotation.z = std::max(std::min((entity_vel.x / horizontal_speed_cap), 0.8f),-0.8f);
         beacon.transform.rotation.x = std::max(std::min((entity_vel.y / vertical_speed_cap), 0.6f), -0.6f);
