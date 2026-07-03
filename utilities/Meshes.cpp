@@ -35,6 +35,7 @@ unsigned int Mesh::get_vao(){
 // **********************************
 
 Pyramid::Pyramid(){
+
     glGenBuffers(1, &VBO); // OpenGL creates one buffer object internally and gives its ID to VBO and so on below
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
@@ -143,6 +144,7 @@ Rectangle::Rectangle(){
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
+
 }
 
 void Rectangle::draw(Shader& shader){

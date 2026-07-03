@@ -8,18 +8,13 @@
 
 #include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW AND SHADER
 
-struct cameraPos{
+struct EntityPos{
     float x = 0.0;
     float y = 0.0;
     float z = 0.0;
-}cameraPos;
-struct cameraRot{
-    float x = 0.0;
-    float y = 0.0;
-    float z = 0.0;
-}cameraRot;
-float cam_move_speed = 0.0;
-float cam_rot_speed =0.0;
+}entityPos;
+float horizontal_speed = 0.0;
+float vertical_speed = 0.0; 
 
 
 //resizes the window
@@ -32,22 +27,16 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos.z -= cam_move_speed;
+        entityPos.y += vertical_speed;
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos.z += cam_move_speed;
+        entityPos.y -= vertical_speed;
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos.x -= cam_move_speed;
+        entityPos.x -= horizontal_speed;
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos.x += cam_move_speed;
-
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        cameraRot.y -= cam_rot_speed;
-
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        cameraRot.y += cam_rot_speed;
+        entityPos.x += horizontal_speed;
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -107,8 +96,14 @@ int main()
     float y_rotation = 0.0f;
     float y_rotation_inc = 0.03;
 
+    //creating the objects
     Pyramid beacon;
+    beacon.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
+    beacon.transform.rotation = glm::vec3(0.3f, 0.0f, 0.0f);
+    beacon.transform.scale = glm::vec3(0.4f, 0.4f, 0.4f);
+
     Rectangle surface;
+
 
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
@@ -118,16 +113,21 @@ int main()
         double frameTime = currentTime - lastFrameTime;
         lastFrameTime = currentTime;
         uint fps = 1 / frameTime;
-        cam_move_speed = 1.5 * frameTime;
+        horizontal_speed = 1.5 * frameTime;
+        vertical_speed = 3*frameTime;
         std::cout<< "\rFPS:"<<fps<<std::flush;
 
-        // calculating a new colour
+        // CYCLING THE COLOURS
         r = cycle_colour(r, increment1);
         g = cycle_colour(g, increment2);
         b = cycle_colour(b, increment3);
         y_offset = cycle_colour(y_offset, y_offset_inc);
         y_rotation = cycle_rads_wrap(y_rotation, y_rotation_inc);
         y_rotation += y_rotation_inc;
+
+
+
+
 
         // check for keystrokes
         processInput(window);
@@ -141,11 +141,11 @@ int main()
         // equiping the current shader
         shader.use();
         
-        // sending camera pose data
-        shader.set_vec3("cameraPos", cameraPos.x , cameraPos.y, cameraPos.z);
-
         // drawing beacon
         beacon.transform.rotation.y = y_rotation;
+
+        beacon.transform.position = glm::vec3(entityPos.x, entityPos.y, entityPos.z);
+
 
         beacon.colour.r = 1.0f - r;
         beacon.colour.g = 1.0f - g;
