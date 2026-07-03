@@ -8,14 +8,21 @@
 
 #include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW AND SHADER
 
-struct EntityPos{
-    float x = 0.0;
-    float y = 0.0;
-    float z = 0.0;
-}entityPos;
-float horizontal_speed = 0.0;
-float vertical_speed = 0.0; 
 
+glm::vec3 entity_pos(0.0f, 0.0f, 0.0f);
+glm::vec3 entity_vel(0.0f, 0.0f, 0.0f);
+glm::vec3 entity_acc(0.0f, 0.0f, 0.0f);
+
+
+float vertical_speed_cap = 3;
+float horizontal_speed_cap = 3;
+float vertical_acc = 30;
+float horizontal_acc = 40;
+float jump_boost = 3;
+
+float gravity = -15.0;
+float friction = 10.0;
+float frameTime;
 
 //resizes the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -26,20 +33,33 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // checks for keystrokes
 void processInput(GLFWwindow* window)
 {
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        entityPos.y += vertical_speed;
+    entity_acc = glm::vec3(0.0f, gravity, 0.0f);
 
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        entityPos.y -= vertical_speed;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
+        // entity_acc.y = +vertical_acc;
+        entity_vel.y = jump_boost;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+        entity_acc.y = -vertical_acc;
+    }
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        entityPos.x -= horizontal_speed;
-
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+        entity_acc.x = -horizontal_acc;
+    }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        entityPos.x += horizontal_speed;
+        entity_acc.x = +horizontal_acc;
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    if(entity_acc.x ==0){ //if no forces on x, apply friction
+        entity_acc.x = -(entity_vel.x*friction);
+    }
+
+    if(entity_pos.y <= -0.8){
+        entity_vel.y = std::max(0.0f, entity_vel.y);
+    }
+
 }
 
 std::string load_file_to_string(std::string filename){
@@ -109,12 +129,10 @@ int main()
     while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
         
         //calculating FPS
-        double currentTime = glfwGetTime();
-        double frameTime = currentTime - lastFrameTime;
+        float currentTime = glfwGetTime();
+        frameTime = currentTime - lastFrameTime;
         lastFrameTime = currentTime;
         uint fps = 1 / frameTime;
-        horizontal_speed = 1.5 * frameTime;
-        vertical_speed = 3*frameTime;
         std::cout<< "\rFPS:"<<fps<<std::flush;
 
         // CYCLING THE COLOURS
@@ -124,9 +142,6 @@ int main()
         y_offset = cycle_colour(y_offset, y_offset_inc);
         y_rotation = cycle_rads_wrap(y_rotation, y_rotation_inc);
         y_rotation += y_rotation_inc;
-
-
-
 
 
         // check for keystrokes
@@ -144,8 +159,11 @@ int main()
         // drawing beacon
         beacon.transform.rotation.y = y_rotation;
 
-        beacon.transform.position = glm::vec3(entityPos.x, entityPos.y, entityPos.z);
-
+        entity_pos = entity_pos + entity_vel * frameTime;
+        entity_vel = (entity_vel + entity_acc * frameTime);
+        entity_vel.x = std::max(std::min(entity_vel.x, horizontal_speed_cap), -horizontal_speed_cap);
+        entity_vel.y = std::max(std::min(entity_vel.y, vertical_speed_cap), -vertical_speed_cap);
+        beacon.transform.position = entity_pos;
 
         beacon.colour.r = 1.0f - r;
         beacon.colour.g = 1.0f - g;
