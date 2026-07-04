@@ -10,7 +10,6 @@
 
 
 glm::vec3 entity_pos(0.0f, 0.0f, 0.0f);
-glm::vec3 entity_pos_future(0.0f, 0.0f, 0.0f);
 glm::vec3 entity_vel(0.0f, 0.0f, 0.0f);
 glm::vec3 entity_acc(0.0f, 0.0f, 0.0f);
 
@@ -74,10 +73,43 @@ void processInput(GLFWwindow* window)
 }
 
 
-bool check_collision_2d(const Hitbox& a, const Hitbox& b)
+glm::vec3 check_collision_2d(const Hitbox& a, const Hitbox& b)
 {
-    return (a.min.x <= b.max.x && a.max.x >= b.min.x) &&
-           (a.min.y <= b.max.y && a.max.y >= b.min.y);
+    glm::vec3 displacement(0.0f, 0.0f, 0.0f);
+    bool in_x = false;
+
+    if(a.min.x <= b.max.x && a.max.x >= b.min.x){
+        float right_dis = b.max.x - a.min.x;
+        float left_dis = b.min.x - a.max.x;
+
+        if(std::abs(right_dis) > std::abs(left_dis)){
+            displacement.x = left_dis;
+        }else{
+            displacement.x = right_dis;
+        }
+
+        if(a.min.y <= b.max.y && a.max.y >= b.min.y){
+            right_dis = b.max.y - a.min.y;
+            left_dis = b.min.y - a.max.y;
+
+            if(std::abs(right_dis) > std::abs(left_dis)){
+                displacement.y = left_dis;
+            }else{
+                displacement.y = right_dis;
+            }
+
+            // COLLISION DATECTED
+            // we keep only the least displacement to return
+            if(std::abs(displacement.x) > std::abs(displacement.y)){
+                displacement.x = 0.0f;
+            }else{
+                displacement.y = 0.0f;
+            }
+        }else{
+            displacement.x = 0.0f;
+        }
+    }
+    return displacement;
 }
 
 std::string load_file_to_string(std::string filename){
@@ -177,19 +209,26 @@ int main()
         
         // drawing beacon
 
-        entity_pos_future = entity_pos + entity_vel * frameTime;
+        //updating translation
+        entity_pos = entity_pos + entity_vel * frameTime;
+        entity_vel = entity_vel + entity_acc * frameTime;
+        beacon.transform.position = entity_pos;
+
+        //check for collisions
         beacon_hitbox = beacon.get_hitbox();
         surface_hitbox = surface.get_hitbox();
         
-        if(check_collision_2d(beacon_hitbox, surface_hitbox)){
-            entity_vel = glm::vec3(0.0f, 0.0f, 0.0f);            
-        }else{
-            entity_pos = entity_pos_future;
-            entity_vel = (entity_vel + entity_acc * frameTime);
+        // //displacing from collisions
+        glm::vec3 collision_displacement = check_collision_2d(beacon_hitbox, surface_hitbox);
+
+        if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
+            entity_pos += collision_displacement;
+            beacon.transform.position = entity_pos;
+            entity_vel = glm::vec3(0.0f, 0.0f, 0.0f);       
+            std::cout<<" "<<collision_displacement.x<<" "<<collision_displacement.y<<" \n";
         }
 
-        std::cout<<"o: "<<entity_pos.y<<" beacon: "<< beacon_hitbox.min.y<<" surface: "<<surface_hitbox.max.y<<"\n";
-
+        //updating rotation
         entity_vel.x = std::max(std::min(entity_vel.x, horizontal_speed_cap), -horizontal_speed_cap);
         entity_vel.y = std::min(entity_vel.y, vertical_speed_cap);
 
@@ -200,8 +239,6 @@ int main()
             y_rotation = 0.0f;
         }
         beacon.transform.rotation.y = y_rotation;
-
-        beacon.transform.position = entity_pos;
 
         beacon.colour.r = 1.0f - r;
         beacon.colour.g = 1.0f - g;
