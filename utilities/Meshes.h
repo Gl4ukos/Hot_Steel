@@ -32,6 +32,7 @@ public:
 
     void draw(Shader& shader);
     Hitbox get_hitbox() const;
+    void set_colour();
     unsigned int get_vao();
     void destroy(); // optional: de-allocate all resources once they've outlived their purpose
 
@@ -76,10 +77,10 @@ class Rectangle : public Mesh{
 private:
     float vertices[48] = {
         //positions         //colors            //texture coords
-        -0.5f, -0.5f, 0.2f,   0.6f, 0.6f, 0.9f,       //top left
-         0.5f, -0.5f, 0.2f,   0.9f, 0.6f, 0.6f ,       //top right
-        -0.5f, -0.7f, 0.2f,  0.0f, 0.0f, 0.0f   ,      //bot left
-        +0.5f, -0.7f, 0.2f,  0.0f, 0.0f, 0.0f     //bot right  
+        -0.0f, +0.2f, 0.2f,   0.6f, 0.6f, 0.9f,       //top left
+         0.4f, +0.2f, 0.2f,   0.9f, 0.6f, 0.6f ,       //top right
+        -0.0f, -0.0f, 0.2f,  0.0f, 0.0f, 0.0f   ,      //bot left
+        +0.4f, -0.0f, 0.2f,  0.0f, 0.0f, 0.0f     //bot right  
     };
 
     //indices for rectangle

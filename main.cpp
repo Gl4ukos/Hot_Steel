@@ -35,17 +35,8 @@ void processInput(GLFWwindow* window)
 {
     entity_acc = glm::vec3(0.0f, gravity, 0.0f);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        // entity_acc.y = +vertical_acc;
-        entity_vel.y = jump_boost;
-    }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        // entity_acc.y = +vertical_acc;
-        entity_vel.y = jump_boost;
-    }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        entity_acc.y = -vertical_acc;
-    }
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
         if(entity_vel.x > 0){
@@ -59,11 +50,22 @@ void processInput(GLFWwindow* window)
         }
         entity_acc.x = +horizontal_acc;
     }
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
 
-    if(entity_acc.x ==0){ //if no forces on x, apply friction
-        entity_acc.x = -(entity_vel.x*friction);
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
+        entity_vel.y = jump_boost;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        entity_vel.y = jump_boost;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+        entity_vel.y = -jump_boost;
+    }
+
+
+    if(entity_acc.x ==0 ){ //if no forces on x, apply friction
+        entity_acc.x -= (entity_vel.x*friction);
     }
 
     if(entity_pos.y <= -0.99){
@@ -173,8 +175,22 @@ int main()
     beacon.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     beacon.transform.scale = glm::vec3(0.2f, 0.2f, 0.2f);
 
-    Rectangle surface;
-    Hitbox surface_hitbox;
+    //creating the platforms
+    Rectangle platforms[4];
+    platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
+    platforms[0].transform.scale = glm::vec3(10.0f, 1.0f, 1.0f);
+
+    platforms[1].transform.position = glm::vec3(0.2, -0.8, 0.0f);
+    platforms[1].transform.scale = glm::vec3(2.0f, 2.0f, 1.0f);
+
+    platforms[2].transform.position = glm::vec3(-0.2, 0.0, 0.0f);
+    platforms[2].transform.scale = glm::vec3(1.5f, 1.0f, 1.0f);
+
+    platforms[3].transform.position = glm::vec3(-0.9, 0.3, 0.0f);
+    platforms[3].transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    Hitbox platform_hitboxes[4];
+
 
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
@@ -216,17 +232,24 @@ int main()
 
         //check for collisions
         beacon_hitbox = beacon.get_hitbox();
-        surface_hitbox = surface.get_hitbox();
         
-        // //displacing from collisions
-        glm::vec3 collision_displacement = check_collision_2d(beacon_hitbox, surface_hitbox);
+        for(int i=0; i<(sizeof(platform_hitboxes)/sizeof(Hitbox)); i++){
+            platform_hitboxes[i] = platforms[i].get_hitbox();
 
-        if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
-            entity_pos += collision_displacement;
-            beacon.transform.position = entity_pos;
-            entity_vel = glm::vec3(0.0f, 0.0f, 0.0f);       
-            std::cout<<" "<<collision_displacement.x<<" "<<collision_displacement.y<<" \n";
+            glm::vec3 collision_displacement = check_collision_2d(beacon_hitbox, platform_hitboxes[i]);
+
+            if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
+                entity_pos += collision_displacement;
+                beacon.transform.position = entity_pos;
+                if(collision_displacement.y != 0.0){
+                    entity_vel.y = 0.0f;
+                }
+                if(collision_displacement.x != 0.0){
+                    entity_vel.x = 0.0f;
+                }
+            }
         }
+    
 
         //updating rotation
         entity_vel.x = std::max(std::min(entity_vel.x, horizontal_speed_cap), -horizontal_speed_cap);
@@ -240,20 +263,12 @@ int main()
         }
         beacon.transform.rotation.y = y_rotation;
 
-        beacon.colour.r = 1.0f - r;
-        beacon.colour.g = 1.0f - g;
-        beacon.colour.b = 1.0f - b;
-        beacon.colour.a = 0.5f; //opacity
-
         beacon.draw(shader);
 
-        // drawing surface
-
-        surface.colour.r = 1.0f - r;
-        surface.colour.g = 1.0f - g;
-        surface.colour.b = 1.0f - b;
-        surface.colour.a = 0.3f;
-        surface.draw(shader);
+        // drawing platforms
+        for(int i=0; i<(sizeof(platform_hitboxes)/sizeof(Hitbox)); i++){
+            platforms[i].draw(shader);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
