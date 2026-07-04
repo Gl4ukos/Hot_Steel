@@ -17,7 +17,7 @@ glm::vec3 entity_acc(0.0f, 0.0f, 0.0f);
 float vertical_speed_cap = 3;
 float horizontal_speed_cap = 3;
 float vertical_acc = 30;
-float horizontal_acc = 40;
+float horizontal_acc = 30;
 float jump_boost = 3;
 
 float gravity = -15.0;
