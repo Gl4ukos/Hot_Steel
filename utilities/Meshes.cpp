@@ -108,7 +108,7 @@ Pyramid::Pyramid(){
     horizontal_acc = 30;
     jump_boost = 3.0;
 
-    colour = glm::vec4(0.4f, 0.0f, 0.9f, 0.5f);
+    additional_colour = glm::vec4(0.4f, 0.0f, 0.9f, 0.5f);
     transform.position = glm::vec3(0.5f, 0.0f, 0.0f);
     transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     transform.scale = glm::vec3(0.2f, 0.2f, 0.2f);
@@ -119,6 +119,7 @@ Pyramid::Pyramid(){
 void Pyramid::draw(Shader& shader){
     glm::mat4 model = getModelMatrix();
     shader.set_mat4("model", model);
+    shader.set_vec4("another_color", additional_colour);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
@@ -209,6 +210,8 @@ Rectangle::Rectangle(){
 void Rectangle::draw(Shader& shader){
     glm::mat4 model = getModelMatrix();
     shader.set_mat4("model", model);
+    shader.set_vec4("another_color", additional_colour);
+
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
@@ -239,17 +242,17 @@ void Rectangle::update_hitbox()
 
 void Background::cycle_colour(){
     for(int i=0; i<3; i++){
-        colour[i] += colour_increment[i];
+        additional_colour[i] += colour_increment[i];
 
-        if(colour[i] > 1.0f){
+        if(additional_colour[i] > 1.0f){
             colour_increment[i] *= -1.0f;
-        }else if(colour[i] < 0.0f){
+        }else if(additional_colour[i] < 0.0f){
             colour_increment[i] *= -1.0f;
         }
     }
 }
 
 void Background::draw(){
-    glClearColor(colour[0], colour[1], colour[2], colour[3]); 
+    glClearColor(additional_colour[0], additional_colour[1], additional_colour[2], additional_colour[3]); 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

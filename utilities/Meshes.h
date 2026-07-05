@@ -26,7 +26,7 @@ public:
         glm::vec3 scale    = glm::vec3(1.0f, 1.0f, 1.0f);
     }transform;
 
-    glm::vec4 colour = glm::vec4(0.0f);
+    glm::vec4 additional_colour = glm::vec4(0.0f);
     glm::vec3 velocity = glm::vec3(0.0f);
     glm::vec3 acceleration = glm::vec3(0.0f);
 
@@ -159,7 +159,7 @@ public:
 
 class Background{
 public:
-    glm::vec4 colour = glm::vec4(0.4f, 0.0f, 0.8f, 1.0f);
+    glm::vec4 additional_colour = glm::vec4(0.4f, 0.0f, 0.8f, 1.0f);
     float colour_increment[3] = {0.01f, 0.02f, 0.003f};
 
     void draw();
