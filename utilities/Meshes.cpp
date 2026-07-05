@@ -107,6 +107,13 @@ Pyramid::Pyramid(){
     vertical_acc = 30;
     horizontal_acc = 30;
     jump_boost = 3.0;
+
+    colour = glm::vec4(0.4f, 0.0f, 0.9f, 0.5f);
+    transform.position = glm::vec3(0.5f, 0.0f, 0.0f);
+    transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+    transform.scale = glm::vec3(0.2f, 0.2f, 0.2f);
+
+            
 }
 
 void Pyramid::draw(Shader& shader){
@@ -117,10 +124,30 @@ void Pyramid::draw(Shader& shader){
     glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 }
 
-Hitbox Pyramid::get_hitbox() const
-{
-    Hitbox box;
+float Pyramid::cycle_rads_wrap(float &value, float &increment){
+    value += increment; 
+    
+    if(value > M_PI){
+        value *= -1.0f;
+    }else if(value < -M_PI){
+        value *= -1.0f;
+    }
+    return value;
+}
 
+float Pyramid::cycle_value(float value, float increment){
+    value += increment;
+
+    if(value > 1.0f){
+        increment *= -1.0f;
+    }else if(value < 0.0f){
+        increment *= -1.0f;
+    }
+    return value;
+}
+
+void Pyramid::update_hitbox()
+{
     // Local bounds of the pyramid
     float min_x = vertices[6];
     float min_y = vertices[13];
@@ -137,10 +164,8 @@ Hitbox Pyramid::get_hitbox() const
     localMax *= transform.scale;
 
     // Apply translation
-    box.min = localMin + transform.position;
-    box.max = localMax + transform.position;
-
-    return box;
+    hitbox.min = localMin + transform.position;
+    hitbox.max = localMax + transform.position;
 }
 
 
@@ -188,10 +213,8 @@ void Rectangle::draw(Shader& shader){
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
-Hitbox Rectangle::get_hitbox() const
+void Rectangle::update_hitbox()
 {
-    Hitbox box;
-
     // Local bounds of the rectangle
     float min_x = vertices[0];
     float min_y = vertices[13];
@@ -208,10 +231,25 @@ Hitbox Rectangle::get_hitbox() const
     localMax *= transform.scale;
 
     // Apply translation
-    box.min = localMin + transform.position;
-    box.max = localMax + transform.position;
-
-    return box;
+    hitbox.min = localMin + transform.position;
+    hitbox.max = localMax + transform.position;
 }
 
 
+
+void Background::cycle_colour(){
+    for(int i=0; i<3; i++){
+        colour[i] += colour_increment[i];
+
+        if(colour[i] > 1.0f){
+            colour_increment[i] *= -1.0f;
+        }else if(colour[i] < 0.0f){
+            colour_increment[i] *= -1.0f;
+        }
+    }
+}
+
+void Background::draw(){
+    glClearColor(colour[0], colour[1], colour[2], colour[3]); 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}

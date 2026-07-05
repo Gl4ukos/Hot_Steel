@@ -14,6 +14,9 @@ struct Hitbox {
     glm::vec3 max = glm::vec3(0.0f, 0.0f, 0.0f);
 };
 
+
+
+
 class Mesh{
 
 public:
@@ -23,13 +26,7 @@ public:
         glm::vec3 scale    = glm::vec3(1.0f, 1.0f, 1.0f);
     }transform;
 
-    struct Colour{
-        float r = 0.0;
-        float g = 0.0;
-        float b = 0.0;
-        float a = 0.0;
-    }colour;
-
+    glm::vec4 colour = glm::vec4(0.0f);
     glm::vec3 velocity = glm::vec3(0.0f);
     glm::vec3 acceleration = glm::vec3(0.0f);
 
@@ -44,7 +41,7 @@ public:
     float jump_boost;
 
     void draw(Shader& shader);
-    Hitbox get_hitbox() const;
+    void update_hitbox();
     void set_colour();
     unsigned int get_vao();
     void destroy(); // optional: de-allocate all resources once they've outlived their purpose
@@ -81,8 +78,10 @@ private:
 
 public:
     Pyramid(); 
-    Hitbox get_hitbox()const;
     void draw(Shader& shader);
+    void update_hitbox();
+    float cycle_rads_wrap(float &value, float &increment);
+    float cycle_value(float value, float increment);
 };
 
 class Rectangle : public Mesh{
@@ -103,7 +102,7 @@ private:
 
 public:
     Rectangle();
-    Hitbox get_hitbox()const;
+    void update_hitbox();
     void draw(Shader& shader);
 };
 
@@ -155,5 +154,17 @@ public:
     Kuv();
     void draw(Shader& shader);
 };
+
+
+
+class Background{
+public:
+    glm::vec4 colour = glm::vec4(0.4f, 0.0f, 0.8f, 1.0f);
+    float colour_increment[3] = {0.01f, 0.02f, 0.003f};
+
+    void draw();
+    void cycle_colour();
+};
+
 
 #endif

@@ -5,7 +5,7 @@ layout(location = 2) in vec2 aTexCoord; //texture coords, position 2
 
 uniform mat4 model;
 
-out vec3 ourColor;
+out vec3 outColor;
 out vec2 TexCoord;
 
 
@@ -15,6 +15,6 @@ void main()
 
     gl_Position = model * vec4(aPos, 1.0);
 
-    ourColor = aColor; // set ourColor to the input color we got from the vertex data
+    outColor = aColor; // set ourColor to the input color we got from the vertex data
     TexCoord = aTexCoord;
 }   

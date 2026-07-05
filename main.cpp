@@ -108,28 +108,6 @@ std::string load_file_to_string(std::string filename){
     return buffer.str();
 }
 
-float cycle_rads_wrap(float &value, float &increment){
-    value += increment; 
-    
-    if(value > M_PI){
-        value *= -1.0f;
-    }else if(value < -M_PI){
-        value *= -1.0f;
-    }
-    return value;
-}
-
-float cycle_colour(float &value, float &increment){
-    value += increment; 
-    
-    if(value > 1.0f){
-        increment *= -1.0f;
-    }else if(value < 0.0f){
-        increment *= -1.0f;
-    }
-    return value;
-}
-
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
@@ -142,27 +120,13 @@ int main()
     Shader shader ("Shaders/vertex_shader.glsl", "Shaders/fragment_shader.glsl");
 
     // temp variables
-    float r = 0.4;
-    float g = 0.0;
-    float b = 0.9;
-    float increment1 = 0.01;
-    float increment2 = 0.01;
-    float increment3 = 0.01;
-
-    float y_offset = 0.0f;
-    float y_offset_inc = 0.01;
-
     float y_rotation = 0.0f;
     float y_rotation_inc = 0.02;
 
     //creating the objects
     Pyramid beacon;
-    Hitbox beacon_hitbox;
-    beacon.transform.position = glm::vec3(0.5f, 0.0f, 0.0f);
-    beacon.transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-    beacon.transform.scale = glm::vec3(0.2f, 0.2f, 0.2f);
-
-    //creating the platforms
+    Background background;
+    int platform_count = 4;
     Rectangle platforms[4];
     platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
     platforms[0].transform.scale = glm::vec3(10.0f, 1.0f, 1.0f);
@@ -176,9 +140,6 @@ int main()
     platforms[3].transform.position = glm::vec3(-0.9, 0.3, 0.0f);
     platforms[3].transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    Hitbox platform_hitboxes[4];
-
-
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
         
@@ -189,36 +150,24 @@ int main()
         uint fps = 1 / frameTime;
         std::cout<< "\rFPS:"<<fps<<std::flush;
 
-        // CYCLING THE COLOURS
-        r = cycle_colour(r, increment1);
-        g = cycle_colour(g, increment2);
-        b = cycle_colour(b, increment3);
-        y_offset = cycle_colour(y_offset, y_offset_inc);
-        y_rotation = cycle_rads_wrap(y_rotation, y_rotation_inc);
-        y_rotation += y_rotation_inc;
+        // *********************
+        // UPDATING BEACON
+        // *********************
 
-
-        // check for keystrokes
-        control_object(window, &beacon);
-
-        // updating the background
-        glClearColor(r,b,g, 1.0f); 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // equiping the current shader
-        shader.use();
-        
-        // drawing beacon
-
-        //updating translation
-        beacon.transform.position += beacon.velocity * frameTime;
-        beacon.velocity += beacon.acceleration * frameTime;
+        control_object(window, &beacon); //keystroke check
+        beacon.transform.position += beacon.velocity * frameTime; //position update
+        beacon.velocity += beacon.acceleration * frameTime; // velocity update
+        beacon.velocity.x = std::max(std::min(beacon.velocity.x, beacon.horizontal_speed_cap), -beacon.horizontal_speed_cap); //clamp x speed
+        beacon.velocity.y = std::min(beacon.velocity.y, beacon.vertical_speed_cap);  //clamp y speed
+        beacon.transform.rotation.z = std::max(std::min((beacon.velocity.x / beacon.horizontal_speed_cap), 0.8f),-0.8f); //update rotation z
+        beacon.transform.rotation.x = std::max(std::min((beacon.velocity.y / beacon.vertical_speed_cap), 0.6f), -0.6f); //update rotation y
+         //colour update
+        beacon.update_hitbox(); //hitbox update
 
         //check for collisions        
-        for(int i=0; i<(sizeof(platform_hitboxes)/sizeof(Hitbox)); i++){
-            platform_hitboxes[i] = platforms[i].get_hitbox();
-
-            glm::vec3 collision_displacement = check_collision_2d(beacon.get_hitbox(), platform_hitboxes[i]);
+        for(int i=0; i<(platform_count); i++){
+            platforms[i].update_hitbox();
+            glm::vec3 collision_displacement = check_collision_2d(beacon.hitbox, platforms[i].hitbox);
 
             if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
                 beacon.transform.position += collision_displacement;
@@ -230,27 +179,30 @@ int main()
                 }
             }
         }
-    
-
-        //updating rotation
-        beacon.velocity.x = std::max(std::min(beacon.velocity.x, beacon.horizontal_speed_cap), -beacon.horizontal_speed_cap);
-        beacon.velocity.y = std::min(beacon.velocity.y, beacon.vertical_speed_cap);
-
-        beacon.transform.rotation.z = std::max(std::min((beacon.velocity.x / beacon.horizontal_speed_cap), 0.8f),-0.8f);
-        beacon.transform.rotation.x = std::max(std::min((beacon.velocity.y / beacon.vertical_speed_cap), 0.6f), -0.6f);
-        
         if(std::abs(beacon.velocity.x) > 0.5){
             y_rotation = 0.0f;
         }
         beacon.transform.rotation.y = y_rotation;
+        if(std::abs(beacon.velocity.x) > 0.5){  // clamp rotation
+            y_rotation = 0.0f;
+        }
+        beacon.transform.rotation.y = y_rotation;
 
+        // ***************************
+        // UPDATING BACKGROUND
+        // ***************************
+        background.cycle_colour();
+        background.draw();
+
+        // *************
+        // DRAWING
+        // *************
+        shader.use();
         beacon.draw(shader);
-
         // drawing platforms
-        for(int i=0; i<(sizeof(platform_hitboxes)/sizeof(Hitbox)); i++){
+        for(int i=0; i<(platform_count); i++){
             platforms[i].draw(shader);
         }
-
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
