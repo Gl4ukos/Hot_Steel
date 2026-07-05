@@ -18,6 +18,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }  
 
+int jumpsLeft = 2;
+bool spaceWasDown = false;
 
 void control_object(GLFWwindow* window, Mesh* mesh)
 {
@@ -39,12 +41,12 @@ void control_object(GLFWwindow* window, Mesh* mesh)
         mesh->acceleration.x = mesh->horizontal_acc;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
+    bool spaceDown = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+    bool spacePressed = spaceDown && !spaceWasDown;
+    spaceWasDown = spaceDown;
+    if (spacePressed && jumpsLeft>0){
         mesh->velocity.y = mesh->jump_boost;
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        mesh->velocity.y = mesh->jump_boost;
+        jumpsLeft-=1;
     }
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
@@ -56,6 +58,7 @@ void control_object(GLFWwindow* window, Mesh* mesh)
     }
 
     if(mesh->transform.position.y <= -0.99){
+        jumpsLeft =2;
         mesh->velocity.y = std::max(0.0f, mesh->velocity.y);
     }
 
@@ -179,6 +182,7 @@ int main()
                 beacon.transform.position += collision_displacement;
                 if(collision_displacement.y != 0.0){
                     beacon.velocity.y = 0.0f;
+                    jumpsLeft = 2;
                 }
                 if(collision_displacement.x != 0.0){
                     beacon.velocity.x = 0.0f;

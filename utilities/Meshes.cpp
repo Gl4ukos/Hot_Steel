@@ -102,11 +102,11 @@ Pyramid::Pyramid(){
 
     mass = 10;
     elasticity_factor = 0.0;
-    vertical_speed_cap = 3.0;
-    horizontal_speed_cap = 3.0;
+    vertical_speed_cap = 4.0;
+    horizontal_speed_cap = 2.5;
     vertical_acc = 30;
     horizontal_acc = 30;
-    jump_boost = 3.0;
+    jump_boost = 3.2;
 
     additional_colour = glm::vec4(0.4f, 0.0f, 0.9f, 0.5f);
     transform.position = glm::vec3(0.5f, 0.0f, 0.0f);
