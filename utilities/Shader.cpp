@@ -90,15 +90,15 @@ void Shader::die(){
     glDeleteProgram(ID);
 }
 
-void Shader::setBool(const std::string &name, bool value) const
+void Shader::set_bool(const std::string &name, bool value) const
 {         
     glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value); 
 }
-void Shader::setInt(const std::string &name, int value) const
+void Shader::set_int(const std::string &name, int value) const
 { 
     glUniform1i(glGetUniformLocation(ID, name.c_str()), value); 
 }
-void Shader::setFloat(const std::string &name, float value) const
+void Shader::set_float(const std::string &name, float value) const
 { 
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 
 }
@@ -109,6 +109,9 @@ void Shader::set_vec4(const std::string& name, const glm::vec4& vec){
     glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(vec));
 }
 
+void Shader::set_vec2(const std::string& name, float a, float b){
+    glUniform2f(glGetUniformLocation(ID, name.c_str()), a, b);
+}
 
 void Shader::set_vec3(const std::string name, float a, float b, float c){
     glUniform3f(glGetUniformLocation(ID, name.c_str()), a, b, c);

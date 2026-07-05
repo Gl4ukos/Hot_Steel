@@ -118,6 +118,7 @@ int main()
     //setting up
     GLFWwindow* window = initialise_glfw();
     Shader shader ("Shaders/vertex_shader.glsl", "Shaders/fragment_shader.glsl");
+    glEnable(GL_DEPTH_TEST); //enabling depth
 
     // temp variables
     float y_rotation = 0.0f;
@@ -130,15 +131,20 @@ int main()
     Rectangle platforms[4];
     platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
     platforms[0].transform.scale = glm::vec3(10.0f, 1.0f, 1.0f);
+    platforms[0].load_texture("textures/wall.jpg");
 
     platforms[1].transform.position = glm::vec3(0.2, -0.8, 0.0f);
     platforms[1].transform.scale = glm::vec3(2.0f, 2.0f, 1.0f);
+    platforms[1].load_texture("textures/wall.jpg");
 
     platforms[2].transform.position = glm::vec3(-0.2, 0.0, 0.0f);
     platforms[2].transform.scale = glm::vec3(1.5f, 1.0f, 1.0f);
+    platforms[2].load_texture("textures/wall.jpg");
 
     platforms[3].transform.position = glm::vec3(-0.9, 0.3, 0.0f);
     platforms[3].transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    platforms[3].load_texture("textures/wall.jpg");
+
 
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
@@ -192,6 +198,8 @@ int main()
         // **************************
         // UPDATING PLATFORMS
         // **************************
+        shader.set_int("tex", 0);
+        shader.set_int("use_texture", 0);
         for (int i=0; i<platform_count; i++){
             platforms[i].additional_colour = glm::vec4(background.additional_colour[0], background.additional_colour[1], background.additional_colour[2], 0.7f); //colour update
         }
@@ -200,7 +208,7 @@ int main()
         // ***************************
         // UPDATING BACKGROUND
         // ***************************
-        background.cycle_colour();
+        // background.cycle_colour();
         background.draw();
 
         // *************

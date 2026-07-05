@@ -14,6 +14,13 @@ struct Hitbox {
     glm::vec3 max = glm::vec3(0.0f, 0.0f, 0.0f);
 };
 
+class Texture{
+public:
+    GLuint id;
+
+    bool load(const std::string& path);
+    void bind(GLuint slot = 0);
+};
 
 
 
@@ -84,14 +91,17 @@ public:
     float cycle_value(float value, float increment);
 };
 
+
+
+
 class Rectangle : public Mesh{
 private:
     float vertices[48] = {
         //positions         //colors            //texture coords
-        -0.0f, +0.2f, 0.2f,   0.6f, 0.6f, 0.9f,       //top left
-         0.4f, +0.2f, 0.2f,   0.9f, 0.6f, 0.6f ,       //top right
-        -0.0f, -0.0f, 0.2f,  0.0f, 0.0f, 0.0f   ,      //bot left
-        +0.4f, -0.0f, 0.2f,  0.0f, 0.0f, 0.0f     //bot right  
+        -0.0f, +0.2f, 0.2f,   0.6f, 0.6f, 0.9f,     0.0f, 0.5f,       //top left
+         0.4f, +0.2f, 0.2f,   0.9f, 0.6f, 0.6f,     1.0f, 0.5f,       //top right
+        -0.0f, -0.0f, 0.2f,  0.0f, 0.0f, 0.0f,      0.0f, 0.0f,      //bot left
+        +0.4f, -0.0f, 0.2f,  0.0f, 0.0f, 0.0f,      1.0f, 0.0f     //bot right  
     };
 
     //indices for rectangle
@@ -101,9 +111,12 @@ private:
     };
 
 public:
+    Texture texture;
+
     Rectangle();
     void update_hitbox();
     void draw(Shader& shader);
+    void load_texture(std::string filename);
 };
 
 
@@ -159,7 +172,7 @@ public:
 
 class Background{
 public:
-    glm::vec4 additional_colour = glm::vec4(0.4f, 0.0f, 0.8f, 1.0f);
+    glm::vec4 additional_colour = glm::vec4(0.34f, 0.8f, 0.74f, 1.0f);
     float colour_increment[3] = {0.01f, 0.02f, 0.003f};
 
     void draw();
