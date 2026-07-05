@@ -100,6 +100,13 @@ Pyramid::Pyramid(){
     // }
     // stbi_image_free(data);
 
+    mass = 10;
+    elasticity_factor = 0.0;
+    vertical_speed_cap = 3.0;
+    horizontal_speed_cap = 3.0;
+    vertical_acc = 30;
+    horizontal_acc = 30;
+    jump_boost = 3.0;
 }
 
 void Pyramid::draw(Shader& shader){
@@ -170,6 +177,8 @@ Rectangle::Rectangle(){
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
 
+    mass = -1; //immobile 
+    elasticity_factor=0.0;
 }
 
 void Rectangle::draw(Shader& shader){

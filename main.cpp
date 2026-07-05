@@ -8,18 +8,6 @@
 
 #include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW AND SHADER
 
-
-glm::vec3 entity_pos(0.0f, 0.0f, 0.0f);
-glm::vec3 entity_vel(0.0f, 0.0f, 0.0f);
-glm::vec3 entity_acc(0.0f, 0.0f, 0.0f);
-
-
-float vertical_speed_cap = 3;
-float horizontal_speed_cap = 3;
-float vertical_acc = 30;
-float horizontal_acc = 30;
-float jump_boost = 3;
-
 float gravity = -15.0;
 float friction = 10.0;
 float frameTime;
@@ -30,46 +18,45 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }  
 
-// checks for keystrokes
-void processInput(GLFWwindow* window)
+
+void control_object(GLFWwindow* window, Mesh* mesh)
 {
-    entity_acc = glm::vec3(0.0f, gravity, 0.0f);
+    mesh->acceleration = glm::vec3(0.0f, gravity, 0.0f);
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        if(entity_vel.x > 0){
-            entity_vel.x =0;
+        if(mesh->velocity.x > 0){
+            mesh->velocity.x = 0;
         }
-        entity_acc.x = -horizontal_acc;
+        mesh->acceleration.x = -mesh->horizontal_acc;
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        if(entity_vel.x < 0){
-            entity_vel.x =0;
+        if(mesh->velocity.x < 0){
+            mesh->velocity.x =0;
         }
-        entity_acc.x = +horizontal_acc;
+        mesh->acceleration.x = mesh->horizontal_acc;
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        entity_vel.y = jump_boost;
+        mesh->velocity.y = mesh->jump_boost;
     }
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        entity_vel.y = jump_boost;
+        mesh->velocity.y = mesh->jump_boost;
     }
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        entity_vel.y = -jump_boost;
+        mesh->velocity.y = -mesh->jump_boost;
     }
 
-
-    if(entity_acc.x ==0 ){ //if no forces on x, apply friction
-        entity_acc.x -= (entity_vel.x*friction);
+    if(mesh->acceleration.x ==0 ){ //if no forces on x, apply friction
+        mesh->acceleration.x -= (mesh->velocity.x*friction);
     }
 
-    if(entity_pos.y <= -0.99){
-        entity_vel.y = std::max(0.0f, entity_vel.y);
+    if(mesh->transform.position.y <= -0.99){
+        mesh->velocity.y = std::max(0.0f, mesh->velocity.y);
     }
 
 }
@@ -103,7 +90,7 @@ glm::vec3 check_collision_2d(const Hitbox& a, const Hitbox& b)
             // COLLISION DATECTED
             // we keep only the least displacement to return
             if(std::abs(displacement.x) > std::abs(displacement.y)){
-                displacement.x = 0.0f;
+                displacement.x = 0.0f; 
             }else{
                 displacement.y = 0.0f;
             }
@@ -212,13 +199,11 @@ int main()
 
 
         // check for keystrokes
-        processInput(window);
+        control_object(window, &beacon);
 
         // updating the background
         glClearColor(r,b,g, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
 
         // equiping the current shader
         shader.use();
@@ -226,39 +211,35 @@ int main()
         // drawing beacon
 
         //updating translation
-        entity_pos = entity_pos + entity_vel * frameTime;
-        entity_vel = entity_vel + entity_acc * frameTime;
-        beacon.transform.position = entity_pos;
+        beacon.transform.position += beacon.velocity * frameTime;
+        beacon.velocity += beacon.acceleration * frameTime;
 
-        //check for collisions
-        beacon_hitbox = beacon.get_hitbox();
-        
+        //check for collisions        
         for(int i=0; i<(sizeof(platform_hitboxes)/sizeof(Hitbox)); i++){
             platform_hitboxes[i] = platforms[i].get_hitbox();
 
-            glm::vec3 collision_displacement = check_collision_2d(beacon_hitbox, platform_hitboxes[i]);
+            glm::vec3 collision_displacement = check_collision_2d(beacon.get_hitbox(), platform_hitboxes[i]);
 
             if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
-                entity_pos += collision_displacement;
-                beacon.transform.position = entity_pos;
+                beacon.transform.position += collision_displacement;
                 if(collision_displacement.y != 0.0){
-                    entity_vel.y = 0.0f;
+                    beacon.velocity.y = 0.0f;
                 }
                 if(collision_displacement.x != 0.0){
-                    entity_vel.x = 0.0f;
+                    beacon.velocity.x = 0.0f;
                 }
             }
         }
     
 
         //updating rotation
-        entity_vel.x = std::max(std::min(entity_vel.x, horizontal_speed_cap), -horizontal_speed_cap);
-        entity_vel.y = std::min(entity_vel.y, vertical_speed_cap);
+        beacon.velocity.x = std::max(std::min(beacon.velocity.x, beacon.horizontal_speed_cap), -beacon.horizontal_speed_cap);
+        beacon.velocity.y = std::min(beacon.velocity.y, beacon.vertical_speed_cap);
 
-        beacon.transform.rotation.z = std::max(std::min((entity_vel.x / horizontal_speed_cap), 0.8f),-0.8f);
-        beacon.transform.rotation.x = std::max(std::min((entity_vel.y / vertical_speed_cap), 0.6f), -0.6f);
+        beacon.transform.rotation.z = std::max(std::min((beacon.velocity.x / beacon.horizontal_speed_cap), 0.8f),-0.8f);
+        beacon.transform.rotation.x = std::max(std::min((beacon.velocity.y / beacon.vertical_speed_cap), 0.6f), -0.6f);
         
-        if(std::abs(entity_vel.x) > 0.5){
+        if(std::abs(beacon.velocity.x) > 0.5){
             y_rotation = 0.0f;
         }
         beacon.transform.rotation.y = y_rotation;

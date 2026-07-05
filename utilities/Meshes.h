@@ -10,8 +10,8 @@
 
 
 struct Hitbox {
-    glm::vec3 min;
-    glm::vec3 max;
+    glm::vec3 min = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 max = glm::vec3(0.0f, 0.0f, 0.0f);
 };
 
 class Mesh{
@@ -30,12 +30,24 @@ public:
         float a = 0.0;
     }colour;
 
+    glm::vec3 velocity = glm::vec3(0.0f);
+    glm::vec3 acceleration = glm::vec3(0.0f);
+
+    Hitbox hitbox;
+
+    float mass;
+    float elasticity_factor;
+    float vertical_speed_cap;
+    float horizontal_speed_cap;
+    float vertical_acc;
+    float horizontal_acc;
+    float jump_boost;
+
     void draw(Shader& shader);
     Hitbox get_hitbox() const;
     void set_colour();
     unsigned int get_vao();
     void destroy(); // optional: de-allocate all resources once they've outlived their purpose
-
 
 protected:
 
