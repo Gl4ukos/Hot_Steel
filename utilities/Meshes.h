@@ -7,8 +7,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-
-
 struct Hitbox {
     glm::vec3 min = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 max = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -21,7 +19,6 @@ public:
     bool load(const std::string& path);
     void bind(GLuint slot = 0);
 };
-
 
 
 class Mesh{
@@ -46,6 +43,8 @@ public:
     float vertical_acc;
     float horizontal_acc;
     float jump_boost;
+
+    Texture* texture = nullptr;
 
     void draw(Shader& shader);
     void update_hitbox();
@@ -98,84 +97,34 @@ class Rectangle : public Mesh{
 private:
     float vertices[48] = {
         //positions         //colors            //texture coords
-        -0.0f, +0.2f, 0.2f,   0.6f, 0.6f, 0.9f,     0.0f, 0.5f,       //top left
-         0.4f, +0.2f, 0.2f,   0.9f, 0.6f, 0.6f,     1.0f, 0.5f,       //top right
-        -0.0f, -0.0f, 0.2f,  0.0f, 0.0f, 0.0f,      0.0f, 0.0f,      //bot left
-        +0.4f, -0.0f, 0.2f,  0.0f, 0.0f, 0.0f,      1.0f, 0.0f     //bot right  
+        -0.0f, +0.4f, 0.0f,   0.6f, 0.6f, 0.9f,     0.0f, 1.0f,       //top left
+         0.4f, +0.4f, 0.0f,   0.9f, 0.6f, 0.6f,     1.0f, 1.0f,       //top right
+        -0.0f, -0.0f, 0.0f,  0.0f, 0.0f, 0.0f,      0.0f, 0.0f,      //bot left
+        +0.4f, -0.0f, 0.0f,  0.0f, 0.0f, 0.0f,      1.0f, 0.0f     //bot right  
     };
 
-    //indices for rectangle
+    //indices for rectangle<
     unsigned int indices[6] = {
         0, 1, 2,
         1, 2, 3
     };
 
 public:
-    Texture texture;
 
     Rectangle();
     void update_hitbox();
     void draw(Shader& shader);
-    void load_texture(std::string filename);
 };
-
-
-class Kuv : public Mesh{
-private:
-    float vertices[48] = {
-        //positions         //colors            //texture coords
-        -0.3f, -0.6f, -0.2f,   0.0f, 0.0f, 0.0f,       //top left
-         0.3f, -0.6f, -0.2f,   0.0f, 0.0f, 0.0f ,       //top right
-        -0.3f, -0.7f, -0.2f,  0.0f, 0.0f, 0.0f   ,      //bot left
-        +0.3f, -0.7f, -0.2f,  0.0f, 0.0f, 0.0f,     //bot right
-
-
-        -0.3f, -0.6f, 0.2f,   0.5f, 0.5f, 0.5f ,        //top left
-         0.3f, -0.6f, 0.2f,   0.5f, 0.5f, 0.5f,         //top right
-        -0.3f, -0.7f, 0.2f,  0.5f, 0.5f, 0.5f ,      //bot left
-        +0.3f, -0.7f, 0.2f,  0.5f, 0.5f, 0.5f         //bot right     
-    };
-
-    //indices for rectangle
-    unsigned int indices[36] = {
-        // Front
-        0, 1, 2,
-        1, 3, 2,
-
-        // Back
-        4, 6, 5,
-        5, 6, 7,
-
-        // Top
-        4, 5, 0,
-        5, 1, 0,
-
-        // Bottom
-        2, 3, 6,
-        3, 7, 6,
-
-        // Left
-        4, 0, 6,
-        0, 2, 6,
-
-        // Right
-        1, 5, 3,
-        5, 7, 3
-    };
-
-public:
-    Kuv();
-    void draw(Shader& shader);
-};
-
 
 
 class Background{
 public:
     glm::vec4 additional_colour = glm::vec4(0.34f, 0.8f, 0.74f, 1.0f);
     float colour_increment[3] = {0.01f, 0.02f, 0.003f};
+    Rectangle rectangle;
 
-    void draw();
+    Background();
+    void draw(Shader& shader);
     void cycle_colour();
 };
 

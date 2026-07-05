@@ -5,6 +5,48 @@
 
 
 
+// **************************
+// TEXTURE
+// **************************
+
+bool Texture::load(const std::string& path)
+{
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    int w, h, channels;
+    unsigned char* data = stbi_load(path.c_str(), &w, &h, &channels, 0);
+
+    if (!data) return false;
+
+    GLenum format = (channels == 4) ? GL_RGBA : GL_RGB;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, format,
+                 w, h, 0,
+                 format, GL_UNSIGNED_BYTE, data);
+
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(data);
+
+    // IMPORTANT default settings
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    return true;
+}
+
+void Texture::bind(GLuint slot)
+{
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_2D, id);
+}
+
+
+
 // **********************************
 // Mesh
 // **********************************
@@ -74,31 +116,6 @@ Pyramid::Pyramid(){
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
 
-
-
-    // //loading textures
-    // // creating a texture on gl
-    // unsigned int texture;
-    // glGenTextures(1, &texture);
-    // glBindTexture(GL_TEXTURE_2D, texture);
-    // // set the texture wrapping/filtering options (on the currently bound texture object)
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // // load and generate the texture
-    // int width, height, nrChannels;
-    // unsigned char *data = stbi_load("textures/wall.jpg", &width, &height, &nrChannels, 0);
-    // if (data)
-    // {
-    //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    //     glGenerateMipmap(GL_TEXTURE_2D);
-    // }
-    // else
-    // {
-    //     std::cout << "Failed to load texture" << std::endl;
-    // }
-    // stbi_image_free(data);
 
     mass = 10;
     elasticity_factor = 0.0;
@@ -213,11 +230,13 @@ void Rectangle::draw(Shader& shader){
     shader.set_mat4("model", model);
     shader.set_vec4("another_color", additional_colour);
     shader.set_vec2("uvScale", transform.scale.x, transform.scale.y);
-    texture.bind(0);
+
+    if(texture){
+        texture->bind(0);
+        shader.set_int("tex", 0);
+    }
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-    shader.set_int("use_texture", 0);
-    
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);    
 }
 
 void Rectangle::update_hitbox()
@@ -242,13 +261,14 @@ void Rectangle::update_hitbox()
     hitbox.max = localMax + transform.position;
 }
 
-void Rectangle::load_texture(std::string filename){
-    if(!texture.load(filename)){
-        std::cout<<"TEXTURE NOT FOUND "<< filename<<" \n";
-    }
+
+
+
+Background::Background(){
+    rectangle.transform.position = glm::vec3(-1.0f, -1.0f, 0.8f);
+    rectangle.transform.scale = glm::vec3(5.0f, 5.0f, 1.0f);
+    rectangle.additional_colour = glm::vec4(0.2f, 0.2f, 0.2f, 0.8f);
 }
-
-
 
 void Background::cycle_colour(){
     for(int i=0; i<3; i++){
@@ -262,44 +282,10 @@ void Background::cycle_colour(){
     }
 }
 
-void Background::draw(){
+void Background::draw(Shader& shader){
     glClearColor(additional_colour[0], additional_colour[1], additional_colour[2], additional_colour[3]); 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-
-bool Texture::load(const std::string& path)
-{
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-
-    int w, h, channels;
-    unsigned char* data = stbi_load(path.c_str(), &w, &h, &channels, 0);
-
-    if (!data) return false;
-
-    GLenum format = (channels == 4) ? GL_RGBA : GL_RGB;
-
-    glTexImage2D(GL_TEXTURE_2D, 0, format,
-                 w, h, 0,
-                 format, GL_UNSIGNED_BYTE, data);
-
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(data);
-
-    // IMPORTANT default settings
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    return true;
-}
-
-void Texture::bind(GLuint slot)
-{
-    glActiveTexture(GL_TEXTURE0 + slot);
-    glBindTexture(GL_TEXTURE_2D, id);
+    
+    rectangle.additional_colour = additional_colour;
+    rectangle.draw(shader);
 }

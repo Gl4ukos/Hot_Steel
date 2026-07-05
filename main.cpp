@@ -18,7 +18,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }  
 
-int jumpsLeft = 2;
+int jumpsLeft = 3;
 bool spaceWasDown = false;
 
 void control_object(GLFWwindow* window, Mesh* mesh)
@@ -127,30 +127,37 @@ int main()
     float y_rotation = 0.0f;
     float y_rotation_inc = 0.02;
 
+    Texture wallTex;
+    wallTex.load("textures/wall.jpg");
+
+
     //creating the objects
     Pyramid beacon;
+
     Background background;
+    
     int platform_count = 4;
     Rectangle platforms[4];
     platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
-    platforms[0].transform.scale = glm::vec3(10.0f, 1.0f, 1.0f);
-    platforms[0].load_texture("textures/wall.jpg");
+    platforms[0].transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
+    platforms[0].texture = &wallTex;
 
     platforms[1].transform.position = glm::vec3(0.2, -0.8, 0.0f);
-    platforms[1].transform.scale = glm::vec3(2.0f, 2.0f, 1.0f);
-    platforms[1].load_texture("textures/wall.jpg");
+    platforms[1].transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
+    platforms[1].texture = &wallTex;
 
     platforms[2].transform.position = glm::vec3(-0.2, 0.0, 0.0f);
-    platforms[2].transform.scale = glm::vec3(1.5f, 1.0f, 1.0f);
-    platforms[2].load_texture("textures/wall.jpg");
+    platforms[2].transform.scale = glm::vec3(1.5f, 0.5f, 1.0f);
+    platforms[2].texture = &wallTex;
 
     platforms[3].transform.position = glm::vec3(-0.9, 0.3, 0.0f);
-    platforms[3].transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
-    platforms[3].load_texture("textures/wall.jpg");
+    platforms[3].transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+    platforms[3].texture = &wallTex;
 
 
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
+        shader.use();
         
         //calculating FPS
         float currentTime = glfwGetTime();
@@ -158,6 +165,12 @@ int main()
         lastFrameTime = currentTime;
         uint fps = 1 / frameTime;
         std::cout<< "\rFPS:"<<fps<<std::flush;
+
+
+        // ***************************
+        // UPDATING BACKGROUND
+        // ***************************
+        background.cycle_colour();
 
         // *********************
         // UPDATING BEACON
@@ -182,7 +195,7 @@ int main()
                 beacon.transform.position += collision_displacement;
                 if(collision_displacement.y != 0.0){
                     beacon.velocity.y = 0.0f;
-                    jumpsLeft = 2;
+                    jumpsLeft = 3;
                 }
                 if(collision_displacement.x != 0.0){
                     beacon.velocity.x = 0.0f;
@@ -203,27 +216,22 @@ int main()
         // UPDATING PLATFORMS
         // **************************
         shader.set_int("tex", 0);
-        shader.set_int("use_texture", 0);
         for (int i=0; i<platform_count; i++){
             platforms[i].additional_colour = glm::vec4(background.additional_colour[0], background.additional_colour[1], background.additional_colour[2], 0.7f); //colour update
         }
 
-
-        // ***************************
-        // UPDATING BACKGROUND
-        // ***************************
-        // background.cycle_colour();
-        background.draw();
-
         // *************
         // DRAWING
         // *************
-        shader.use();
+        background.draw(shader);
+
         beacon.draw(shader);
         // drawing platforms
         for(int i=0; i<(platform_count); i++){
             platforms[i].draw(shader);
         }
+
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -241,7 +249,7 @@ GLFWwindow* initialise_glfw(){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //CORE PROFILE = modern OpenGL
 
     // Creating window
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "MORPHEUS ENGINE", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "HOT STEEL", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
