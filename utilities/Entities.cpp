@@ -13,19 +13,23 @@ Kaelen_Voss::Kaelen_Voss(){
     vertical_acc = 30;
     horizontal_acc = 30;
     jump_boost = 3.2;
-
-    mesh.transform.scale = glm::vec3(0.5f, 0.5f, 1.0f);    
+    state = IDLE;
+    mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);    
 }
 
 void Kaelen_Voss::draw(Shader& shader){
-    shader.set_int("use_texture", texture != nullptr ? 1 : 0);
-    if(texture){
-        texture->bind(0);
+    shader.set_int("use_texture", textures[state] != nullptr ? 1 : 0);
+    if(textures[state]){
+        textures[state]->bind(0);
         shader.set_int("tex", 0);
     }
     mesh.draw(shader, stretch_texture);
     shader.set_int("use_texture", 0);
 
+}
+
+void Kaelen_Voss::update_state(Player_state new_state){
+    state = new_state;
 }
 
 void Kaelen_Voss::update_hitbox(){
@@ -41,6 +45,7 @@ Hitbox Kaelen_Voss::get_hitbox(){
 //  ***********************/
 
 Platform::Platform(){
+    mesh.additional_colour = glm::vec4(0.0f);
 
 }
 

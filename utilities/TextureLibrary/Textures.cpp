@@ -23,7 +23,17 @@ Texture_Library::Texture_Library(){
         std::cout << "Couldn't load wall texture\n";
     }
 
-    if (!textures[PLAYER].load("utilities/TextureLibrary/textures/side-eye-what.gif", 0))
+    if (!textures[PLAYER_LEFT].load("utilities/TextureLibrary/textures/kaelen_inv.png", 0))
+    {
+        std::cout << "Couldn't load player texture\n";
+    }
+
+    if (!textures[PLAYER_RIGHT].load("utilities/TextureLibrary/textures/kaelen.png", 0))
+    {
+        std::cout << "Couldn't load player texture\n";
+    }
+
+    if (!textures[PLAYER_IDLE].load("utilities/TextureLibrary/textures/kat.png", 0))
     {
         std::cout << "Couldn't load player texture\n";
     }

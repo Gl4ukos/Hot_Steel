@@ -130,7 +130,10 @@ int main()
     Texture_Library tex_lib;
 
     Kaelen_Voss player;
-    player.texture = &tex_lib.textures[PLAYER];
+    player.textures[0] = &tex_lib.textures[PLAYER_LEFT];
+    player.textures[1] = &tex_lib.textures[PLAYER_RIGHT];
+    player.textures[2] = &tex_lib.textures[PLAYER_IDLE];
+
 
     int platform_count = 4;
     Platform ground[4];
@@ -138,15 +141,15 @@ int main()
     ground[0].mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
     ground[0].mesh.transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
 
-    ground[1].texture = &tex_lib.textures[PLATFORM];
+    ground[1].texture = nullptr;
     ground[1].mesh.transform.position = glm::vec3(-0.5f, -0.5f, 0.0f);
     ground[1].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
 
-    ground[2].texture = &tex_lib.textures[PLATFORM];
+    ground[2].texture = nullptr;
     ground[2].mesh.transform.position = glm::vec3(-0.0f, -0.0f, 0.0f);
     ground[2].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
 
-    ground[3].texture = &tex_lib.textures[PLATFORM];
+    ground[3].texture = nullptr;
     ground[3].mesh.transform.position = glm::vec3(0.5f, 0.5f, 0.0f);
     ground[3].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
 
@@ -176,6 +179,13 @@ int main()
         control_player(window, &player);        
         player.mesh.transform.position += player.mesh.velocity * frameTime;
         player.mesh.velocity += player.mesh.acceleration * frameTime;
+        if(player.mesh.velocity.x <-0.3){
+            player.state = RUN_LEFT;
+        }else if(player.mesh.velocity.x >0.3){
+            player.state = RUN_RIGHT;
+        }else{
+            player.state = IDLE;
+        }
         player.mesh.velocity.x = std::max(std::min(player.mesh.velocity.x, player.horizontal_speed_cap), -player.horizontal_speed_cap);
         // player.mesh.transform.rotation.x = std::max(std::min((player.mesh.velocity.y / player.mesh.vertical_speed_cap), 0.6f), -0.6f); //update rotation y
         player.mesh.update_hitbox();
@@ -205,6 +215,7 @@ int main()
         player.draw(shader);
 
         for(int i=0; i<platform_count; i++){
+            ground[i].mesh.additional_colour = background.mesh.additional_colour;
             ground[i].draw(shader);
         }
 
