@@ -97,10 +97,10 @@ class Rectangle : public Mesh{
 private:
     float vertices[48] = {
         //positions         //colors            //texture coords
-        -0.0f, +0.4f, 0.0f,   0.6f, 0.6f, 0.9f,     0.0f, 1.0f,       //top left
-         0.4f, +0.4f, 0.0f,   0.9f, 0.6f, 0.6f,     1.0f, 1.0f,       //top right
-        -0.0f, -0.0f, 0.0f,  0.0f, 0.0f, 0.0f,      0.0f, 0.0f,      //bot left
-        +0.4f, -0.0f, 0.0f,  0.0f, 0.0f, 0.0f,      1.0f, 0.0f     //bot right  
+        -0.0f, +0.4f, 0.0f,   0.84f, 1.0f, 1.0f,     0.0f, 1.0f,       //top left
+         0.4f, +0.4f, 0.0f,   0.84f, 1.0f, 1.0f,     1.0f, 1.0f,       //top right
+        -0.0f, -0.0f, 0.0f,  0.9f, 0.9f, 0.9f,      0.0f, 0.0f,      //bot left
+        +0.4f, -0.0f, 0.0f,  0.9f, 0.9f, 0.9f,      1.0f, 0.0f     //bot right  
     };
 
     //indices for rectangle<

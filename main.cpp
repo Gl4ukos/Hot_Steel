@@ -129,6 +129,8 @@ int main()
     float y_rotation = 0.0f;
     float y_rotation_inc = 0.02;
 
+    Texture platform_tex;
+    platform_tex.load("textures/platform.png", 0);
     Texture wall_tex;
     wall_tex.load("textures/wall.jpg", 0);
     Texture background_tex;
@@ -145,19 +147,19 @@ int main()
     Rectangle platforms[4];
     platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
     platforms[0].transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
-    platforms[0].texture = &wall_tex;
+    platforms[0].texture = &platform_tex;
 
     platforms[1].transform.position = glm::vec3(0.2, -0.8, 0.0f);
     platforms[1].transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
-    platforms[1].texture = &wall_tex;
+    platforms[1].texture = &platform_tex;
 
     platforms[2].transform.position = glm::vec3(-0.2, 0.0, 0.0f);
     platforms[2].transform.scale = glm::vec3(1.5f, 0.5f, 1.0f);
-    platforms[2].texture = &wall_tex;
+    platforms[2].texture = &platform_tex;
 
     platforms[3].transform.position = glm::vec3(-0.9, 0.3, 0.0f);
     platforms[3].transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
-    platforms[3].texture = &wall_tex;
+    platforms[3].texture = &platform_tex;
 
 
     // MAIN LOOP

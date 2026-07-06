@@ -15,8 +15,7 @@ void main()
 
     if(use_texture == 1){ //if there is texture use colour of texture
         base_colour = texture(tex, TexCoord * uvScale);
-        frag_colour = vec4((another_colour * another_colour[3]) + base_colour * (1.0 - another_colour[3])); //blend with "another_colour"
-    }else{ //if no texture use the base colour given by the vertices
-        frag_colour = vec4(((another_colour* another_colour[3]) + base_colour* (1.0 - another_colour[3]))); //blend with "another_colour"
     }
+    frag_colour = vec4(((another_colour* another_colour[3]) + base_colour* (1.0 - another_colour[3]))); //blend with "another_colour"
+
 }
