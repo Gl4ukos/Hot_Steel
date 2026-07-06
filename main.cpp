@@ -23,47 +23,46 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 int jumpsLeft = 3;
 bool spaceWasDown = false;
 
-void control_object(GLFWwindow* window, Mesh* mesh)
+void control_player(GLFWwindow* window, Kaelen_Voss* player)
 {
-    mesh->acceleration = glm::vec3(0.0f, gravity, 0.0f);
+    player->mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        if(mesh->velocity.x > 0){
-            mesh->velocity.x = 0;
+        if(player->mesh.velocity.x > 0){
+            player->mesh.velocity.x = 0;
         }
-        mesh->acceleration.x = -mesh->horizontal_acc;
+        player->mesh.acceleration.x = -player->horizontal_acc;
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        if(mesh->velocity.x < 0){
-            mesh->velocity.x =0;
+        if(player->mesh.velocity.x < 0){
+            player->mesh.velocity.x =0;
         }
-        mesh->acceleration.x = mesh->horizontal_acc;
+        player->mesh.acceleration.x = player->horizontal_acc;
     }
 
     bool spaceDown = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
     bool spacePressed = spaceDown && !spaceWasDown;
     spaceWasDown = spaceDown;
     if (spacePressed && jumpsLeft>0){
-        mesh->velocity.y = mesh->jump_boost;
+        player->mesh.velocity.y = player->jump_boost;
         jumpsLeft-=1;
     }
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        mesh->velocity.y = -mesh->jump_boost;
+        player->mesh.velocity.y = -player->jump_boost;
     }
 
-    if(mesh->acceleration.x ==0 ){ //if no forces on x, apply friction
-        mesh->acceleration.x -= (mesh->velocity.x*friction);
+    if(player->mesh.acceleration.x ==0 ){ //if no forces on x, apply friction
+        player->mesh.acceleration.x -= (player->mesh.velocity.x*friction);
     }
 
-    if(mesh->transform.position.y <= -0.99){
+    if(player->mesh.transform.position.y <= -0.99){
         jumpsLeft =2;
-        mesh->velocity.y = std::max(0.0f, mesh->velocity.y);
+        player->mesh.velocity.y = std::max(0.0f, player->mesh.velocity.y);
     }
-
 }
 
 
@@ -127,44 +126,37 @@ int main()
     glEnable(GL_BLEND); //enabling blend
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // temp variables
-    float y_rotation = 0.0f;
-    float y_rotation_inc = 0.02;
-
     //creating the objects
     Texture_Library tex_lib;
 
     Kaelen_Voss player;
     player.texture = &tex_lib.textures[PLAYER];
 
-    Platform ground;
-    ground.texture = &tex_lib.textures[PLATFORM];
-    ground.mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
-    ground.mesh.transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
+    int platform_count = 4;
+    Platform ground[4];
+    ground[0].texture = &tex_lib.textures[PLATFORM];
+    ground[0].mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
+    ground[0].mesh.transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
 
-    Pyramid beacon;
+    ground[1].texture = &tex_lib.textures[PLATFORM];
+    ground[1].mesh.transform.position = glm::vec3(-0.5f, -0.5f, 0.0f);
+    ground[1].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+
+    ground[2].texture = &tex_lib.textures[PLATFORM];
+    ground[2].mesh.transform.position = glm::vec3(-0.0f, -0.0f, 0.0f);
+    ground[2].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+
+    ground[3].texture = &tex_lib.textures[PLATFORM];
+    ground[3].mesh.transform.position = glm::vec3(0.5f, 0.5f, 0.0f);
+    ground[3].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+
+
     Background background;
     background.texture = &tex_lib.textures[BACKGROUND];
     
-    // int platform_count = 1;
-    // Rectangle platforms[1];
-    // platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
-    // platforms[0].transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
-
-    // platforms[1].transform.position = glm::vec3(0.2, -0.8, 0.0f);
-    // platforms[1].transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
-
-    // platforms[2].transform.position = glm::vec3(-0.2, 0.0, 0.0f);
-    // platforms[2].transform.scale = glm::vec3(1.5f, 0.5f, 1.0f);
-
-    // platforms[3].transform.position = glm::vec3(-0.9, 0.3, 0.0f);
-    // platforms[3].transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
-
-
     // MAIN LOOP
     while(!glfwWindowShouldClose(window)){ //loops until the Esc button is pressed
         shader.use();
-        
         //calculating FPS
         float currentTime = glfwGetTime();
         frameTime = currentTime - lastFrameTime;
@@ -172,81 +164,55 @@ int main()
         uint fps = 1 / frameTime;
         std::cout<< "\rFPS:"<<fps<<std::flush;
 
-
         // ***************************
         // UPDATING BACKGROUND
         // ***************************
         background.cycle_colour();
 
 
-
-
         // *********************
         // UPDATING PLAYER
         // *********************
-        // control_object(window, &player.mesh);        
-        // player.mesh.transform.position += player.mesh.velocity * frameTime;
-        // player.mesh.velocity += player.mesh.acceleration * frameTime;
-        // player.mesh.velocity.x = std::max(std::min(player.mesh.velocity.x, player.mesh.horizontal_speed_cap), -player.mesh.horizontal_speed_cap);
+        control_player(window, &player);        
+        player.mesh.transform.position += player.mesh.velocity * frameTime;
+        player.mesh.velocity += player.mesh.acceleration * frameTime;
+        player.mesh.velocity.x = std::max(std::min(player.mesh.velocity.x, player.horizontal_speed_cap), -player.horizontal_speed_cap);
         // player.mesh.transform.rotation.x = std::max(std::min((player.mesh.velocity.y / player.mesh.vertical_speed_cap), 0.6f), -0.6f); //update rotation y
-        // player.mesh.update_hitbox();
-
-        // *********************
-        // UPDATING BEACON
-        // *********************
-
-        control_object(window, &beacon); //keystroke check
-        beacon.transform.position += beacon.velocity * frameTime; //position update
-        beacon.velocity += beacon.acceleration * frameTime; // velocity update
-        beacon.velocity.x = std::max(std::min(beacon.velocity.x, beacon.horizontal_speed_cap), -beacon.horizontal_speed_cap); //clamp x speed
-        beacon.velocity.y = std::min(beacon.velocity.y, beacon.vertical_speed_cap);  //clamp y speed
-        beacon.transform.rotation.z = std::max(std::min((beacon.velocity.x / beacon.horizontal_speed_cap), 0.8f),-0.8f); //update rotation z
-        beacon.transform.rotation.x = std::max(std::min((beacon.velocity.y / beacon.vertical_speed_cap), 0.6f), -0.6f); //update rotation y
-        // beacon.additional_colour = glm::vec4(background.rectangle.additional_colour[0], background.rectangle.additional_colour[1], background.rectangle.additional_colour[2], 0.3f); //colour update
-        beacon.update_hitbox(); //hitbox update
+        player.mesh.update_hitbox();
 
 
-        
 
         //check for collisions 
-        // for(int i=0; i<(platform_count); i++){
-        //     platforms[i].update_hitbox();
-        //     glm::vec3 collision_displacement = check_collision_2d(beacon.hitbox, platforms[i].hitbox);
-
-        //     if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
-        //         beacon.transform.position += collision_displacement;
-        //         if(collision_displacement.y != 0.0){
-        //             beacon.velocity.y = 0.0f;
-        //             jumpsLeft = 3;
-        //         }
-        //         if(collision_displacement.x != 0.0){
-        //             beacon.velocity.x = 0.0f;
-        //         }
-        //     }
-        // }
-
-        // **************************
-        // UPDATING PLATFORMS
-        // **************************
-        // shader.set_int("tex", 0);
-        // for (int i=0; i<platform_count; i++){
-        //     platforms[i].additional_colour = glm::vec4(background.rectangle.additional_colour[0], background.rectangle.additional_colour[1], background.rectangle.additional_colour[2], 0.1f); //colour update
-        // }
+        for(int i=0; i<(platform_count); i++){
+            ground[i].update_hitbox();
+            glm::vec3 collision_displacement = check_collision_2d(player.mesh.hitbox, ground[i].get_hitbox());
+            if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
+                player.mesh.transform.position += collision_displacement;
+                if(collision_displacement.y != 0.0){
+                    player.mesh.velocity.y = 0.0f;
+                    jumpsLeft = 3;
+                }
+                if(collision_displacement.x != 0.0){
+                    player.mesh.velocity.x = 0.0f;
+                }
+            }
+        }
 
         // *************
         // DRAWING
         // *************
         background.draw(shader);
         player.draw(shader);
-        beacon.draw(shader,0);
-        ground.draw(shader);
+
+        for(int i=0; i<platform_count; i++){
+            ground[i].draw(shader);
+        }
 
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    beacon.destroy();
     glfwTerminate(); //closes the window
     return 0;
 }

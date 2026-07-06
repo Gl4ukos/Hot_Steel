@@ -68,14 +68,7 @@ Pyramid::Pyramid(){
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
-
-
-    vertical_speed_cap = 4.0;
-    horizontal_speed_cap = 2.5;
-    vertical_acc = 30;
-    horizontal_acc = 30;
-    jump_boost = 3.2;
-
+    
     additional_colour = glm::vec4(0.4f, 0.0f, 0.9f, 0.5f);
     transform.position = glm::vec3(0.5f, 0.0f, 0.0f);
     transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);

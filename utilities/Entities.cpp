@@ -6,7 +6,15 @@
 //  KAELEN VOSS
 //  ***********************/
 Kaelen_Voss::Kaelen_Voss(){
+    mass = 10;
+    elasticity_factor = 0.0;
+    vertical_speed_cap = 4.0;
+    horizontal_speed_cap = 2.5;
+    vertical_acc = 30;
+    horizontal_acc = 30;
+    jump_boost = 3.2;
 
+    mesh.transform.scale = glm::vec3(0.5f, 0.5f, 1.0f);    
 }
 
 void Kaelen_Voss::draw(Shader& shader){

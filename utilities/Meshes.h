@@ -25,14 +25,6 @@ public:
 
     Hitbox hitbox;
 
-    float mass;
-    float elasticity_factor;
-    float vertical_speed_cap;
-    float horizontal_speed_cap;
-    float vertical_acc;
-    float horizontal_acc;
-    float jump_boost;
-
     void draw(Shader& shader, int stretch);
     void update_hitbox();
     void set_colour();
