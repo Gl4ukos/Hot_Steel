@@ -119,7 +119,6 @@ public:
 
 class Background{
 public:
-    glm::vec4 additional_colour = glm::vec4(0.34f, 0.8f, 0.74f, 1.0f);
     float colour_increment[3] = {0.01f, 0.02f, 0.003f};
     Rectangle rectangle;
 

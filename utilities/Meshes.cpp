@@ -142,7 +142,7 @@ Pyramid::Pyramid(){
 void Pyramid::draw(Shader& shader, int stretch){
     glm::mat4 model = getModelMatrix();
     shader.set_mat4("model", model);
-    shader.set_vec4("another_color", additional_colour);
+    shader.set_vec4("another_colour", additional_colour);
     shader.set_int("use_texture", texture != nullptr ? 1 : 0);
 
 
@@ -236,7 +236,7 @@ Rectangle::Rectangle(){
 void Rectangle::draw(Shader& shader, int stretch){
     glm::mat4 model = getModelMatrix();
     shader.set_mat4("model", model);
-    shader.set_vec4("another_color", additional_colour);
+    shader.set_vec4("another_colour", additional_colour);
     if(stretch == 1){
         shader.set_vec2("uvScale", transform.scale.x, transform.scale.y);
     }else{
@@ -278,25 +278,24 @@ void Rectangle::update_hitbox()
 Background::Background(){
     rectangle.transform.position = glm::vec3(-1.0f, -1.0f, 0.8f);
     rectangle.transform.scale = glm::vec3(5.0f, 5.0f, 1.0f);
-    rectangle.additional_colour = glm::vec4(0.2f, 0.2f, 0.2f, 0.8f);
+    rectangle.additional_colour = glm::vec4(0.2f, 0.2f, 0.2f, 0.2f);
 }
 
 void Background::cycle_colour(){
     for(int i=0; i<3; i++){
-        additional_colour[i] += colour_increment[i];
+        rectangle.additional_colour[i] += colour_increment[i];
 
-        if(additional_colour[i] > 1.0f){
+        if(rectangle.additional_colour[i] > 1.0f){
             colour_increment[i] *= -1.0f;
-        }else if(additional_colour[i] < 0.0f){
+        }else if(rectangle.additional_colour[i] < 0.0f){
             colour_increment[i] *= -1.0f;
         }
     }
 }
 
 void Background::draw(Shader& shader, int stretch){
-    glClearColor(additional_colour[0], additional_colour[1], additional_colour[2], additional_colour[3]); 
+    // glClearColor(additional_colour[0], additional_colour[1], additional_colour[2], additional_colour[3]); 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    rectangle.additional_colour = additional_colour;
     rectangle.draw(shader, stretch);
 }

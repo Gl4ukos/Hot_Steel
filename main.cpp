@@ -122,6 +122,8 @@ int main()
     GLFWwindow* window = initialise_glfw();
     Shader shader ("Shaders/vertex_shader.glsl", "Shaders/fragment_shader.glsl");
     glEnable(GL_DEPTH_TEST); //enabling depth
+    glEnable(GL_BLEND); //enabling blend
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // temp variables
     float y_rotation = 0.0f;
@@ -186,7 +188,7 @@ int main()
         beacon.velocity.y = std::min(beacon.velocity.y, beacon.vertical_speed_cap);  //clamp y speed
         beacon.transform.rotation.z = std::max(std::min((beacon.velocity.x / beacon.horizontal_speed_cap), 0.8f),-0.8f); //update rotation z
         beacon.transform.rotation.x = std::max(std::min((beacon.velocity.y / beacon.vertical_speed_cap), 0.6f), -0.6f); //update rotation y
-        beacon.additional_colour = glm::vec4(background.additional_colour[0], background.additional_colour[1], background.additional_colour[2], 0.3f); //colour update
+        beacon.additional_colour = glm::vec4(background.rectangle.additional_colour[0], background.rectangle.additional_colour[1], background.rectangle.additional_colour[2], 0.3f); //colour update
         beacon.update_hitbox(); //hitbox update
 
         //check for collisions        
@@ -220,7 +222,7 @@ int main()
         // **************************
         shader.set_int("tex", 0);
         for (int i=0; i<platform_count; i++){
-            platforms[i].additional_colour = glm::vec4(background.additional_colour[0], background.additional_colour[1], background.additional_colour[2], 0.7f); //colour update
+            platforms[i].additional_colour = glm::vec4(background.rectangle.additional_colour[0], background.rectangle.additional_colour[1], background.rectangle.additional_colour[2], 0.1f); //colour update
         }
 
         // *************
