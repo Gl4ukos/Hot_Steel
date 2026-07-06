@@ -37,6 +37,11 @@ Texture_Library::Texture_Library(){
     {
         std::cout << "Couldn't load player texture\n";
     }
+
+    if (!textures[KIKE].load("utilities/TextureLibrary/textures/kike.png", 0))
+    {
+        std::cout << "Couldn't load player texture\n";
+    }
 }
 
 

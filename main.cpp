@@ -134,9 +134,12 @@ int main()
     player.textures[1] = &tex_lib.textures[PLAYER_RIGHT];
     player.textures[2] = &tex_lib.textures[PLAYER_IDLE];
 
+    Kike kike;
+    kike.texture = &tex_lib.textures[KIKE];
 
-    int platform_count = 4;
-    Platform ground[4];
+
+    int platform_count = 6;
+    Platform ground[6];
     ground[0].texture = &tex_lib.textures[PLATFORM];
     ground[0].mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
     ground[0].mesh.transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
@@ -152,6 +155,13 @@ int main()
     ground[3].texture = nullptr;
     ground[3].mesh.transform.position = glm::vec3(0.5f, 0.5f, 0.0f);
     ground[3].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+
+    ground[4].texture = &tex_lib.textures[PLATFORM];;
+    ground[4].mesh.transform.position = glm::vec3(-1.1f, -1.0f, 0.0f);
+    ground[4].mesh.transform.scale = glm::vec3(0.2f, 2.0f, 1.0f);
+    ground[5].texture = &tex_lib.textures[PLATFORM];;
+    ground[5].mesh.transform.position = glm::vec3(1.0f, -1.0f, 0.0f);
+    ground[5].mesh.transform.scale = glm::vec3(0.2f, 2.0f, 1.0f);
 
 
     Background background;
@@ -179,23 +189,32 @@ int main()
         control_player(window, &player);        
         player.mesh.transform.position += player.mesh.velocity * frameTime;
         player.mesh.velocity += player.mesh.acceleration * frameTime;
-        if(player.mesh.velocity.x <-0.3){
-            player.state = RUN_LEFT;
-        }else if(player.mesh.velocity.x >0.3){
-            player.state = RUN_RIGHT;
-        }else{
-            player.state = IDLE;
-        }
         player.mesh.velocity.x = std::max(std::min(player.mesh.velocity.x, player.horizontal_speed_cap), -player.horizontal_speed_cap);
         // player.mesh.transform.rotation.x = std::max(std::min((player.mesh.velocity.y / player.mesh.vertical_speed_cap), 0.6f), -0.6f); //update rotation y
         player.mesh.update_hitbox();
 
+        // **********************
+        // UPDATING KIKE
+        // **********************
+        kike.mesh.acceleration.y = gravity;
+        kike.mesh.transform.position += kike.mesh.velocity * frameTime;
+        kike.mesh.velocity += kike.mesh.acceleration * frameTime;
+        kike.mesh.velocity.x = std::max(std::min(kike.mesh.velocity.x, kike.horizontal_speed_cap), - kike.horizontal_speed_cap);
+        if(kike.mesh.transform.position.x > player.mesh.transform.position.x){
+            kike.mesh.acceleration.x -= kike.horizontal_acc;
+        }else if(kike.mesh.transform.position.x < player.mesh.transform.position.x){
+            kike.mesh.acceleration.x += kike.horizontal_acc;
+        }
+        kike.update_hitbox();
 
 
-        //check for collisions 
+
+
+        glm::vec3 collision_displacement;
+        //check for player collisions 
         for(int i=0; i<(platform_count); i++){
             ground[i].update_hitbox();
-            glm::vec3 collision_displacement = check_collision_2d(player.mesh.hitbox, ground[i].get_hitbox());
+            collision_displacement = check_collision_2d(player.mesh.hitbox, ground[i].get_hitbox());
             if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
                 player.mesh.transform.position += collision_displacement;
                 if(collision_displacement.y != 0.0){
@@ -208,11 +227,52 @@ int main()
             }
         }
 
+        collision_displacement = check_collision_2d(player.mesh.hitbox, kike.mesh.hitbox);
+        if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
+            player.mesh.transform.position += collision_displacement;
+            if(collision_displacement.y != 0.0){
+                player.mesh.velocity.y = 0.0f;
+                jumpsLeft = 3;
+            }
+            if(collision_displacement.x != 0.0){
+                player.mesh.velocity.x = 0.0f;
+            }
+        }
+
+        // checking for Kike collisions
+
+        for(int i=0; i<(platform_count); i++){
+            ground[i].update_hitbox();
+            collision_displacement = check_collision_2d(kike.mesh.hitbox, ground[i].get_hitbox());
+            if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
+                kike.mesh.transform.position += collision_displacement;
+                if(collision_displacement.y != 0.0){
+                    kike.mesh.velocity.y = 0.0f;
+                    jumpsLeft = 3;
+                }
+                if(collision_displacement.x != 0.0){
+                    kike.mesh.velocity.x = 0.0f;
+                }
+            }
+        }
+
+
+
         // *************
         // DRAWING
         // *************
         background.draw(shader);
+        
+        if(player.mesh.velocity.x <-0.3){
+            player.state = RUN_LEFT;
+        }else if(player.mesh.velocity.x >0.3){
+            player.state = RUN_RIGHT;
+        }else if(std::abs(player.mesh.velocity.y) < 0.1){
+            player.state = IDLE;
+        }
         player.draw(shader);
+        
+        kike.draw(shader);
 
         for(int i=0; i<platform_count; i++){
             ground[i].mesh.additional_colour = background.mesh.additional_colour;

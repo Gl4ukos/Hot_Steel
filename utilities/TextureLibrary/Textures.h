@@ -15,7 +15,8 @@ enum Texture_type {
     WALL = 2,      
     PLAYER_LEFT =3,
     PLAYER_RIGHT = 4,
-    PLAYER_IDLE = 5
+    PLAYER_IDLE = 5,
+    KIKE = 6
 }; 
 
 class Texture{
@@ -29,7 +30,7 @@ public:
 
 class Texture_Library{
 public:
-    Texture textures[6];
+    Texture textures[7];
     Texture_Library();
 };
 

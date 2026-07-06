@@ -32,6 +32,28 @@ public:
     float jump_boost;
 };
 
+class Kike{
+public:
+    Kike();
+    void draw(Shader& shader);
+    void update_hitbox();
+    Hitbox get_hitbox();
+    void update_state(Player_state new_state);
+    
+    Texture* texture;
+    Rectangle mesh;
+    int stretch_texture =0;
+    Player_state state;
+    float mass;
+    float elasticity_factor;
+    float vertical_speed_cap;
+    float horizontal_speed_cap;
+    float vertical_acc;
+    float horizontal_acc;
+    float jump_boost;
+};
+
+
 class Platform{
 public:
     Platform();
