@@ -190,6 +190,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+utilities/Entities.o: utilities/Entities.cpp.o
+.PHONY : utilities/Entities.o
+
+# target to build an object file
+utilities/Entities.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Entities.cpp.o
+.PHONY : utilities/Entities.cpp.o
+
+utilities/Entities.i: utilities/Entities.cpp.i
+.PHONY : utilities/Entities.i
+
+# target to preprocess a source file
+utilities/Entities.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Entities.cpp.i
+.PHONY : utilities/Entities.cpp.i
+
+utilities/Entities.s: utilities/Entities.cpp.s
+.PHONY : utilities/Entities.s
+
+# target to generate assembly for a file
+utilities/Entities.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Entities.cpp.s
+.PHONY : utilities/Entities.cpp.s
+
 utilities/Meshes.o: utilities/Meshes.cpp.o
 .PHONY : utilities/Meshes.o
 
@@ -238,6 +262,30 @@ utilities/Shader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/Shader.cpp.s
 .PHONY : utilities/Shader.cpp.s
 
+utilities/TextureLibrary/Textures.o: utilities/TextureLibrary/Textures.cpp.o
+.PHONY : utilities/TextureLibrary/Textures.o
+
+# target to build an object file
+utilities/TextureLibrary/Textures.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o
+.PHONY : utilities/TextureLibrary/Textures.cpp.o
+
+utilities/TextureLibrary/Textures.i: utilities/TextureLibrary/Textures.cpp.i
+.PHONY : utilities/TextureLibrary/Textures.i
+
+# target to preprocess a source file
+utilities/TextureLibrary/Textures.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.i
+.PHONY : utilities/TextureLibrary/Textures.cpp.i
+
+utilities/TextureLibrary/Textures.s: utilities/TextureLibrary/Textures.cpp.s
+.PHONY : utilities/TextureLibrary/Textures.s
+
+# target to generate assembly for a file
+utilities/TextureLibrary/Textures.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/simulator.dir/build.make CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.s
+.PHONY : utilities/TextureLibrary/Textures.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -254,12 +302,18 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... utilities/Entities.o"
+	@echo "... utilities/Entities.i"
+	@echo "... utilities/Entities.s"
 	@echo "... utilities/Meshes.o"
 	@echo "... utilities/Meshes.i"
 	@echo "... utilities/Meshes.s"
 	@echo "... utilities/Shader.o"
 	@echo "... utilities/Shader.i"
 	@echo "... utilities/Shader.s"
+	@echo "... utilities/TextureLibrary/Textures.o"
+	@echo "... utilities/TextureLibrary/Textures.i"
+	@echo "... utilities/TextureLibrary/Textures.s"
 .PHONY : help
 
 

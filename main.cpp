@@ -7,6 +7,8 @@
 
 
 #include "utilities/Meshes.h" // !!! INCLUDES GLAD AND GLFW AND SHADER
+#include "utilities/Entities.h"
+#include "utilities/TextureLibrary/Textures.h"
 
 float gravity = -15.0;
 float friction = 10.0;
@@ -129,37 +131,29 @@ int main()
     float y_rotation = 0.0f;
     float y_rotation_inc = 0.02;
 
-    Texture platform_tex;
-    platform_tex.load("textures/platform.png", 0);
-    Texture wall_tex;
-    wall_tex.load("textures/wall.jpg", 0);
-    Texture background_tex;
-    background_tex.load("textures/simulation_background.jpg", 1);
-
-
     //creating the objects
+    Texture_Library tex_lib;
+
+    Kaelen_Voss player;
+    player.texture = &tex_lib.textures[1];
+
     Pyramid beacon;
 
     Background background;
-    background.rectangle.texture = &background_tex;
     
-    int platform_count = 4;
-    Rectangle platforms[4];
+    int platform_count = 1;
+    Rectangle platforms[1];
     platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
     platforms[0].transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
-    platforms[0].texture = &platform_tex;
 
-    platforms[1].transform.position = glm::vec3(0.2, -0.8, 0.0f);
-    platforms[1].transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
-    platforms[1].texture = &platform_tex;
+    // platforms[1].transform.position = glm::vec3(0.2, -0.8, 0.0f);
+    // platforms[1].transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
 
-    platforms[2].transform.position = glm::vec3(-0.2, 0.0, 0.0f);
-    platforms[2].transform.scale = glm::vec3(1.5f, 0.5f, 1.0f);
-    platforms[2].texture = &platform_tex;
+    // platforms[2].transform.position = glm::vec3(-0.2, 0.0, 0.0f);
+    // platforms[2].transform.scale = glm::vec3(1.5f, 0.5f, 1.0f);
 
-    platforms[3].transform.position = glm::vec3(-0.9, 0.3, 0.0f);
-    platforms[3].transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
-    platforms[3].texture = &platform_tex;
+    // platforms[3].transform.position = glm::vec3(-0.9, 0.3, 0.0f);
+    // platforms[3].transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
 
 
     // MAIN LOOP
@@ -178,6 +172,15 @@ int main()
         // UPDATING BACKGROUND
         // ***************************
         background.cycle_colour();
+
+
+
+
+        // *********************
+        // UPDATING PLAYER
+        // *********************
+        
+
 
         // *********************
         // UPDATING BEACON
@@ -231,7 +234,7 @@ int main()
         // DRAWING
         // *************
         background.draw(shader, 0);
-
+        player.draw(shader);
         beacon.draw(shader, 0);
         // drawing platforms
         for(int i=0; i<(platform_count); i++){

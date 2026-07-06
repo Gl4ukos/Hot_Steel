@@ -1,23 +1,12 @@
 #ifndef MESHES_H
 #define MESHES_H
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h> //GLAD must be included before GLFW, because GLFW can include OpenGL headers internally
 #include "Shader.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+
 
 struct Hitbox {
     glm::vec3 min = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 max = glm::vec3(0.0f, 0.0f, 0.0f);
-};
-
-class Texture{
-public:
-    GLuint id;
-
-    bool load(const std::string& path, int stretch);
-    void bind(GLuint slot = 0);
 };
 
 
@@ -43,8 +32,6 @@ public:
     float vertical_acc;
     float horizontal_acc;
     float jump_boost;
-
-    Texture* texture = nullptr;
 
     void draw(Shader& shader, int stretch);
     void update_hitbox();
@@ -119,7 +106,7 @@ public:
 
 class Background{
 public:
-    float colour_increment[3] = {0.01f, 0.02f, 0.003f};
+    float colour_increment[3] = {0.01f, 0.00f, 0.003f};
     Rectangle rectangle;
 
     Background();

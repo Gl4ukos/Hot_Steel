@@ -1,58 +1,5 @@
 #include "Meshes.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "../external/stb_image.h"
-
-
-
-// **************************
-// TEXTURE
-// **************************
-
-bool Texture::load(const std::string& path, int stretch)
-{
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-
-    int w, h, channels;
-    unsigned char* data = stbi_load(path.c_str(), &w, &h, &channels, 0);
-
-    if (!data) return false;
-
-    GLenum format = (channels == 4) ? GL_RGBA : GL_RGB;
-
-    glTexImage2D(GL_TEXTURE_2D, 0, format,
-                 w, h, 0,
-                 format, GL_UNSIGNED_BYTE, data);
-
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(data);
-
-    // IMPORTANT default settings
-    if(stretch == 1){
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    }else{
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    }
-
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    return true;
-}
-
-void Texture::bind(GLuint slot)
-{
-    glActiveTexture(GL_TEXTURE0 + slot);
-    glBindTexture(GL_TEXTURE_2D, id);
-}
-
-
-
 // **********************************
 // Mesh
 // **********************************
@@ -123,8 +70,6 @@ Pyramid::Pyramid(){
     glBindVertexArray(0); 
 
 
-    mass = 10;
-    elasticity_factor = 0.0;
     vertical_speed_cap = 4.0;
     horizontal_speed_cap = 2.5;
     vertical_acc = 30;
@@ -143,7 +88,7 @@ void Pyramid::draw(Shader& shader, int stretch){
     glm::mat4 model = getModelMatrix();
     shader.set_mat4("model", model);
     shader.set_vec4("another_colour", additional_colour);
-    shader.set_int("use_texture", texture != nullptr ? 1 : 0);
+    // shader.set_int("use_texture", texture != nullptr ? 1 : 0);
 
 
     glBindVertexArray(VAO);
@@ -229,8 +174,6 @@ Rectangle::Rectangle(){
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
 
-    mass = -1; //immobile 
-    elasticity_factor=0.0;
 }
 
 void Rectangle::draw(Shader& shader, int stretch){
@@ -243,12 +186,6 @@ void Rectangle::draw(Shader& shader, int stretch){
         shader.set_vec2("uvScale", 1.0f, 1.0f);
     }
 
-    shader.set_int("use_texture", texture != nullptr ? 1 : 0);
-
-    if(texture){
-        texture->bind(0);
-        shader.set_int("tex", 0);
-    }
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);    
 }

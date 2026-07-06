@@ -114,11 +114,41 @@ CMakeFiles/simulator.dir/utilities/Meshes.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/simulator.dir/utilities/Meshes.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/rook/opengl_project/utilities/Meshes.cpp -o CMakeFiles/simulator.dir/utilities/Meshes.cpp.s
 
+CMakeFiles/simulator.dir/utilities/Entities.cpp.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/utilities/Entities.cpp.o: /home/rook/opengl_project/utilities/Entities.cpp
+CMakeFiles/simulator.dir/utilities/Entities.cpp.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rook/opengl_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/simulator.dir/utilities/Entities.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/simulator.dir/utilities/Entities.cpp.o -MF CMakeFiles/simulator.dir/utilities/Entities.cpp.o.d -o CMakeFiles/simulator.dir/utilities/Entities.cpp.o -c /home/rook/opengl_project/utilities/Entities.cpp
+
+CMakeFiles/simulator.dir/utilities/Entities.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/simulator.dir/utilities/Entities.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/rook/opengl_project/utilities/Entities.cpp > CMakeFiles/simulator.dir/utilities/Entities.cpp.i
+
+CMakeFiles/simulator.dir/utilities/Entities.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/simulator.dir/utilities/Entities.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/rook/opengl_project/utilities/Entities.cpp -o CMakeFiles/simulator.dir/utilities/Entities.cpp.s
+
+CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o: CMakeFiles/simulator.dir/flags.make
+CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o: /home/rook/opengl_project/utilities/TextureLibrary/Textures.cpp
+CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o: CMakeFiles/simulator.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/rook/opengl_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o -MF CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o.d -o CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o -c /home/rook/opengl_project/utilities/TextureLibrary/Textures.cpp
+
+CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/rook/opengl_project/utilities/TextureLibrary/Textures.cpp > CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.i
+
+CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/rook/opengl_project/utilities/TextureLibrary/Textures.cpp -o CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.s
+
 # Object files for target simulator
 simulator_OBJECTS = \
 "CMakeFiles/simulator.dir/main.cpp.o" \
 "CMakeFiles/simulator.dir/utilities/Shader.cpp.o" \
-"CMakeFiles/simulator.dir/utilities/Meshes.cpp.o"
+"CMakeFiles/simulator.dir/utilities/Meshes.cpp.o" \
+"CMakeFiles/simulator.dir/utilities/Entities.cpp.o" \
+"CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o"
 
 # External object files for target simulator
 simulator_EXTERNAL_OBJECTS =
@@ -126,11 +156,13 @@ simulator_EXTERNAL_OBJECTS =
 simulator: CMakeFiles/simulator.dir/main.cpp.o
 simulator: CMakeFiles/simulator.dir/utilities/Shader.cpp.o
 simulator: CMakeFiles/simulator.dir/utilities/Meshes.cpp.o
+simulator: CMakeFiles/simulator.dir/utilities/Entities.cpp.o
+simulator: CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o
 simulator: CMakeFiles/simulator.dir/build.make
 simulator: /usr/lib/x86_64-linux-gnu/libglfw.so.3.3
 simulator: libglad.a
 simulator: CMakeFiles/simulator.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/rook/opengl_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable simulator"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/rook/opengl_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable simulator"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/simulator.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

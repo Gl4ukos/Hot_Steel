@@ -1,6 +1,7 @@
 CMakeFiles/simulator.dir/utilities/Meshes.cpp.o: \
  /home/rook/opengl_project/utilities/Meshes.cpp \
  /usr/include/stdc-predef.h /home/rook/opengl_project/utilities/Meshes.h \
+ /home/rook/opengl_project/utilities/Shader.h \
  /home/rook/opengl_project/external/glad/include/glad/glad.h \
  /home/rook/opengl_project/external/glad/include/KHR/khrplatform.h \
  /usr/lib/gcc/x86_64-linux-gnu/9/include/stdint.h /usr/include/stdint.h \
@@ -17,9 +18,7 @@ CMakeFiles/simulator.dir/utilities/Meshes.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/GLFW/glfw3.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/stddef.h /usr/include/GL/gl.h \
- /home/rook/opengl_project/utilities/Shader.h /usr/include/c++/9/string \
+ /usr/include/c++/9/string \
  /usr/include/x86_64-linux-gnu/c++/9/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/9/bits/os_defines.h \
  /usr/include/x86_64-linux-gnu/c++/9/bits/cpu_defines.h \
@@ -43,6 +42,7 @@ CMakeFiles/simulator.dir/utilities/Meshes.cpp.o: \
  /usr/include/c++/9/bits/postypes.h /usr/include/c++/9/cwchar \
  /usr/include/wchar.h /usr/include/x86_64-linux-gnu/bits/floatn.h \
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
+ /usr/lib/gcc/x86_64-linux-gnu/9/include/stddef.h \
  /usr/lib/gcc/x86_64-linux-gnu/9/include/stdarg.h \
  /usr/include/x86_64-linux-gnu/bits/types/wint_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h \
@@ -335,10 +335,4 @@ CMakeFiles/simulator.dir/utilities/Meshes.cpp.o: \
  /usr/include/glm/ext/vector_uint1.hpp \
  /usr/include/glm/ext/vector_uint1_precision.hpp \
  /usr/include/c++/9/cstring /usr/include/string.h /usr/include/strings.h \
- /usr/include/glm/gtc/type_ptr.inl \
- /home/rook/opengl_project/utilities/../external/stb_image.h \
- /usr/include/c++/9/stdlib.h /usr/include/c++/9/math.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/emmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/9/include/mm_malloc.h
+ /usr/include/glm/gtc/type_ptr.inl

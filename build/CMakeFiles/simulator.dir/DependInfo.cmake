@@ -9,8 +9,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/rook/opengl_project/main.cpp" "CMakeFiles/simulator.dir/main.cpp.o" "gcc" "CMakeFiles/simulator.dir/main.cpp.o.d"
+  "/home/rook/opengl_project/utilities/Entities.cpp" "CMakeFiles/simulator.dir/utilities/Entities.cpp.o" "gcc" "CMakeFiles/simulator.dir/utilities/Entities.cpp.o.d"
   "/home/rook/opengl_project/utilities/Meshes.cpp" "CMakeFiles/simulator.dir/utilities/Meshes.cpp.o" "gcc" "CMakeFiles/simulator.dir/utilities/Meshes.cpp.o.d"
   "/home/rook/opengl_project/utilities/Shader.cpp" "CMakeFiles/simulator.dir/utilities/Shader.cpp.o" "gcc" "CMakeFiles/simulator.dir/utilities/Shader.cpp.o.d"
+  "/home/rook/opengl_project/utilities/TextureLibrary/Textures.cpp" "CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o" "gcc" "CMakeFiles/simulator.dir/utilities/TextureLibrary/Textures.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
