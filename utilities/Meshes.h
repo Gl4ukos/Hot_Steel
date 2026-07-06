@@ -104,15 +104,6 @@ public:
 };
 
 
-class Background{
-public:
-    float colour_increment[3] = {0.01f, 0.00f, 0.003f};
-    Rectangle rectangle;
-
-    Background();
-    void draw(Shader& shader, int stretch);
-    void cycle_colour();
-};
 
 
 #endif

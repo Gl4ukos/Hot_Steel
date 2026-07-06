@@ -23,7 +23,7 @@ Texture_Library::Texture_Library(){
         std::cout << "Couldn't load wall texture\n";
     }
 
-    if (!textures[PLAYER].load("utilities/TextureLibrary/textures/wall.jpg", 0))
+    if (!textures[PLAYER].load("utilities/TextureLibrary/textures/side-eye-what.gif", 0))
     {
         std::cout << "Couldn't load player texture\n";
     }

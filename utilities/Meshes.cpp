@@ -212,27 +212,4 @@ void Rectangle::update_hitbox()
     hitbox.max = localMax + transform.position;
 }
 
-Background::Background(){
-    rectangle.transform.position = glm::vec3(-1.0f, -1.0f, 0.8f);
-    rectangle.transform.scale = glm::vec3(5.0f, 5.0f, 1.0f);
-    rectangle.additional_colour = glm::vec4(0.2f, 0.2f, 0.2f, 0.2f);
-}
 
-void Background::cycle_colour(){
-    for(int i=0; i<3; i++){
-        rectangle.additional_colour[i] += colour_increment[i];
-
-        if(rectangle.additional_colour[i] > 1.0f){
-            colour_increment[i] *= -1.0f;
-        }else if(rectangle.additional_colour[i] < 0.0f){
-            colour_increment[i] *= -1.0f;
-        }
-    }
-}
-
-void Background::draw(Shader& shader, int stretch){
-    // glClearColor(additional_colour[0], additional_colour[1], additional_colour[2], additional_colour[3]); 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    rectangle.draw(shader, stretch);
-}

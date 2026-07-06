@@ -135,16 +135,21 @@ int main()
     Texture_Library tex_lib;
 
     Kaelen_Voss player;
-    player.texture = &tex_lib.textures[1];
+    player.texture = &tex_lib.textures[PLAYER];
+
+    Platform ground;
+    ground.texture = &tex_lib.textures[PLATFORM];
+    ground.mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
+    ground.mesh.transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
 
     Pyramid beacon;
-
     Background background;
+    background.texture = &tex_lib.textures[BACKGROUND];
     
-    int platform_count = 1;
-    Rectangle platforms[1];
-    platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
-    platforms[0].transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
+    // int platform_count = 1;
+    // Rectangle platforms[1];
+    // platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
+    // platforms[0].transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
 
     // platforms[1].transform.position = glm::vec3(0.2, -0.8, 0.0f);
     // platforms[1].transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
@@ -179,8 +184,12 @@ int main()
         // *********************
         // UPDATING PLAYER
         // *********************
-        
-
+        // control_object(window, &player.mesh);        
+        // player.mesh.transform.position += player.mesh.velocity * frameTime;
+        // player.mesh.velocity += player.mesh.acceleration * frameTime;
+        // player.mesh.velocity.x = std::max(std::min(player.mesh.velocity.x, player.mesh.horizontal_speed_cap), -player.mesh.horizontal_speed_cap);
+        // player.mesh.transform.rotation.x = std::max(std::min((player.mesh.velocity.y / player.mesh.vertical_speed_cap), 0.6f), -0.6f); //update rotation y
+        // player.mesh.update_hitbox();
 
         // *********************
         // UPDATING BEACON
@@ -193,53 +202,44 @@ int main()
         beacon.velocity.y = std::min(beacon.velocity.y, beacon.vertical_speed_cap);  //clamp y speed
         beacon.transform.rotation.z = std::max(std::min((beacon.velocity.x / beacon.horizontal_speed_cap), 0.8f),-0.8f); //update rotation z
         beacon.transform.rotation.x = std::max(std::min((beacon.velocity.y / beacon.vertical_speed_cap), 0.6f), -0.6f); //update rotation y
-        beacon.additional_colour = glm::vec4(background.rectangle.additional_colour[0], background.rectangle.additional_colour[1], background.rectangle.additional_colour[2], 0.3f); //colour update
+        // beacon.additional_colour = glm::vec4(background.rectangle.additional_colour[0], background.rectangle.additional_colour[1], background.rectangle.additional_colour[2], 0.3f); //colour update
         beacon.update_hitbox(); //hitbox update
 
-        //check for collisions        
-        for(int i=0; i<(platform_count); i++){
-            platforms[i].update_hitbox();
-            glm::vec3 collision_displacement = check_collision_2d(beacon.hitbox, platforms[i].hitbox);
-
-            if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
-                beacon.transform.position += collision_displacement;
-                if(collision_displacement.y != 0.0){
-                    beacon.velocity.y = 0.0f;
-                    jumpsLeft = 3;
-                }
-                if(collision_displacement.x != 0.0){
-                    beacon.velocity.x = 0.0f;
-                }
-            }
-        }
-        if(std::abs(beacon.velocity.x) > 0.5){
-            y_rotation = 0.0f;
-        }
-        beacon.transform.rotation.y = y_rotation;
-        if(std::abs(beacon.velocity.x) > 0.5){  // clamp rotation
-            y_rotation = 0.0f;
-        }
-        beacon.transform.rotation.y = y_rotation;
 
         
+
+        //check for collisions 
+        // for(int i=0; i<(platform_count); i++){
+        //     platforms[i].update_hitbox();
+        //     glm::vec3 collision_displacement = check_collision_2d(beacon.hitbox, platforms[i].hitbox);
+
+        //     if(collision_displacement.x != 0.0f || collision_displacement.y != 0.0f){ //in case of collision, then displace accordingly
+        //         beacon.transform.position += collision_displacement;
+        //         if(collision_displacement.y != 0.0){
+        //             beacon.velocity.y = 0.0f;
+        //             jumpsLeft = 3;
+        //         }
+        //         if(collision_displacement.x != 0.0){
+        //             beacon.velocity.x = 0.0f;
+        //         }
+        //     }
+        // }
+
         // **************************
         // UPDATING PLATFORMS
         // **************************
-        shader.set_int("tex", 0);
-        for (int i=0; i<platform_count; i++){
-            platforms[i].additional_colour = glm::vec4(background.rectangle.additional_colour[0], background.rectangle.additional_colour[1], background.rectangle.additional_colour[2], 0.1f); //colour update
-        }
+        // shader.set_int("tex", 0);
+        // for (int i=0; i<platform_count; i++){
+        //     platforms[i].additional_colour = glm::vec4(background.rectangle.additional_colour[0], background.rectangle.additional_colour[1], background.rectangle.additional_colour[2], 0.1f); //colour update
+        // }
 
         // *************
         // DRAWING
         // *************
-        background.draw(shader, 0);
+        background.draw(shader);
         player.draw(shader);
-        beacon.draw(shader, 0);
-        // drawing platforms
-        for(int i=0; i<(platform_count); i++){
-            platforms[i].draw(shader, 1);
-        }
+        beacon.draw(shader,0);
+        ground.draw(shader);
 
 
         glfwSwapBuffers(window);
