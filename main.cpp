@@ -127,32 +127,35 @@ int main()
     float y_rotation = 0.0f;
     float y_rotation_inc = 0.02;
 
-    Texture wallTex;
-    wallTex.load("textures/wall.jpg");
+    Texture wall_tex;
+    wall_tex.load("textures/wall.jpg", 0);
+    Texture background_tex;
+    background_tex.load("textures/simulation_background.jpg", 1);
 
 
     //creating the objects
     Pyramid beacon;
 
     Background background;
+    background.rectangle.texture = &background_tex;
     
     int platform_count = 4;
     Rectangle platforms[4];
     platforms[0].transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
     platforms[0].transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
-    platforms[0].texture = &wallTex;
+    platforms[0].texture = &wall_tex;
 
     platforms[1].transform.position = glm::vec3(0.2, -0.8, 0.0f);
     platforms[1].transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
-    platforms[1].texture = &wallTex;
+    platforms[1].texture = &wall_tex;
 
     platforms[2].transform.position = glm::vec3(-0.2, 0.0, 0.0f);
     platforms[2].transform.scale = glm::vec3(1.5f, 0.5f, 1.0f);
-    platforms[2].texture = &wallTex;
+    platforms[2].texture = &wall_tex;
 
     platforms[3].transform.position = glm::vec3(-0.9, 0.3, 0.0f);
     platforms[3].transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
-    platforms[3].texture = &wallTex;
+    platforms[3].texture = &wall_tex;
 
 
     // MAIN LOOP
@@ -223,12 +226,12 @@ int main()
         // *************
         // DRAWING
         // *************
-        background.draw(shader);
+        background.draw(shader, 0);
 
-        beacon.draw(shader);
+        beacon.draw(shader, 0);
         // drawing platforms
         for(int i=0; i<(platform_count); i++){
-            platforms[i].draw(shader);
+            platforms[i].draw(shader, 1);
         }
 
 

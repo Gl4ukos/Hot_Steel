@@ -16,7 +16,7 @@ class Texture{
 public:
     GLuint id;
 
-    bool load(const std::string& path);
+    bool load(const std::string& path, int stretch);
     void bind(GLuint slot = 0);
 };
 
@@ -46,7 +46,7 @@ public:
 
     Texture* texture = nullptr;
 
-    void draw(Shader& shader);
+    void draw(Shader& shader, int stretch);
     void update_hitbox();
     void set_colour();
     unsigned int get_vao();
@@ -84,7 +84,7 @@ private:
 
 public:
     Pyramid(); 
-    void draw(Shader& shader);
+    void draw(Shader& shader, int stretch);
     void update_hitbox();
     float cycle_rads_wrap(float &value, float &increment);
     float cycle_value(float value, float increment);
@@ -113,7 +113,7 @@ public:
 
     Rectangle();
     void update_hitbox();
-    void draw(Shader& shader);
+    void draw(Shader& shader, int stretch);
 };
 
 
@@ -124,7 +124,7 @@ public:
     Rectangle rectangle;
 
     Background();
-    void draw(Shader& shader);
+    void draw(Shader& shader, int stretch);
     void cycle_colour();
 };
 

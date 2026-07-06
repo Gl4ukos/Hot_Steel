@@ -9,7 +9,7 @@
 // TEXTURE
 // **************************
 
-bool Texture::load(const std::string& path)
+bool Texture::load(const std::string& path, int stretch)
 {
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
@@ -30,8 +30,14 @@ bool Texture::load(const std::string& path)
     stbi_image_free(data);
 
     // IMPORTANT default settings
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    if(stretch == 1){
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }else{
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    }
+
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -133,10 +139,12 @@ Pyramid::Pyramid(){
             
 }
 
-void Pyramid::draw(Shader& shader){
+void Pyramid::draw(Shader& shader, int stretch){
     glm::mat4 model = getModelMatrix();
     shader.set_mat4("model", model);
     shader.set_vec4("another_color", additional_colour);
+    shader.set_int("use_texture", texture != nullptr ? 1 : 0);
+
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
@@ -225,11 +233,17 @@ Rectangle::Rectangle(){
     elasticity_factor=0.0;
 }
 
-void Rectangle::draw(Shader& shader){
+void Rectangle::draw(Shader& shader, int stretch){
     glm::mat4 model = getModelMatrix();
     shader.set_mat4("model", model);
     shader.set_vec4("another_color", additional_colour);
-    shader.set_vec2("uvScale", transform.scale.x, transform.scale.y);
+    if(stretch == 1){
+        shader.set_vec2("uvScale", transform.scale.x, transform.scale.y);
+    }else{
+        shader.set_vec2("uvScale", 1.0f, 1.0f);
+    }
+
+    shader.set_int("use_texture", texture != nullptr ? 1 : 0);
 
     if(texture){
         texture->bind(0);
@@ -261,9 +275,6 @@ void Rectangle::update_hitbox()
     hitbox.max = localMax + transform.position;
 }
 
-
-
-
 Background::Background(){
     rectangle.transform.position = glm::vec3(-1.0f, -1.0f, 0.8f);
     rectangle.transform.scale = glm::vec3(5.0f, 5.0f, 1.0f);
@@ -282,10 +293,10 @@ void Background::cycle_colour(){
     }
 }
 
-void Background::draw(Shader& shader){
+void Background::draw(Shader& shader, int stretch){
     glClearColor(additional_colour[0], additional_colour[1], additional_colour[2], additional_colour[3]); 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     rectangle.additional_colour = additional_colour;
-    rectangle.draw(shader);
+    rectangle.draw(shader, stretch);
 }
