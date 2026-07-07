@@ -22,8 +22,6 @@ public:
     void draw(Shader& shader);
     void update_hitbox();
     Hitbox get_hitbox();
-    void update_movement_state(Movement_Control_Input input, float frame_duration); //either 1.0 or 0.0, depending on keystroke
-
 
     Rectangle mesh;
     int stretch_texture= 0;
@@ -45,8 +43,12 @@ public:
     Texture* current_tex;
     Texture* tex_run_right[4];
     Texture* tex_run_left[4];
-    Texture* tex_run_ascend[4];
-    Texture* tex_run_descend[4];
+    Texture* tex_ascend[4];
+    Texture* tex_descend[4];
+    Texture* tex_idle[4];
+
+    int texture_duration = 0;
+    const int max_texture_duration = 5;
     int current_tex_index = 0;
     glm::vec3 control_input = glm::vec3(0.0f);
 
@@ -60,7 +62,10 @@ public:
 
     Kaelen_Voss(Texture_Library* tex_lib);
     void move();
+    void update_movement_state(Movement_Control_Input input, float frame_duration); 
     void draw(Shader& shader);
+private:
+    void update_texture();
 };
 
 class Kike : public Entity{
@@ -74,6 +79,7 @@ public:
     }state_type, prev_state_type;
 
     Kike(Texture_Library* tex_lib);
+    void update_movement_state(Movement_Control_Input input, float frame_duration); 
     void move();
     void draw(Shader& shader);
 };

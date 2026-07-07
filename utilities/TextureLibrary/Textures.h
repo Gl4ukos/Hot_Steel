@@ -12,28 +12,31 @@
 enum Texture_type {
     BACKGROUND =0,
     PLATFORM = 1,
-    WALL = 2,      
-    PLAYER_LEFT =3,
-    PLAYER_RIGHT1 = 4,
-    PLAYER_RIGHT2 = 5,
-    PLAYER_RIGHT3 = 6,
-    PLAYER_RIGHT4 = 7,
-    PLAYER_IDLE = 8,
-    KIKE = 9
+    WALL = 2,     
+    PLAYER_RIGHT1 = 3,
+    PLAYER_RIGHT2 = 4,
+    PLAYER_RIGHT3 = 5,
+    PLAYER_RIGHT4 = 6,
+    PLAYER_LEFT1 = 7,
+    PLAYER_LEFT2 = 8,
+    PLAYER_LEFT3 = 9,
+    PLAYER_LEFT4 = 10,
+    PLAYER_IDLE = 11,
+    KIKE = 12
 }; 
 
 class Texture{
 public:
     GLuint id;
 
-    bool load(const std::string& path, int stretch);
+    bool load(const std::string& path, int stretch, int flip_horizontal);
     void bind(GLuint slot = 0);
 };
 
 
 class Texture_Library{
 public:
-    Texture textures[10];
+    Texture textures[13];
     Texture_Library();
 };
 
