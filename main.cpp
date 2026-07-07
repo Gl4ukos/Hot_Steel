@@ -92,16 +92,9 @@ int main()
     Texture_Library tex_lib;
 
     World world(&tex_lib);
+    Kaelen_Voss player(&tex_lib);
+    Kike kike(&tex_lib);
 
-    Kaelen_Voss player;
-    player.textures[0] = &tex_lib.textures[PLAYER_LEFT];
-    player.textures[1] = &tex_lib.textures[PLAYER_RIGHT];
-    player.textures[2] = &tex_lib.textures[PLAYER_IDLE];
-
-    Kike kike;
-    kike.textures[0] = &tex_lib.textures[KIKE];
-    kike.textures[1] = &tex_lib.textures[KIKE];
-    kike.textures[2] = &tex_lib.textures[KIKE];
 
     // MAIN LOOP
     shader.use();

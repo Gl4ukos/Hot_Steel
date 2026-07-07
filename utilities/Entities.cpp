@@ -54,6 +54,10 @@ Entity::Entity(){
     jump_boost = 3.2;
     state = IDLE;
     mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);  
+
+    textures[0] = nullptr;
+    textures[1] = nullptr;
+    textures[2] = nullptr;
 }
 
 void Entity::draw(Shader& shader){
@@ -76,7 +80,7 @@ Hitbox Entity::get_hitbox(){
 //**************************
 //  KAELEN VOSS
 //  ***********************/
-Kaelen_Voss::Kaelen_Voss(){
+Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     mass = 10;
     elasticity_factor = 0.0;
     vertical_speed_cap = 4.0;
@@ -86,6 +90,10 @@ Kaelen_Voss::Kaelen_Voss(){
     jump_boost = 3.2;
     state = IDLE;
     mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);    
+
+    textures[0] = &tex_lib->textures[PLAYER_LEFT];
+    textures[1] = &tex_lib->textures[PLAYER_RIGHT];
+    textures[2] = &tex_lib->textures[PLAYER_IDLE];
 }
 
 void Kaelen_Voss::draw(Shader& shader){
@@ -102,10 +110,14 @@ void Kaelen_Voss::draw(Shader& shader){
 //**************************
 //  KIKE
 //  ***********************/
-Kike::Kike() : Entity(){
+Kike::Kike(Texture_Library* tex_lib) : Entity(){
+
+    textures[0] = &tex_lib->textures[KIKE];
+    textures[1] = &tex_lib->textures[KIKE];
+    textures[2] = &tex_lib->textures[KIKE];
+
     mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);    
     mesh.transform.position = glm::vec3(0.0f, -0.7f, 0.0f);
-
 }
 
 void Kike::draw (Shader& shader){

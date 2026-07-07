@@ -37,14 +37,14 @@ public:
 
 class Kaelen_Voss : public Entity{
 public:
-    Kaelen_Voss();
+    Kaelen_Voss(Texture_Library* tex_lib);
     void move();
     void draw(Shader& shader);
 };
 
 class Kike : public Entity{
 public:
-    Kike();
+    Kike(Texture_Library* tex_lib);
     void move();
     void draw(Shader& shader);
 };
