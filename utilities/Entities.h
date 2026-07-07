@@ -5,28 +5,27 @@
 #include "TextureLibrary/Textures.h"
 
 
-enum Player_state{
+enum Entity_state{
     RUN_LEFT = 0,
     RUN_RIGHT = 1,
     IDLE = 2
 };
 
-
-
 glm::vec3 get_collision_displacement(const Hitbox& a, const Hitbox& b);
 
-class Kaelen_Voss{
+
+class Entity{
 public:
-    Kaelen_Voss();
+    Entity();
     void draw(Shader& shader);
     void update_hitbox();
     Hitbox get_hitbox();
-    void update_state(Player_state new_state);
-    
+    void update_state(Entity_state new_state);
+
     Texture* textures[3];
     Rectangle mesh;
-    int stretch_texture =0;
-    Player_state state;
+    int stretch_texture= 0;
+    Entity_state state;
     float mass;
     float elasticity_factor;
     float vertical_speed_cap;
@@ -36,25 +35,18 @@ public:
     float jump_boost;
 };
 
-class Kike{
+class Kaelen_Voss : public Entity{
+public:
+    Kaelen_Voss();
+    void move();
+    void draw(Shader& shader);
+};
+
+class Kike : public Entity{
 public:
     Kike();
+    void move();
     void draw(Shader& shader);
-    void update_hitbox();
-    Hitbox get_hitbox();
-    void update_state(Player_state new_state);
-    
-    Texture* texture;
-    Rectangle mesh;
-    int stretch_texture =0;
-    Player_state state;
-    float mass;
-    float elasticity_factor;
-    float vertical_speed_cap;
-    float horizontal_speed_cap;
-    float vertical_acc;
-    float horizontal_acc;
-    float jump_boost;
 };
 
 

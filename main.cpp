@@ -99,8 +99,9 @@ int main()
     player.textures[2] = &tex_lib.textures[PLAYER_IDLE];
 
     Kike kike;
-    kike.texture = &tex_lib.textures[KIKE];
-
+    kike.textures[0] = &tex_lib.textures[KIKE];
+    kike.textures[1] = &tex_lib.textures[KIKE];
+    kike.textures[2] = &tex_lib.textures[KIKE];
 
     // MAIN LOOP
     shader.use();
@@ -201,9 +202,9 @@ int main()
         }else if(std::abs(player.mesh.velocity.y) < 0.1){
             player.state = IDLE;
         }
-        player.draw(shader);        
-        kike.draw(shader);
+        player.draw(shader);  
 
+        kike.draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -41,6 +41,37 @@ glm::vec3 get_collision_displacement(const Hitbox& a, const Hitbox& b)
     return displacement;
 }
 
+//**************************
+//  ENTITY
+//  ***********************/
+Entity::Entity(){
+    mass = 10;
+    elasticity_factor = 0.0;
+    vertical_speed_cap = 4.0;
+    horizontal_speed_cap = 2.5;
+    vertical_acc = 30;
+    horizontal_acc = 30;
+    jump_boost = 3.2;
+    state = IDLE;
+    mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);  
+}
+
+void Entity::draw(Shader& shader){
+    std::cout<<"DRAW FUNCTION NOT ASSIGNED\n";
+}
+
+void Entity::update_hitbox(){
+    mesh.update_hitbox();
+}
+
+void Entity::update_state(Entity_state new_state){
+    state = new_state;
+}
+
+Hitbox Entity::get_hitbox(){
+    return mesh.hitbox;
+}
+
 
 //**************************
 //  KAELEN VOSS
@@ -68,58 +99,24 @@ void Kaelen_Voss::draw(Shader& shader){
 
 }
 
-void Kaelen_Voss::update_state(Player_state new_state){
-    state = new_state;
-}
-
-void Kaelen_Voss::update_hitbox(){
-    mesh.update_hitbox();
-}
-
-Hitbox Kaelen_Voss::get_hitbox(){
-    return mesh.hitbox;
-}
-
-
 //**************************
 //  KIKE
 //  ***********************/
-Kike::Kike(){
-    mass = 10;
-    elasticity_factor = 0.0;
-    vertical_speed_cap = 3.0;
-    horizontal_speed_cap = 1.5;
-    vertical_acc = 10;
-    horizontal_acc = 4;
-    jump_boost = 3.2;
-    state = IDLE;
+Kike::Kike() : Entity(){
     mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);    
     mesh.transform.position = glm::vec3(0.0f, -0.7f, 0.0f);
+
 }
 
-void Kike::draw(Shader& shader){
-    shader.set_int("use_texture", texture != nullptr ? 1 : 0);
-    if(texture){
-        texture->bind(0);
+void Kike::draw (Shader& shader){
+    shader.set_int("use_texture", textures[state] != nullptr ? 1:0);
+    if(textures[state]){
+        textures[state]->bind(0);
         shader.set_int("tex", 0);
     }
     mesh.draw(shader, stretch_texture);
     shader.set_int("use_texture", 0);
-
 }
-
-void Kike::update_state(Player_state new_state){
-    state = new_state;
-}
-
-void Kike::update_hitbox(){
-    mesh.update_hitbox();
-}
-
-Hitbox Kike::get_hitbox(){
-    return mesh.hitbox;
-}
-
 //**************************
 //  PLATFORM
 //  ***********************/
