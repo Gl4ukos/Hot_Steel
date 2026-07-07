@@ -11,6 +11,13 @@ enum Entity_state{
     IDLE = 2
 };
 
+struct Movement_Control_Input{
+    int left;
+    int right;
+    int up;
+    int down;
+};
+
 glm::vec3 get_collision_displacement(const Hitbox& a, const Hitbox& b);
 
 
@@ -20,19 +27,24 @@ public:
     void draw(Shader& shader);
     void update_hitbox();
     Hitbox get_hitbox();
-    void update_state(Entity_state new_state);
+    void update_movement_state(Movement_Control_Input input); //either 1.0 or 0.0, depending on keystroke
+
 
     Texture* textures[3];
     Rectangle mesh;
     int stretch_texture= 0;
-    Entity_state state;
+    bool spaceWasDown;
+    Entity_state state_type;
     float mass;
     float elasticity_factor;
+    float friction;
+    float gravity;
     float vertical_speed_cap;
     float horizontal_speed_cap;
     float vertical_acc;
     float horizontal_acc;
     float jump_boost;
+    int jumpsLeft;
 };
 
 class Kaelen_Voss : public Entity{
@@ -40,6 +52,8 @@ public:
     Kaelen_Voss(Texture_Library* tex_lib);
     void move();
     void draw(Shader& shader);
+
+    glm::vec3 control_input = glm::vec3(0.0f);
 };
 
 class Kike : public Entity{

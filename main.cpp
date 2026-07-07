@@ -10,9 +10,6 @@
 #include "utilities/Entities.h"
 #include "utilities/TextureLibrary/Textures.h"
 
-float gravity = -15.0;
-float friction = 10.0;
-float frameTime;
 
 //resizes the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -22,49 +19,39 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 int jumpsLeft = 3;
 bool spaceWasDown = false;
+Movement_Control_Input movement_control_input;
 
-void control_player(GLFWwindow* window, Kaelen_Voss* player)
-{
-    player->mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
 
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+void handle_key_input(GLFWwindow* window){
+
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
+    }
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        if(player->mesh.velocity.x > 0){
-            player->mesh.velocity.x = 0;
-        }
-        player->mesh.acceleration.x = -player->horizontal_acc;
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        if(player->mesh.velocity.x < 0){
-            player->mesh.velocity.x =0;
-        }
-        player->mesh.acceleration.x = player->horizontal_acc;
+        movement_control_input.left = 1;
+    }else{
+        movement_control_input.left = 0;
     }
 
-    bool spaceDown = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
-    bool spacePressed = spaceDown && !spaceWasDown;
-    spaceWasDown = spaceDown;
-    if (spacePressed && jumpsLeft>0){
-        player->mesh.velocity.y = player->jump_boost;
-        jumpsLeft-=1;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
+        movement_control_input.right = 1;
+    }else{
+        movement_control_input.right = 0;
     }
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        player->mesh.velocity.y = -player->jump_boost;
+        movement_control_input.down = 1;
+    }else{
+        movement_control_input.down = 0;
     }
-
-    if(player->mesh.acceleration.x ==0 ){ //if no forces on x, apply friction
-        player->mesh.acceleration.x -= (player->mesh.velocity.x*friction);
-    }
-
-    if(player->mesh.transform.position.y <= -0.99){
-        jumpsLeft =2;
-        player->mesh.velocity.y = std::max(0.0f, player->mesh.velocity.y);
+    
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        movement_control_input.up = 1;
+    }else{
+        movement_control_input.up = 0;
     }
 }
-
 
 
 std::string load_file_to_string(std::string filename){
@@ -78,6 +65,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 GLFWwindow* initialise_glfw();
+float frameTime;
 double lastFrameTime = glfwGetTime();
 int main()
 {
@@ -114,7 +102,8 @@ int main()
         // *********************
         // UPDATING PLAYER
         // *********************
-        control_player(window, &player);        
+        handle_key_input(window);  
+        player.update_movement_state(movement_control_input);   
         player.mesh.transform.position += player.mesh.velocity * frameTime;
         player.mesh.velocity += player.mesh.acceleration * frameTime;
         player.mesh.velocity.x = std::max(std::min(player.mesh.velocity.x, player.horizontal_speed_cap), -player.horizontal_speed_cap);
@@ -124,7 +113,7 @@ int main()
         // **********************
         // UPDATING KIKE
         // **********************
-        kike.mesh.acceleration.y = gravity;
+        kike.mesh.acceleration.y = -15.0f;
         kike.mesh.transform.position += kike.mesh.velocity * frameTime;
         kike.mesh.velocity += kike.mesh.acceleration * frameTime;
         kike.mesh.velocity.x = std::max(std::min(kike.mesh.velocity.x, kike.horizontal_speed_cap), - kike.horizontal_speed_cap);
@@ -151,7 +140,7 @@ int main()
             player.mesh.transform.position += collision_displacement;
             if(collision_displacement.y != 0.0){
                 player.mesh.velocity.y = 0.0f;
-                jumpsLeft = 3;
+                player.jumpsLeft = 3;
             }
             if(collision_displacement.x != 0.0){
                 player.mesh.velocity.x = 0.0f;
@@ -164,7 +153,7 @@ int main()
             player.mesh.transform.position += collision_displacement;
             if(collision_displacement.y != 0.0){
                 player.mesh.velocity.y = 0.0f;
-                jumpsLeft = 3;
+                player.jumpsLeft = 3;
             }
             if(collision_displacement.x != 0.0){
                 player.mesh.velocity.x = 0.0f;
@@ -189,11 +178,11 @@ int main()
         // DRAWING
         // *************        
         if(player.mesh.velocity.x <-0.3){
-            player.state = RUN_LEFT;
+            player.state_type = RUN_LEFT;
         }else if(player.mesh.velocity.x >0.3){
-            player.state = RUN_RIGHT;
+            player.state_type = RUN_RIGHT;
         }else if(std::abs(player.mesh.velocity.y) < 0.1){
-            player.state = IDLE;
+            player.state_type = IDLE;
         }
         player.draw(shader);  
 

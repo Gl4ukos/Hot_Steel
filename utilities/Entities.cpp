@@ -52,7 +52,10 @@ Entity::Entity(){
     vertical_acc = 30;
     horizontal_acc = 30;
     jump_boost = 3.2;
-    state = IDLE;
+    gravity = -15.0;
+    friction = 10.0;
+    state_type = IDLE;
+    jumpsLeft = 1;
     mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);  
 
     textures[0] = nullptr;
@@ -68,8 +71,45 @@ void Entity::update_hitbox(){
     mesh.update_hitbox();
 }
 
-void Entity::update_state(Entity_state new_state){
-    state = new_state;
+void Entity::update_movement_state(Movement_Control_Input input){
+    mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
+
+    if(input.left){
+        if(mesh.velocity.x>0){
+            mesh.velocity.x = 0;
+        }
+        mesh.acceleration.x = -horizontal_acc;
+    }
+
+    if(input.right){
+        if(mesh.velocity.x<0){
+            mesh.velocity.x = 0;
+        }
+        mesh.acceleration.x = horizontal_acc;
+    }
+
+    bool spaceDown = input.up;
+    bool spacePressed = spaceDown && !spaceWasDown;
+    spaceWasDown = spaceDown;
+
+    if(spacePressed && jumpsLeft>0){
+        mesh.velocity.y = jump_boost;
+        jumpsLeft -=1;
+    }
+
+    if(input.down){
+        mesh.velocity.y = -jump_boost;
+    }
+
+    if(mesh.acceleration.x == 0){
+        mesh.acceleration.x -= (mesh.velocity.x * friction);
+    }
+
+    if(mesh.transform.position.y <= -0.99){
+        jumpsLeft = 3;
+        mesh.velocity.y = std::max(0.0f, mesh.velocity.y);
+    }
+
 }
 
 Hitbox Entity::get_hitbox(){
@@ -88,7 +128,9 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     vertical_acc = 30;
     horizontal_acc = 30;
     jump_boost = 3.2;
-    state = IDLE;
+    state_type = IDLE;
+    jumpsLeft=3;
+    spaceWasDown = 0;
     mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);    
 
     textures[0] = &tex_lib->textures[PLAYER_LEFT];
@@ -97,13 +139,17 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
 }
 
 void Kaelen_Voss::draw(Shader& shader){
-    shader.set_int("use_texture", textures[state] != nullptr ? 1 : 0);
-    if(textures[state]){
-        textures[state]->bind(0);
+    shader.set_int("use_texture", textures[state_type] != nullptr ? 1 : 0);
+    if(textures[state_type]){
+        textures[state_type]->bind(0);
         shader.set_int("tex", 0);
     }
     mesh.draw(shader, stretch_texture);
     shader.set_int("use_texture", 0);
+
+}
+
+void Kaelen_Voss::move(){
 
 }
 
@@ -121,9 +167,9 @@ Kike::Kike(Texture_Library* tex_lib) : Entity(){
 }
 
 void Kike::draw (Shader& shader){
-    shader.set_int("use_texture", textures[state] != nullptr ? 1:0);
-    if(textures[state]){
-        textures[state]->bind(0);
+    shader.set_int("use_texture", textures[state_type] != nullptr ? 1:0);
+    if(textures[state_type]){
+        textures[state_type]->bind(0);
         shader.set_int("tex", 0);
     }
     mesh.draw(shader, stretch_texture);
