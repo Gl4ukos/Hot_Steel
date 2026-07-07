@@ -103,7 +103,7 @@ int main()
         // UPDATING PLAYER
         // *********************
         handle_key_input(window);  
-        player.update_movement_state(movement_control_input);   
+        player.update_movement_state(movement_control_input, frameTime);   
         player.mesh.transform.position += player.mesh.velocity * frameTime;
         player.mesh.velocity += player.mesh.acceleration * frameTime;
         player.mesh.velocity.x = std::max(std::min(player.mesh.velocity.x, player.horizontal_speed_cap), -player.horizontal_speed_cap);
@@ -177,13 +177,6 @@ int main()
         // *************
         // DRAWING
         // *************        
-        if(player.mesh.velocity.x <-0.3){
-            player.state_type = RUN_LEFT;
-        }else if(player.mesh.velocity.x >0.3){
-            player.state_type = RUN_RIGHT;
-        }else if(std::abs(player.mesh.velocity.y) < 0.1){
-            player.state_type = IDLE;
-        }
         player.draw(shader);  
 
         kike.draw(shader);

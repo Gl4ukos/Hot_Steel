@@ -22,13 +22,25 @@ Texture_Library::Texture_Library(){
     {
         std::cout << "Couldn't load wall texture\n";
     }
-
+    stbi_set_flip_vertically_on_load(true); // inversion for png loading
     if (!textures[PLAYER_LEFT].load("utilities/TextureLibrary/textures/kaelen_inv.png", 0))
     {
         std::cout << "Couldn't load player texture\n";
     }
 
-    if (!textures[PLAYER_RIGHT].load("utilities/TextureLibrary/textures/kaelen.png", 0))
+    if (!textures[PLAYER_RIGHT1].load("utilities/TextureLibrary/textures/kaelen_run1.png", 0))
+    {
+        std::cout << "Couldn't load player texture\n";
+    }
+    if (!textures[PLAYER_RIGHT2].load("utilities/TextureLibrary/textures/kaelen_run2.png", 0))
+    {
+        std::cout << "Couldn't load player texture\n";
+    }
+    if (!textures[PLAYER_RIGHT3].load("utilities/TextureLibrary/textures/kaelen_run3.png", 0))
+    {
+        std::cout << "Couldn't load player texture\n";
+    }
+    if (!textures[PLAYER_RIGHT4].load("utilities/TextureLibrary/textures/kaelen_run4.png", 0))
     {
         std::cout << "Couldn't load player texture\n";
     }
@@ -37,11 +49,14 @@ Texture_Library::Texture_Library(){
     {
         std::cout << "Couldn't load player texture\n";
     }
+    stbi_set_flip_vertically_on_load(false);
 
     if (!textures[KIKE].load("utilities/TextureLibrary/textures/kike.png", 0))
     {
         std::cout << "Couldn't load player texture\n";
     }
+
+
 }
 
 

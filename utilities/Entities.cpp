@@ -54,13 +54,9 @@ Entity::Entity(){
     jump_boost = 3.2;
     gravity = -15.0;
     friction = 10.0;
-    state_type = IDLE;
     jumpsLeft = 1;
     mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);  
 
-    textures[0] = nullptr;
-    textures[1] = nullptr;
-    textures[2] = nullptr;
 }
 
 void Entity::draw(Shader& shader){
@@ -71,7 +67,7 @@ void Entity::update_hitbox(){
     mesh.update_hitbox();
 }
 
-void Entity::update_movement_state(Movement_Control_Input input){
+void Entity::update_movement_state(Movement_Control_Input input, float frame_duration){
     mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
 
     if(input.left){
@@ -131,17 +127,20 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     state_type = IDLE;
     jumpsLeft=3;
     spaceWasDown = 0;
-    mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);    
+    mesh.transform.scale = glm::vec3(0.5f, 0.5f, 1.0f);    
 
-    textures[0] = &tex_lib->textures[PLAYER_LEFT];
-    textures[1] = &tex_lib->textures[PLAYER_RIGHT];
-    textures[2] = &tex_lib->textures[PLAYER_IDLE];
+    current_tex = &tex_lib->textures[PLAYER_RIGHT1];
+    // textures[RUN_RIGHT1] = &tex_lib->textures[PLAYER_RIGHT1];
+    // textures[RUN_RIGHT2] = &tex_lib->textures[PLAYER_RIGHT2];
+    // textures[RUN_RIGHT3] = &tex_lib->textures[PLAYER_RIGHT3];
+    // textures[RUN_RIGHT4] = &tex_lib->textures[PLAYER_RIGHT4];
+
 }
 
 void Kaelen_Voss::draw(Shader& shader){
-    shader.set_int("use_texture", textures[state_type] != nullptr ? 1 : 0);
-    if(textures[state_type]){
-        textures[state_type]->bind(0);
+    shader.set_int("use_texture", current_tex != nullptr ? 1 : 0);
+    if(current_tex){
+        current_tex->bind(0);
         shader.set_int("tex", 0);
     }
     mesh.draw(shader, stretch_texture);
@@ -149,36 +148,32 @@ void Kaelen_Voss::draw(Shader& shader){
 
 }
 
-void Kaelen_Voss::move(){
-
-}
 
 //**************************
 //  KIKE
 //  ***********************/
 Kike::Kike(Texture_Library* tex_lib) : Entity(){
 
-    textures[0] = &tex_lib->textures[KIKE];
-    textures[1] = &tex_lib->textures[KIKE];
-    textures[2] = &tex_lib->textures[KIKE];
+    current_tex = &tex_lib->textures[KIKE];
+    state_type = IDLE;
 
     mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);    
     mesh.transform.position = glm::vec3(0.0f, -0.7f, 0.0f);
 }
 
 void Kike::draw (Shader& shader){
-    shader.set_int("use_texture", textures[state_type] != nullptr ? 1:0);
-    if(textures[state_type]){
-        textures[state_type]->bind(0);
+    shader.set_int("use_texture", current_tex != nullptr ? 1:0);
+    if(current_tex){
+        current_tex->bind(0);
         shader.set_int("tex", 0);
     }
     mesh.draw(shader, stretch_texture);
     shader.set_int("use_texture", 0);
 }
+
 //**************************
 //  PLATFORM
 //  ***********************/
-
 Platform::Platform(){
     mesh.additional_colour = glm::vec4(0.0f);
 
