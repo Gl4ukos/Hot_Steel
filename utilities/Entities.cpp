@@ -2,6 +2,46 @@
 
 
 
+glm::vec3 get_collision_displacement(const Hitbox& a, const Hitbox& b)
+{
+    glm::vec3 displacement(0.0f, 0.0f, 0.0f);
+    bool in_x = false;
+
+    if(a.min.x <= b.max.x && a.max.x >= b.min.x){
+        float right_dis = b.max.x - a.min.x;
+        float left_dis = b.min.x - a.max.x;
+
+        if(std::abs(right_dis) > std::abs(left_dis)){
+            displacement.x = left_dis;
+        }else{
+            displacement.x = right_dis;
+        }
+
+        if(a.min.y <= b.max.y && a.max.y >= b.min.y){
+            right_dis = b.max.y - a.min.y;
+            left_dis = b.min.y - a.max.y;
+
+            if(std::abs(right_dis) > std::abs(left_dis)){
+                displacement.y = left_dis;
+            }else{
+                displacement.y = right_dis;
+            }
+
+            // COLLISION DATECTED
+            // we keep only the least displacement to return
+            if(std::abs(displacement.x) > std::abs(displacement.y)){
+                displacement.x = 0.0f; 
+            }else{
+                displacement.y = 0.0f;
+            }
+        }else{
+            displacement.x = 0.0f;
+        }
+    }
+    return displacement;
+}
+
+
 //**************************
 //  KAELEN VOSS
 //  ***********************/
@@ -41,7 +81,6 @@ Hitbox Kaelen_Voss::get_hitbox(){
 }
 
 
-
 //**************************
 //  KIKE
 //  ***********************/
@@ -49,9 +88,9 @@ Kike::Kike(){
     mass = 10;
     elasticity_factor = 0.0;
     vertical_speed_cap = 3.0;
-    horizontal_speed_cap = 2.0;
-    vertical_acc = 20;
-    horizontal_acc = 20;
+    horizontal_speed_cap = 1.5;
+    vertical_acc = 10;
+    horizontal_acc = 4;
     jump_boost = 3.2;
     state = IDLE;
     mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);    
@@ -144,3 +183,70 @@ void Background::draw(Shader& shader){
     shader.set_int("use_texture", 0);
 
 }
+
+
+// *******************
+// WORLD
+// *******************
+World::World(Texture_Library* tex_lib){
+
+    background.texture = &tex_lib->textures[BACKGROUND];
+
+    platforms[0].texture = &tex_lib->textures[PLATFORM];
+    platforms[0].mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
+    platforms[0].mesh.transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
+
+    platforms[1].texture = nullptr;
+    platforms[1].mesh.transform.position = glm::vec3(-0.5f, -0.5f, 0.0f);
+    platforms[1].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+    
+    platforms[2].texture = nullptr;
+    platforms[2].mesh.transform.position = glm::vec3(-0.0f, -0.0f, 0.0f);
+    platforms[2].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+    
+    platforms[3].texture = nullptr;
+    platforms[3].mesh.transform.position = glm::vec3(0.5f, 0.5f, 0.0f);
+    platforms[3].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+    
+    platforms[4].texture = &tex_lib->textures[PLATFORM];
+    platforms[4].mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
+    platforms[4].mesh.transform.scale = glm::vec3(0.2f, 2.0f, 1.0f);
+    
+    platforms[5].texture = &tex_lib->textures[PLATFORM];
+    platforms[5].mesh.transform.position = glm::vec3(0.95f, -1.0f, 0.0f);
+    platforms[5].mesh.transform.scale = glm::vec3(0.2f, 2.0f, 1.0f);
+
+    for(int i = 0; i < platform_count; i++){
+        platforms[i].update_hitbox();
+    }
+
+}
+
+glm::vec4 World::get_ambient_colour(){
+    return background.mesh.additional_colour;
+}
+
+void World::draw(Shader& shader){
+    background.cycle_colour();
+    background.draw(shader);
+
+    for(int i=0; i<platform_count; i++){
+        platforms[i].mesh.additional_colour = background.mesh.additional_colour;
+        platforms[i].draw(shader);
+    }
+}
+
+
+
+
+glm::vec3 World::get_total_collision_displacement(const Hitbox& a){
+    glm::vec3 displacement(0.0f, 0.0f, 0.0f);
+    Hitbox b;
+
+    for(int i=0; i<platform_count; i++){
+        b = platforms[i].mesh.hitbox;
+        displacement += get_collision_displacement(a, b);
+    }
+    return displacement;
+}
+ 

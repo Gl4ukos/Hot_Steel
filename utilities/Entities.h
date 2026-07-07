@@ -11,6 +11,10 @@ enum Player_state{
     IDLE = 2
 };
 
+
+
+glm::vec3 get_collision_displacement(const Hitbox& a, const Hitbox& b);
+
 class Kaelen_Voss{
 public:
     Kaelen_Voss();
@@ -79,5 +83,16 @@ public:
     void cycle_colour();
 };
 
+class World{
+public:
+    World(Texture_Library* tex_lib);
+    void draw(Shader& shader);
+    glm::vec3 get_total_collision_displacement(const Hitbox& a);
+    glm::vec4 get_ambient_colour();
+
+    Background background;
+    int platform_count = 6;
+    Platform platforms[6];  
+};
 
 #endif
