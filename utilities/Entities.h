@@ -41,14 +41,14 @@ public:
 class Kaelen_Voss : public Entity{
 public:
     Texture* current_tex;
-    Texture* tex_run_right[4];
-    Texture* tex_run_left[4];
+    Texture* tex_run_right[8];
+    Texture* tex_run_left[8];
     Texture* tex_ascend[4];
     Texture* tex_descend[4];
     Texture* tex_idle[4];
 
     int texture_duration = 0;
-    const int max_texture_duration = 5;
+    const int max_texture_duration = 4;
     int current_tex_index = 0;
     glm::vec3 control_input = glm::vec3(0.0f);
 

@@ -10,19 +10,31 @@
 
 
 enum Texture_type {
-    BACKGROUND =0,
-    PLATFORM = 1,
-    WALL = 2,     
-    PLAYER_RIGHT1 = 3,
-    PLAYER_RIGHT2 = 4,
-    PLAYER_RIGHT3 = 5,
-    PLAYER_RIGHT4 = 6,
-    PLAYER_LEFT1 = 7,
-    PLAYER_LEFT2 = 8,
-    PLAYER_LEFT3 = 9,
-    PLAYER_LEFT4 = 10,
-    PLAYER_IDLE = 11,
-    KIKE = 12
+    BACKGROUND,
+    PLATFORM,
+    WALL,    
+
+    PLAYER_RIGHT1,
+    PLAYER_RIGHT2,
+    PLAYER_RIGHT3,
+    PLAYER_RIGHT4,
+    PLAYER_RIGHT5,
+    PLAYER_RIGHT6,
+    PLAYER_RIGHT7,
+    PLAYER_RIGHT8,
+ 
+    PLAYER_LEFT1,
+    PLAYER_LEFT2 ,
+    PLAYER_LEFT3 ,
+    PLAYER_LEFT4 ,
+    PLAYER_LEFT5 ,
+    PLAYER_LEFT6 ,
+    PLAYER_LEFT7 ,
+    PLAYER_LEFT8 ,
+
+    PLAYER_IDLE,
+    KIKE,
+    TEXTURE_COUNT
 }; 
 
 class Texture{
@@ -36,7 +48,7 @@ public:
 
 class Texture_Library{
 public:
-    Texture textures[13];
+    Texture textures[TEXTURE_COUNT];
     Texture_Library();
 };
 

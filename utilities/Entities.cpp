@@ -48,14 +48,14 @@ Entity::Entity(){
     mass = 10;
     elasticity_factor = 0.0;
     vertical_speed_cap = 4.0;
-    horizontal_speed_cap = 2.5;
+    horizontal_speed_cap = 1.0;
     vertical_acc = 30;
     horizontal_acc = 30;
     jump_boost = 3.2;
     gravity = -15.0;
     friction = 10.0;
     jumpsLeft = 1;
-    mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);  
+    mesh.transform.scale = glm::vec3(0.35f, 0.4f, 1.0f);  
 
 }
 
@@ -80,25 +80,33 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     mass = 10;
     elasticity_factor = 0.0;
     vertical_speed_cap = 4.0;
-    horizontal_speed_cap = 0.5;
+    horizontal_speed_cap = 1.5;
     vertical_acc = 30;
     horizontal_acc = 30;
     jump_boost = 3.2;
     state_type = IDLE;
     jumpsLeft=3;
     spaceWasDown = 0;
-    mesh.transform.scale = glm::vec3(0.5f, 0.5f, 1.0f);    
+    mesh.transform.scale = glm::vec3(0.8f, 0.8f, 1.0f);    
 
     current_tex = &tex_lib->textures[PLAYER_RIGHT1];
     tex_run_right[0] = &tex_lib->textures[PLAYER_RIGHT1];
     tex_run_right[1] = &tex_lib->textures[PLAYER_RIGHT2];
     tex_run_right[2] = &tex_lib->textures[PLAYER_RIGHT3];
     tex_run_right[3] = &tex_lib->textures[PLAYER_RIGHT4];
+    tex_run_right[4] = &tex_lib->textures[PLAYER_RIGHT5];
+    tex_run_right[5] = &tex_lib->textures[PLAYER_RIGHT6];
+    tex_run_right[6] = &tex_lib->textures[PLAYER_RIGHT7];
+    tex_run_right[7] = &tex_lib->textures[PLAYER_RIGHT8];
 
     tex_run_left[0] = &tex_lib->textures[PLAYER_LEFT1];
     tex_run_left[1] = &tex_lib->textures[PLAYER_LEFT2];
     tex_run_left[2] = &tex_lib->textures[PLAYER_LEFT3];
     tex_run_left[3] = &tex_lib->textures[PLAYER_LEFT4];
+    tex_run_left[4] = &tex_lib->textures[PLAYER_LEFT5];
+    tex_run_left[5] = &tex_lib->textures[PLAYER_LEFT6];
+    tex_run_left[6] = &tex_lib->textures[PLAYER_LEFT7];
+    tex_run_left[7] = &tex_lib->textures[PLAYER_LEFT8];
 
     tex_idle[0] = &tex_lib->textures[PLAYER_RIGHT1];
     tex_idle[1] = &tex_lib->textures[PLAYER_RIGHT1];
@@ -106,14 +114,14 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     tex_idle[3] = &tex_lib->textures[PLAYER_RIGHT1];
 
     tex_ascend[0] = &tex_lib->textures[PLAYER_RIGHT1];
-    tex_ascend[0] = &tex_lib->textures[PLAYER_RIGHT1];
-    tex_ascend[0] = &tex_lib->textures[PLAYER_RIGHT1];
-    tex_ascend[0] = &tex_lib->textures[PLAYER_RIGHT1];
+    tex_ascend[1] = &tex_lib->textures[PLAYER_RIGHT1];
+    tex_ascend[2] = &tex_lib->textures[PLAYER_RIGHT1];
+    tex_ascend[3] = &tex_lib->textures[PLAYER_RIGHT1];
 
     tex_descend[0] = &tex_lib->textures[PLAYER_RIGHT1];
-    tex_descend[0] = &tex_lib->textures[PLAYER_RIGHT1];
-    tex_descend[0] = &tex_lib->textures[PLAYER_RIGHT1];
-    tex_descend[0] = &tex_lib->textures[PLAYER_RIGHT1];
+    tex_descend[1] = &tex_lib->textures[PLAYER_RIGHT1];
+    tex_descend[2] = &tex_lib->textures[PLAYER_RIGHT1];
+    tex_descend[3] = &tex_lib->textures[PLAYER_RIGHT1];
 }
 
 
@@ -159,7 +167,6 @@ void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float fram
 }
 
 void Kaelen_Voss::update_texture(){
-
     if(mesh.velocity.x > 0.2){
         state_type = RUN_RIGHT;
     }else if(mesh.velocity.x < -0.2){
@@ -181,6 +188,7 @@ void Kaelen_Voss::update_texture(){
             current_tex = tex_run_right[current_tex_index];
         }else{
             texture_duration=0;
+            current_tex_index=0;
         }
     }else if(state_type == RUN_LEFT){
         if(prev_state_type == RUN_LEFT){
@@ -188,13 +196,14 @@ void Kaelen_Voss::update_texture(){
             if(texture_duration >= max_texture_duration){
                 current_tex_index +=1;
                 texture_duration =0;
-                if(current_tex_index >= sizeof(tex_run_right)/sizeof(Texture*)){
+                if(current_tex_index >= sizeof(tex_run_left)/sizeof(Texture*)){
                     current_tex_index =0;
                 }
             }
             current_tex = tex_run_left[current_tex_index];
         }else{
             texture_duration=0;
+            current_tex_index=0;
         }
     }else{
         current_tex = tex_idle[0];
@@ -229,7 +238,6 @@ Kike::Kike(Texture_Library* tex_lib) : Entity(){
 
 void Kike::update_movement_state(Movement_Control_Input input, float frame_duration){
     mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
-    prev_state_type = state_type;
 
     if(input.left){
         if(mesh.velocity.x>0){
@@ -265,7 +273,6 @@ void Kike::update_movement_state(Movement_Control_Input input, float frame_durat
     if(mesh.transform.position.y <= -0.99){
         jumpsLeft = 3;
         mesh.velocity.y = std::max(0.0f, mesh.velocity.y);
-        state_type = IDLE;
     }
 
 }
