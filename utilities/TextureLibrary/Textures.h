@@ -33,7 +33,7 @@ enum Texture_type {
     PLAYER_LEFT8 ,
 
     PLAYER_IDLE,
-    KIKE,
+    TRACKER_IDLE,
     TEXTURE_COUNT
 }; 
 

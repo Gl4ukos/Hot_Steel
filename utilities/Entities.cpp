@@ -73,6 +73,9 @@ Hitbox Entity::get_hitbox(){
 }
 
 
+
+
+
 //**************************
 //  KAELEN VOSS
 //  ***********************/
@@ -80,14 +83,17 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     mass = 10;
     elasticity_factor = 0.0;
     vertical_speed_cap = 4.0;
-    horizontal_speed_cap = 1.5;
+    horizontal_speed_cap = 2.0;
     vertical_acc = 30;
-    horizontal_acc = 30;
+    horizontal_acc = 20;
     jump_boost = 3.2;
     state_type = IDLE;
+    friction = 15;
     jumpsLeft=3;
     spaceWasDown = 0;
-    mesh.transform.scale = glm::vec3(0.8f, 0.8f, 1.0f);    
+    mesh.hitbox.offset_min = glm::vec2(0.14f, 0.0f); //percentage
+    mesh.hitbox.offset_max = glm::vec2(0.12f, 0.03f); //percentage
+    mesh.transform.scale = glm::vec3(0.55f, 0.7f, 1.0f);    
 
     current_tex = &tex_lib->textures[PLAYER_RIGHT1];
     tex_run_right[0] = &tex_lib->textures[PLAYER_RIGHT1];
@@ -108,10 +114,10 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     tex_run_left[6] = &tex_lib->textures[PLAYER_LEFT7];
     tex_run_left[7] = &tex_lib->textures[PLAYER_LEFT8];
 
-    tex_idle[0] = &tex_lib->textures[PLAYER_RIGHT1];
-    tex_idle[1] = &tex_lib->textures[PLAYER_RIGHT1];
-    tex_idle[2] = &tex_lib->textures[PLAYER_RIGHT1];
-    tex_idle[3] = &tex_lib->textures[PLAYER_RIGHT1];
+    tex_idle[0] = &tex_lib->textures[PLAYER_IDLE];
+    tex_idle[1] = &tex_lib->textures[PLAYER_IDLE];
+    tex_idle[2] = &tex_lib->textures[PLAYER_IDLE];
+    tex_idle[3] = &tex_lib->textures[PLAYER_IDLE];
 
     tex_ascend[0] = &tex_lib->textures[PLAYER_RIGHT1];
     tex_ascend[1] = &tex_lib->textures[PLAYER_RIGHT1];
@@ -124,10 +130,8 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     tex_descend[3] = &tex_lib->textures[PLAYER_RIGHT1];
 }
 
-
-void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float frame_duration){
+void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float frameTime){
     mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
-    prev_state_type = state_type;
 
     if(input.left){
         if(mesh.velocity.x>0){
@@ -164,9 +168,13 @@ void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float fram
         jumpsLeft = 3;
         mesh.velocity.y = std::max(0.0f, mesh.velocity.y);
     }
+    mesh.transform.position += mesh.velocity * frameTime;
+    mesh.velocity += mesh.acceleration * frameTime;
+    mesh.velocity.x = std::max(std::min(mesh.velocity.x, horizontal_speed_cap), -horizontal_speed_cap);
 }
 
 void Kaelen_Voss::update_texture(){
+    prev_state_type = state_type;
     if(mesh.velocity.x > 0.2){
         state_type = RUN_RIGHT;
     }else if(mesh.velocity.x < -0.2){
@@ -224,19 +232,31 @@ void Kaelen_Voss::draw(Shader& shader){
 
 
 //**************************
-//  KIKE
+//  Tracker_robot
 //  ***********************/
-Kike::Kike(Texture_Library* tex_lib) : Entity(){
+Tracker_robot::Tracker_robot(Texture_Library* tex_lib) : Entity(){
+    mass = 10;
+    elasticity_factor = 0.0;
+    vertical_speed_cap = 4.0;
+    horizontal_speed_cap = 1.7;
+    vertical_acc = 30;
+    horizontal_acc = 10;
+    jump_boost = 4.2;
+    state_type = IDLE;
+    jumpsLeft=2;
+    spaceWasDown = 0;
 
-    current_tex = &tex_lib->textures[KIKE];
+    current_tex = &tex_lib->textures[TRACKER_IDLE];
     state_type = IDLE;
 
-    mesh.transform.scale = glm::vec3(0.3f, 0.35f, 1.0f);    
+    mesh.transform.scale = glm::vec3(0.4f, 0.4f, 1.0f);    
     mesh.transform.position = glm::vec3(0.0f, -0.7f, 0.0f);
+    mesh.hitbox.offset_min = glm::vec2(0.05f, 0.05f);
+    mesh.hitbox.offset_max = glm::vec2(0.05f, 0.1f);
 }
 
 
-void Kike::update_movement_state(Movement_Control_Input input, float frame_duration){
+void Tracker_robot::update_movement_state(Movement_Control_Input input, float frameTime){
     mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
 
     if(input.left){
@@ -274,10 +294,28 @@ void Kike::update_movement_state(Movement_Control_Input input, float frame_durat
         jumpsLeft = 3;
         mesh.velocity.y = std::max(0.0f, mesh.velocity.y);
     }
-
+    mesh.transform.position += mesh.velocity * frameTime;
+    mesh.velocity += mesh.acceleration * frameTime;
+    mesh.velocity.x = std::max(std::min(mesh.velocity.x, horizontal_speed_cap), -horizontal_speed_cap);
 }
 
-void Kike::draw (Shader& shader){
+Movement_Control_Input Tracker_robot::think(float x_diff, float y_diff){
+    Movement_Control_Input decision;
+
+    if(x_diff > 0.04){
+        decision.right = 1;
+    }else if(x_diff < -0.04){
+        decision.left = 1 ;
+    }
+
+    decision.up = 0;
+    decision.down=0;
+
+
+    return decision;
+}
+
+void Tracker_robot::draw (Shader& shader){
     shader.set_int("use_texture", current_tex != nullptr ? 1:0);
     if(current_tex){
         current_tex->bind(0);
@@ -364,15 +402,15 @@ World::World(Texture_Library* tex_lib){
 
     platforms[1].texture = nullptr;
     platforms[1].mesh.transform.position = glm::vec3(-0.5f, -0.5f, 0.0f);
-    platforms[1].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+    platforms[1].mesh.transform.scale = glm::vec3(1.0f, 0.2f, 1.0f);
     
     platforms[2].texture = nullptr;
     platforms[2].mesh.transform.position = glm::vec3(-0.0f, -0.0f, 0.0f);
-    platforms[2].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+    platforms[2].mesh.transform.scale = glm::vec3(1.0f, 0.2f, 1.0f);
     
     platforms[3].texture = nullptr;
     platforms[3].mesh.transform.position = glm::vec3(0.5f, 0.5f, 0.0f);
-    platforms[3].mesh.transform.scale = glm::vec3(1.0f, 0.5f, 1.0f);
+    platforms[3].mesh.transform.scale = glm::vec3(1.0f, 0.2f, 1.0f);
     
     platforms[4].texture = &tex_lib->textures[PLATFORM];
     platforms[4].mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);

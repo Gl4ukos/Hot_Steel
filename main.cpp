@@ -51,6 +51,7 @@ void handle_key_input(GLFWwindow* window){
     }else{
         movement_control_input.up = 0;
     }
+
 }
 
 
@@ -72,7 +73,7 @@ int main()
     //setting up
     GLFWwindow* window = initialise_glfw();
     Shader shader ("Shaders/vertex_shader.glsl", "Shaders/fragment_shader.glsl");
-    glEnable(GL_DEPTH_TEST); //enabling depth
+    // glEnable(GL_DEPTH_TEST); //enabling depth
     glEnable(GL_BLEND); //enabling blend
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -81,7 +82,7 @@ int main()
 
     World world(&tex_lib);
     Kaelen_Voss player(&tex_lib);
-    Kike kike(&tex_lib);
+    Tracker_robot tracker_robot(&tex_lib);
 
 
     // MAIN LOOP
@@ -104,38 +105,22 @@ int main()
         // *********************
         handle_key_input(window);  
         player.update_movement_state(movement_control_input, frameTime);   
-        player.mesh.transform.position += player.mesh.velocity * frameTime;
-        player.mesh.velocity += player.mesh.acceleration * frameTime;
-        player.mesh.velocity.x = std::max(std::min(player.mesh.velocity.x, player.horizontal_speed_cap), -player.horizontal_speed_cap);
-        // player.mesh.transform.rotation.x = std::max(std::min((player.mesh.velocity.y / player.mesh.vertical_speed_cap), 0.6f), -0.6f); //update rotation y
         player.mesh.update_hitbox();
 
         // **********************
-        // UPDATING KIKE
+        // UPDATING tracker_robot
         // **********************
-        kike.mesh.acceleration.y = -15.0f;
-        kike.mesh.transform.position += kike.mesh.velocity * frameTime;
-        kike.mesh.velocity += kike.mesh.acceleration * frameTime;
-        kike.mesh.velocity.x = std::max(std::min(kike.mesh.velocity.x, kike.horizontal_speed_cap), - kike.horizontal_speed_cap);
-        if(kike.mesh.transform.position.x > player.mesh.transform.position.x){
-            if(kike.mesh.velocity.x > 0){
-                kike.mesh.velocity.x = 0.0f;
-                kike.mesh.acceleration.x = 0.0f;
-            }
-            kike.mesh.acceleration.x -= kike.horizontal_acc;
-        }else if(kike.mesh.transform.position.x < player.mesh.transform.position.x){
-            if(kike.mesh.velocity.x < 0){
-                kike.mesh.velocity.x = 0.0f;
-                kike.mesh.acceleration.x = 0.0f;
-            }
-            kike.mesh.acceleration.x += kike.horizontal_acc;
 
-        }
-        kike.update_hitbox();
+        float x_diff = player.mesh.transform.position.x - tracker_robot.mesh.transform.position.x;
+        float y_diff = player.mesh.transform.position.y - tracker_robot.mesh.transform.position.y;
+        Movement_Control_Input tracker_robot_decision = tracker_robot.think(x_diff, y_diff);
+        tracker_robot.update_movement_state(tracker_robot_decision, frameTime);
+        tracker_robot.update_hitbox();
 
 
+        // get collision displacement from environment
         glm::vec3 collision_displacement = world.get_total_collision_displacement(player.mesh.hitbox);
-
+        // apply collision displacement to player
         if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){
             player.mesh.transform.position += collision_displacement;
             if(collision_displacement.y != 0.0){
@@ -147,28 +132,28 @@ int main()
             }
         }
 
+        // get collision displacement from player and tracker robot and apply
+        // collision_displacement = get_collision_displacement(player.mesh.hitbox, tracker_robot.mesh.hitbox);
+        // if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){ //in case of collision, then displace accordingly
+        //     player.mesh.transform.position += collision_displacement;
+        //     if(collision_displacement.y != 0.0){
+        //         player.mesh.velocity.y = 0.0f;
+        //         player.jumpsLeft = 3;
+        //     }
+        //     if(collision_displacement.x != 0.0){
+        //         player.mesh.velocity.x = 0.0f;
+        //     }
+        // }
 
-        collision_displacement = get_collision_displacement(player.mesh.hitbox, kike.mesh.hitbox);
+        // checking for tracker_robot collision with environmnet and applying displacement
+        collision_displacement = world.get_total_collision_displacement(tracker_robot.mesh.hitbox);
         if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){ //in case of collision, then displace accordingly
-            player.mesh.transform.position += collision_displacement;
+            tracker_robot.mesh.transform.position += collision_displacement;
             if(collision_displacement.y != 0.0){
-                player.mesh.velocity.y = 0.0f;
-                player.jumpsLeft = 3;
+                tracker_robot.mesh.velocity.y = 0.0f;
             }
             if(collision_displacement.x != 0.0){
-                player.mesh.velocity.x = 0.0f;
-            }
-        }
-
-        // checking for Kike collisions
-        collision_displacement = world.get_total_collision_displacement(kike.mesh.hitbox);
-        if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){ //in case of collision, then displace accordingly
-            kike.mesh.transform.position += collision_displacement;
-            if(collision_displacement.y != 0.0){
-                kike.mesh.velocity.y = 0.0f;
-            }
-            if(collision_displacement.x != 0.0){
-                kike.mesh.velocity.x = 0.0f;
+                tracker_robot.mesh.velocity.x = 0.0f;
             }
         }
 
@@ -179,7 +164,7 @@ int main()
         // *************        
         player.draw(shader);  
 
-        kike.draw(shader);
+        tracker_robot.draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

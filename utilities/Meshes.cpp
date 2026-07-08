@@ -69,7 +69,7 @@ Pyramid::Pyramid(){
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0); 
     
-    additional_colour = glm::vec4(0.4f, 0.0f, 0.9f, 0.5f);
+    additional_colour = glm::vec4(0.4f, 0.0f, 0.9f, 0.9f);
     transform.position = glm::vec3(0.5f, 0.0f, 0.0f);
     transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     transform.scale = glm::vec3(0.2f, 0.2f, 0.2f);
@@ -120,8 +120,9 @@ void Pyramid::update_hitbox()
     float max_y = vertices[1];
     float max_z = vertices[2];
 
-    glm::vec3 localMin(min_x, min_y, min_z);
-    glm::vec3 localMax(max_x, max_y, max_z);
+
+    glm::vec3 localMin(min_x + hitbox.offset_min.x, min_y + hitbox.offset_min.y, min_z);
+    glm::vec3 localMax(max_x - hitbox.offset_max.x, max_y - hitbox.offset_max.y, max_z);
 
     // Apply scale
     localMin *= transform.scale;
@@ -193,8 +194,9 @@ void Rectangle::update_hitbox()
     float max_y = vertices[1];
     float max_z = vertices[2];
 
-    glm::vec3 localMin(min_x, min_y, min_z);
-    glm::vec3 localMax(max_x, max_y, max_z);
+
+    glm::vec3 localMin(min_x + hitbox.offset_min.x, min_y + hitbox.offset_min.y, min_z);
+    glm::vec3 localMax(max_x - hitbox.offset_max.x, max_y - hitbox.offset_max.y, max_z);
 
     // Apply scale
     localMin *= transform.scale;

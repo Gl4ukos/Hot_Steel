@@ -6,11 +6,19 @@
 
 
 
-struct Movement_Control_Input{
+class Movement_Control_Input{
+public:
     int left;
     int right;
     int up;
     int down;
+
+    Movement_Control_Input(){
+        left = 0;
+        right = 0;
+        up = 0;
+        down = 0;
+    }
 };
 
 glm::vec3 get_collision_displacement(const Hitbox& a, const Hitbox& b);
@@ -22,6 +30,7 @@ public:
     void draw(Shader& shader);
     void update_hitbox();
     Hitbox get_hitbox();
+
 
     Rectangle mesh;
     int stretch_texture= 0;
@@ -61,14 +70,14 @@ public:
     }state_type, prev_state_type;
 
     Kaelen_Voss(Texture_Library* tex_lib);
+    void update_movement_state(Movement_Control_Input input, float frameTime);
     void move();
-    void update_movement_state(Movement_Control_Input input, float frame_duration); 
     void draw(Shader& shader);
 private:
     void update_texture();
 };
 
-class Kike : public Entity{
+class Tracker_robot : public Entity{
 public:
     Texture* current_tex;
 
@@ -78,8 +87,9 @@ public:
         IDLE = 2
     }state_type, prev_state_type;
 
-    Kike(Texture_Library* tex_lib);
-    void update_movement_state(Movement_Control_Input input, float frame_duration); 
+    Tracker_robot(Texture_Library* tex_lib);
+    Movement_Control_Input think(float x_diff, float y_diff);
+    void update_movement_state(Movement_Control_Input input, float frameTime);
     void move();
     void draw(Shader& shader);
 };

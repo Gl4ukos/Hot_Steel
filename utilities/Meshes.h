@@ -5,6 +5,9 @@
 
 
 struct Hitbox {
+    glm::vec2 offset_min = glm::vec2(0.0f, 0.0f);
+    glm::vec2 offset_max = glm::vec2(0.0f, 0.0f);
+
     glm::vec3 min = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 max = glm::vec3(0.0f, 0.0f, 0.0f);
 };
@@ -91,11 +94,11 @@ private:
 public:
 
     Rectangle();
+    float get_width();
+    float get_height();
     void update_hitbox();
     void draw(Shader& shader, int stretch);
 };
-
-
 
 
 #endif
