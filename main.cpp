@@ -123,9 +123,11 @@ int main()
         // apply collision displacement to player
         if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){
             player.mesh.transform.position += collision_displacement;
-            if(collision_displacement.y != 0.0){
+            if(collision_displacement.y > 0.0){
                 player.mesh.velocity.y = 0.0f;
                 player.jumpsLeft = 3;
+            }else if(collision_displacement.y < 0.0){
+                player.mesh.velocity.y = 0.0f;
             }
             if(collision_displacement.x != 0.0){
                 player.mesh.velocity.x = 0.0f;
@@ -149,7 +151,10 @@ int main()
         collision_displacement = world.get_total_collision_displacement(tracker_robot.mesh.hitbox);
         if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){ //in case of collision, then displace accordingly
             tracker_robot.mesh.transform.position += collision_displacement;
-            if(collision_displacement.y != 0.0){
+            if(collision_displacement.y > 0.0){
+                tracker_robot.mesh.velocity.y = 0.0f;
+                tracker_robot.jumpsLeft = 1;
+            }else if(collision_displacement.y <0.0){
                 tracker_robot.mesh.velocity.y = 0.0f;
             }
             if(collision_displacement.x != 0.0){

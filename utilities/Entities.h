@@ -34,7 +34,8 @@ public:
 
     Rectangle mesh;
     int stretch_texture= 0;
-    bool spaceWasDown;
+    float jump_cooldown = 0.2f;
+    float jumpTimer = 0.0f;
     float mass;
     float elasticity_factor;
     float friction;

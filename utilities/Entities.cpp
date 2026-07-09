@@ -90,7 +90,6 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     state_type = IDLE;
     friction = 15;
     jumpsLeft=3;
-    spaceWasDown = 0;
     mesh.hitbox.offset_min = glm::vec2(0.14f, 0.0f); //percentage
     mesh.hitbox.offset_max = glm::vec2(0.12f, 0.03f); //percentage
     mesh.transform.scale = glm::vec3(0.55f, 0.7f, 1.0f);    
@@ -147,14 +146,14 @@ void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float fram
         mesh.acceleration.x = horizontal_acc;
     }
 
-    bool spaceDown = input.up;
-    bool spacePressed = spaceDown && !spaceWasDown;
-    spaceWasDown = spaceDown;
-
-    if(spacePressed && jumpsLeft>0){
-        mesh.velocity.y = jump_boost;
-        jumpsLeft -=1;
+    if(input.up){
+        if((jumpTimer > jump_cooldown) && jumpsLeft>0){
+            mesh.velocity.y = jump_boost;
+            jumpsLeft -=1;
+            jumpTimer = 0.0f;
+        }
     }
+    jumpTimer += frameTime;
 
     if(input.down){
         mesh.velocity.y = -jump_boost;
@@ -238,13 +237,12 @@ Tracker_robot::Tracker_robot(Texture_Library* tex_lib) : Entity(){
     mass = 10;
     elasticity_factor = 0.0;
     vertical_speed_cap = 4.0;
-    horizontal_speed_cap = 1.7;
+    horizontal_speed_cap = 1.2;
     vertical_acc = 30;
     horizontal_acc = 10;
-    jump_boost = 4.2;
+    jump_boost = 3.3;
     state_type = IDLE;
     jumpsLeft=2;
-    spaceWasDown = 0;
 
     current_tex = &tex_lib->textures[TRACKER_IDLE];
     state_type = IDLE;
@@ -273,14 +271,15 @@ void Tracker_robot::update_movement_state(Movement_Control_Input input, float fr
         mesh.acceleration.x = horizontal_acc;
     }
 
-    bool spaceDown = input.up;
-    bool spacePressed = spaceDown && !spaceWasDown;
-    spaceWasDown = spaceDown;
 
-    if(spacePressed && jumpsLeft>0){
-        mesh.velocity.y = jump_boost;
-        jumpsLeft -=1;
+    if(input.up){
+        if((jumpTimer > jump_cooldown) && jumpsLeft>0){
+            mesh.velocity.y = jump_boost;
+            jumpsLeft -=1;
+            jumpTimer = 0.0f;
+        }
     }
+    jumpTimer += frameTime;
 
     if(input.down){
         mesh.velocity.y = -jump_boost;
@@ -301,6 +300,11 @@ void Tracker_robot::update_movement_state(Movement_Control_Input input, float fr
 
 Movement_Control_Input Tracker_robot::think(float x_diff, float y_diff){
     Movement_Control_Input decision;
+    decision.right = 0;
+    decision.left = 0;
+    decision.up = 0;
+    decision.down = 0;
+
 
     if(x_diff > 0.04){
         decision.right = 1;
@@ -308,9 +312,9 @@ Movement_Control_Input Tracker_robot::think(float x_diff, float y_diff){
         decision.left = 1 ;
     }
 
-    decision.up = 0;
-    decision.down=0;
-
+    if(y_diff > 0.15){
+        decision.up = 1;
+    }
 
     return decision;
 }
