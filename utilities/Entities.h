@@ -57,6 +57,14 @@ public:
     Texture* tex_descend[4];
     Texture* tex_idle[4];
 
+    Texture* current_weapon_tex;
+    Texture* sniper_tex_left[4];
+    Texture* sniper_tex_right[5];
+    Rectangle weapon_mesh;
+    glm::vec3 weapon_right_position_offset = glm::vec3(0.05f, 0.08f, 0.0f);
+    glm::vec3 weapon_left_position_offset = glm::vec3(-0.05f, 0.08f, 0.0f);
+
+
     int texture_duration = 0;
     const int max_texture_duration = 4;
     int current_tex_index = 0;
@@ -69,6 +77,13 @@ public:
         DESCENDING = 3,
         IDLE = 4
     }state_type, prev_state_type;
+
+    enum Weapon_state{
+        INACTIVE,
+        READY,
+        SHOOTING,
+        RELOADING
+    }weapon_state, prev_weapon_state;
 
     Kaelen_Voss(Texture_Library* tex_lib);
     void update_movement_state(Movement_Control_Input input, float frameTime);

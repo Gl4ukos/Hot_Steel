@@ -34,6 +34,8 @@ enum Texture_type {
 
     PLAYER_IDLE,
     TRACKER_IDLE,
+    SNIPER_LEFT,
+    SNIPER_RIGHT,
     TEXTURE_COUNT
 }; 
 

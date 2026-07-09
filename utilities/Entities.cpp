@@ -88,13 +88,17 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     horizontal_acc = 20;
     jump_boost = 3.2;
     state_type = IDLE;
+    prev_state_type = IDLE;
+    weapon_state = READY;
+    prev_weapon_state = READY;
     friction = 15;
     jumpsLeft=3;
     mesh.hitbox.offset_min = glm::vec2(0.14f, 0.0f); //percentage
     mesh.hitbox.offset_max = glm::vec2(0.12f, 0.03f); //percentage
-    mesh.transform.scale = glm::vec3(0.55f, 0.7f, 1.0f);    
+    mesh.transform.scale = glm::vec3(0.55f, 0.7f, 1.0f);   
+    weapon_mesh.transform.scale = glm::vec3(0.55f, 0.55f, 1.0f);
+    weapon_mesh.transform.position = mesh.transform.position;
 
-    current_tex = &tex_lib->textures[PLAYER_RIGHT1];
     tex_run_right[0] = &tex_lib->textures[PLAYER_RIGHT1];
     tex_run_right[1] = &tex_lib->textures[PLAYER_RIGHT2];
     tex_run_right[2] = &tex_lib->textures[PLAYER_RIGHT3];
@@ -127,6 +131,21 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     tex_descend[1] = &tex_lib->textures[PLAYER_RIGHT1];
     tex_descend[2] = &tex_lib->textures[PLAYER_RIGHT1];
     tex_descend[3] = &tex_lib->textures[PLAYER_RIGHT1];
+
+    sniper_tex_left[0] = &tex_lib->textures[SNIPER_LEFT];
+    sniper_tex_left[1] = &tex_lib->textures[SNIPER_LEFT];
+    sniper_tex_left[2] = &tex_lib->textures[SNIPER_LEFT];
+    sniper_tex_left[3] = &tex_lib->textures[SNIPER_LEFT];
+
+    sniper_tex_right[0] = &tex_lib->textures[SNIPER_RIGHT];
+    sniper_tex_right[1] = &tex_lib->textures[SNIPER_RIGHT];
+    sniper_tex_right[2] = &tex_lib->textures[SNIPER_RIGHT];
+    sniper_tex_right[3] = &tex_lib->textures[SNIPER_RIGHT];
+
+
+
+    current_tex = tex_idle[0];
+    current_weapon_tex= sniper_tex_right[0];
 }
 
 void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float frameTime){
@@ -170,6 +189,7 @@ void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float fram
     mesh.transform.position += mesh.velocity * frameTime;
     mesh.velocity += mesh.acceleration * frameTime;
     mesh.velocity.x = std::max(std::min(mesh.velocity.x, horizontal_speed_cap), -horizontal_speed_cap);
+
 }
 
 void Kaelen_Voss::update_texture(){
@@ -197,6 +217,8 @@ void Kaelen_Voss::update_texture(){
             texture_duration=0;
             current_tex_index=0;
         }
+        current_weapon_tex = sniper_tex_right[0];
+        weapon_mesh.transform.position = mesh.transform.position + weapon_right_position_offset;
     }else if(state_type == RUN_LEFT){
         if(prev_state_type == RUN_LEFT){
             texture_duration +=1;
@@ -212,8 +234,11 @@ void Kaelen_Voss::update_texture(){
             texture_duration=0;
             current_tex_index=0;
         }
+        current_weapon_tex = sniper_tex_left[0];
+        weapon_mesh.transform.position = mesh.transform.position + weapon_left_position_offset;
     }else{
         current_tex = tex_idle[0];
+        weapon_mesh.transform.position = mesh.transform.position;
     }
 
 }
@@ -226,6 +251,13 @@ void Kaelen_Voss::draw(Shader& shader){
         shader.set_int("tex", 0);
     }
     mesh.draw(shader, stretch_texture);
+
+    shader.set_int("use_texture", current_weapon_tex != nullptr? 1:0);
+    if(current_weapon_tex){
+        current_weapon_tex->bind(0);
+        shader.set_int("tex", 0);
+    }
+    weapon_mesh.draw(shader, stretch_texture);
     shader.set_int("use_texture", 0);
 }
 
