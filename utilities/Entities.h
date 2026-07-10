@@ -3,7 +3,8 @@
 
 #include "Meshes.h"
 #include "TextureLibrary/Textures.h"
-
+#include <vector>
+#include <algorithm>
 
 
 class Movement_Control_Input{
@@ -12,18 +13,21 @@ public:
     int right;
     int up;
     int down;
+    int shoot;
 
     Movement_Control_Input(){
         left = 0;
         right = 0;
         up = 0;
         down = 0;
+        shoot = 0;
     }
 };
 
 glm::vec3 get_collision_displacement(const Hitbox& a, const Hitbox& b);
 
 
+class World;
 class Entity{
 public:
     Entity();
@@ -36,6 +40,8 @@ public:
     int stretch_texture= 0;
     float jump_cooldown = 0.2f;
     float jumpTimer = 0.0f;
+    float shoot_cooldown = 0.5f;
+    float shootTimer = 0.0f;
     float mass;
     float elasticity_factor;
     float friction;
@@ -63,6 +69,10 @@ public:
     Rectangle weapon_mesh;
     glm::vec3 weapon_right_position_offset = glm::vec3(0.05f, 0.08f, 0.0f);
     glm::vec3 weapon_left_position_offset = glm::vec3(-0.05f, 0.08f, 0.0f);
+
+    glm::vec3 sniper_beam_offset_right = glm::vec3(0.27f, 0.04f, 0.5f);
+    glm::vec3 sniper_beam_offset_left = glm::vec3(-0.05f, 0.33f, 0.5f);
+
 
     float opacity = 1.0f;
     int texture_duration = 0;
@@ -93,6 +103,7 @@ public:
     Kaelen_Voss(Texture_Library* tex_lib);
     void update_movement_state(Movement_Control_Input input, float frameTime);
     void move();
+    void spawn_projectiles(World* world, Texture_Library* tex_lib);
     void draw(Shader& shader);
 private:
     void update_texture();
@@ -129,12 +140,16 @@ public:
 
     Texture* texture;
     float opacity = 1.0f;
+    glm::vec3 beam_right_position_offset = glm::vec3(0.05f, 0.08f, 0.0f);
+    glm::vec3 beam_left_position_offset = glm::vec3(-0.05f, 0.08f, 0.0f);
+
         
     Rectangle mesh;
 
     Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle);
     void update_texture(float dt);
     void draw(Shader& shader);
+    bool is_dead();
 };
 
 class Platform{
@@ -168,12 +183,16 @@ class World{
 public:
     World(Texture_Library* tex_lib);
     void draw(Shader& shader);
+    void update_projectiles(float frameTime);
     glm::vec3 get_total_collision_displacement(const Hitbox& a);
     glm::vec4 get_ambient_colour();
 
     Background background;
     int platform_count = 6;
     Platform platforms[6];  
+
+    std::vector<Beam> spawned_beams;
+    
 };
 
 #endif

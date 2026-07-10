@@ -180,6 +180,17 @@ void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float fram
         mesh.velocity.y = -jump_boost;
     }
 
+    if(input.shoot){
+        if((shootTimer > shoot_cooldown)){
+            shootTimer = 0.0f;
+            weapon_state = SHOOTING;
+        }else{
+            weapon_state = READY;
+        }
+    }
+    shootTimer += frameTime;
+
+
     if(mesh.acceleration.x == 0){
         mesh.acceleration.x -= (mesh.velocity.x * friction);
     }
@@ -276,6 +287,23 @@ void Kaelen_Voss::draw(Shader& shader){
 }
 
 
+void Kaelen_Voss::spawn_projectiles(World* world, Texture_Library* tex_lib){
+    if(weapon_state == SHOOTING){
+        if(facing_direction == RIGHT){
+            glm::vec3 beam_pos = mesh.transform.position;
+            beam_pos += sniper_beam_offset_right;
+            Beam sniper_beam(tex_lib, beam_pos, 0.0f);
+            world->spawned_beams.push_back(sniper_beam);
+        }else{
+            glm::vec3 beam_pos = mesh.transform.position;
+            beam_pos += sniper_beam_offset_left;
+            Beam sniper_beam(tex_lib, beam_pos, -3.14f);
+            world->spawned_beams.push_back(sniper_beam);
+        }
+    }
+}
+
+
 Beam::Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle)
 {
     lifetime = 2.0f;
@@ -284,21 +312,13 @@ Beam::Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle)
     width = 0.7f;
 
     start = origin;
-
-    const float maxLength = 1.0f;
-
-    end = origin + glm::vec3(
-        cos(angle),
-        sin(angle),
-        0.0f
-    ) * maxLength;
-
+    float length = 5.0f;
 
     texture = &tex_lib->textures[SNIPER_BEAM];
 
     mesh.transform.position = start;
     mesh.transform.rotation.z = angle;
-    mesh.transform.scale = glm::vec3(maxLength, width, 1.0f);
+    mesh.transform.scale = glm::vec3(length, width, 1.0f);
 
     mesh.additional_colour = glm::vec4(0.0f);
 }
@@ -328,6 +348,10 @@ void Beam::update_texture(float dt)
 
     // Fade
     opacity = 1.0f - t;
+}
+
+bool Beam::is_dead(){
+    return age >= lifetime;
 }
 
 
@@ -460,7 +484,6 @@ Hitbox Platform::get_hitbox(){
 }
 
 
-
 // ******************************
 // BACKGROUND
 // ******************************
@@ -546,10 +569,27 @@ void World::draw(Shader& shader){
         platforms[i].mesh.additional_colour = background.mesh.additional_colour;
         platforms[i].draw(shader);
     }
+
+    for(Beam& beam : spawned_beams){
+        beam.draw(shader);
+    }
 }
 
-
-
+void World::update_projectiles(float frameTime){
+    for (Beam& beam : spawned_beams){
+        beam.update_texture(frameTime);
+    }
+    spawned_beams.erase(
+    std::remove_if(
+        spawned_beams.begin(),
+        spawned_beams.end(),
+        [](Beam& beam)
+        {
+            return beam.is_dead();
+        }),
+    spawned_beams.end()
+    );
+}
 
 glm::vec3 World::get_total_collision_displacement(const Hitbox& a){
     glm::vec3 displacement(0.0f, 0.0f, 0.0f);

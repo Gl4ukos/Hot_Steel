@@ -28,6 +28,12 @@ void handle_key_input(GLFWwindow* window){
         glfwSetWindowShouldClose(window, true);
     }
 
+    if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
+        movement_control_input.shoot = 1 ;
+    }else{
+        movement_control_input.shoot = 0;
+    }
+
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
         movement_control_input.left = 1;
     }else{
@@ -95,16 +101,12 @@ int main()
         uint fps = 1 / frameTime;
         std::cout<< "\rFPS:"<<fps<<std::flush;
 
-        // ***************************
-        // UPDATING BACKGROUND
-        // ***************************
-        world.draw(shader);
-
         // *********************
         // UPDATING PLAYER
         // *********************
         handle_key_input(window);  
-        player.update_movement_state(movement_control_input, frameTime);   
+        player.update_movement_state(movement_control_input, frameTime);  
+        player.spawn_projectiles(&world, &tex_lib); 
         player.mesh.update_hitbox();
 
         // **********************
@@ -116,6 +118,12 @@ int main()
         Movement_Control_Input tracker_robot_decision = tracker_robot.think(x_diff, y_diff);
         tracker_robot.update_movement_state(tracker_robot_decision, frameTime);
         tracker_robot.update_hitbox();
+
+
+        // **********************
+        // UPDATING PROJECTILES
+        // **********************
+        world.update_projectiles(frameTime);
 
 
         // get collision displacement from environment
@@ -166,12 +174,11 @@ int main()
 
         // *************
         // DRAWING
-        // *************        
+        // *************
+        world.draw(shader);
         player.draw(shader);  
         tracker_robot.draw(shader);
-        Beam sniper_beam(&tex_lib, player.mesh.transform.position, 0.0f);
-        sniper_beam.draw(shader);
-        // sniper_beam.update_texture(frameTime);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -197,7 +204,6 @@ GLFWwindow* initialise_glfw(){
     }
     glfwMakeContextCurrent(window); //Creting GLFW context
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);// adding callback for each time the window gets fumbled with
-
 
     // Initializing GLAD (MUST BE DONE AFTER CREATING GLFW CONTEXT)
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
