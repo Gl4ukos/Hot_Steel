@@ -132,6 +132,11 @@ Texture_Library::Texture_Library(){
         std::cout << "Couldn't load player texture\n";
     }
 
+    if (!textures[SNIPER_BEAM].load("utilities/TextureLibrary/textures/weapons/sniper_beam.png", 0,0))
+    {
+        std::cout << "Couldn't load player texture\n";
+    }
+
 
     stbi_set_flip_vertically_on_load(false);
 

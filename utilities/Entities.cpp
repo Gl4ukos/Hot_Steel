@@ -87,6 +87,8 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     vertical_acc = 30;
     horizontal_acc = 20;
     jump_boost = 3.2;
+    facing_direction = RIGHT;
+    prev_facing_direction = RIGHT;
     state_type = IDLE;
     prev_state_type = IDLE;
     weapon_state = READY;
@@ -194,57 +196,69 @@ void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float fram
 
 void Kaelen_Voss::update_texture(){
     prev_state_type = state_type;
+    prev_facing_direction = facing_direction;
     if(mesh.velocity.x > 0.2){
-        state_type = RUN_RIGHT;
+        facing_direction = RIGHT;
+        state_type = RUNNING;
     }else if(mesh.velocity.x < -0.2){
-        state_type = RUN_LEFT;
+        facing_direction = LEFT;
+        state_type = RUNNING;
     }else{
         state_type = IDLE;
     }
 
-    if(state_type == RUN_RIGHT){
-        if(prev_state_type == RUN_RIGHT){
-            texture_duration +=1;
-            if(texture_duration >= max_texture_duration){
-                current_tex_index +=1;
-                texture_duration =0;
-                if(current_tex_index >= sizeof(tex_run_right)/sizeof(Texture*)){
-                    current_tex_index =0;
+    if(state_type == RUNNING){
+        if(facing_direction == RIGHT){
+            if(prev_facing_direction == RIGHT){
+                texture_duration +=1;
+                if(texture_duration >= max_texture_duration){
+                    current_tex_index +=1;
+                    texture_duration =0;
+                    if(current_tex_index >= sizeof(tex_run_right)/sizeof(Texture*)){
+                        current_tex_index =0;
+                    }
                 }
+                current_tex = tex_run_right[current_tex_index];
+            }else{
+                texture_duration=0;
+                current_tex_index=0;
             }
-            current_tex = tex_run_right[current_tex_index];
+            current_weapon_tex = sniper_tex_right[0];
+            weapon_mesh.transform.position = mesh.transform.position + weapon_right_position_offset;
         }else{
-            texture_duration=0;
-            current_tex_index=0;
-        }
-        current_weapon_tex = sniper_tex_right[0];
-        weapon_mesh.transform.position = mesh.transform.position + weapon_right_position_offset;
-    }else if(state_type == RUN_LEFT){
-        if(prev_state_type == RUN_LEFT){
-            texture_duration +=1;
-            if(texture_duration >= max_texture_duration){
-                current_tex_index +=1;
-                texture_duration =0;
-                if(current_tex_index >= sizeof(tex_run_left)/sizeof(Texture*)){
-                    current_tex_index =0;
+            if(prev_facing_direction == LEFT){
+                texture_duration +=1;
+                if(texture_duration >= max_texture_duration){
+                    current_tex_index +=1;
+                    texture_duration =0;
+                    if(current_tex_index >= sizeof(tex_run_left)/sizeof(Texture*)){
+                        current_tex_index =0;
+                    }
                 }
+                current_tex = tex_run_left[current_tex_index];
+            }else{
+                texture_duration=0;
+                current_tex_index=0;
             }
-            current_tex = tex_run_left[current_tex_index];
-        }else{
-            texture_duration=0;
-            current_tex_index=0;
+            current_weapon_tex = sniper_tex_left[0];
+            weapon_mesh.transform.position = mesh.transform.position + weapon_left_position_offset;
         }
-        current_weapon_tex = sniper_tex_left[0];
-        weapon_mesh.transform.position = mesh.transform.position + weapon_left_position_offset;
     }else{
-        current_tex = tex_idle[0];
-        weapon_mesh.transform.position = mesh.transform.position;
+        if(facing_direction == LEFT){
+            current_weapon_tex = sniper_tex_left[0];
+            weapon_mesh.transform.position = mesh.transform.position + weapon_left_position_offset;
+
+        }else if(facing_direction == RIGHT){
+            current_weapon_tex = sniper_tex_right[0];
+            weapon_mesh.transform.position = mesh.transform.position + weapon_right_position_offset;
+        }
     }
 
 }
 
 void Kaelen_Voss::draw(Shader& shader){
     update_texture();
+    shader.set_float("fragment_opacity", opacity);
     shader.set_int("use_texture", current_tex != nullptr ? 1 : 0);
     if(current_tex){
         current_tex->bind(0);
@@ -260,6 +274,62 @@ void Kaelen_Voss::draw(Shader& shader){
     weapon_mesh.draw(shader, stretch_texture);
     shader.set_int("use_texture", 0);
 }
+
+
+Beam::Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle)
+{
+    lifetime = 2.0f;
+    age = 0.0f;
+
+    width = 0.7f;
+
+    start = origin;
+
+    const float maxLength = 1.0f;
+
+    end = origin + glm::vec3(
+        cos(angle),
+        sin(angle),
+        0.0f
+    ) * maxLength;
+
+
+    texture = &tex_lib->textures[SNIPER_BEAM];
+
+    mesh.transform.position = start;
+    mesh.transform.rotation.z = angle;
+    mesh.transform.scale = glm::vec3(maxLength, width, 1.0f);
+
+    mesh.additional_colour = glm::vec4(0.0f);
+}
+
+void Beam::draw(Shader& shader)
+{
+    shader.set_int("use_texture", texture != nullptr);
+    shader.set_float("fragment_opacity", opacity);
+
+    if(texture)
+    {
+        texture->bind(0);
+        shader.set_int("tex", 0);
+    }
+
+    mesh.draw(shader, false);
+
+    shader.set_int("use_texture", 0);
+}
+
+void Beam::update_texture(float dt)
+{
+    age += dt;
+
+    float t = age / lifetime;
+    t = glm::clamp(t, 0.0f, 1.0f);
+
+    // Fade
+    opacity = 1.0f - t;
+}
+
 
 
 //**************************
@@ -353,6 +423,7 @@ Movement_Control_Input Tracker_robot::think(float x_diff, float y_diff){
 
 void Tracker_robot::draw (Shader& shader){
     shader.set_int("use_texture", current_tex != nullptr ? 1:0);
+    shader.set_float("fragment_opacity", opacity);
     if(current_tex){
         current_tex->bind(0);
         shader.set_int("tex", 0);
@@ -371,6 +442,7 @@ Platform::Platform(){
 
 void Platform::draw(Shader& shader){
     shader.set_int("use_texture", texture != nullptr ? 1 : 0);
+    shader.set_float("fragment_opacity", opacity);
     if(texture){
         texture->bind(0);
         shader.set_int("tex", 0);
@@ -411,10 +483,10 @@ void Background::cycle_colour(){
 }
 
 void Background::draw(Shader& shader){
-    // glClearColor(additional_colour[0], additional_colour[1], additional_colour[2], additional_colour[3]); 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     shader.set_int("use_texture", texture != nullptr ? 1 : 0);
+    shader.set_float("fragment_opacity", opacity);
     if(texture){
         texture->bind(0);
         shader.set_int("tex", 0);

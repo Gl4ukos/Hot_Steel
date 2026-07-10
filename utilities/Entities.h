@@ -64,18 +64,23 @@ public:
     glm::vec3 weapon_right_position_offset = glm::vec3(0.05f, 0.08f, 0.0f);
     glm::vec3 weapon_left_position_offset = glm::vec3(-0.05f, 0.08f, 0.0f);
 
-
+    float opacity = 1.0f;
     int texture_duration = 0;
     const int max_texture_duration = 4;
     int current_tex_index = 0;
     glm::vec3 control_input = glm::vec3(0.0f);
 
+    enum Facing_direction{
+        LEFT,
+        RIGHT
+    }facing_direction, prev_facing_direction;
+
     enum Entity_state{
-        RUN_LEFT = 0,
-        RUN_RIGHT = 1,
-        ASCENDING = 2,
-        DESCENDING = 3,
-        IDLE = 4
+        RUNNING, 
+        ASCENDING,
+        DESCENDING,
+        DAMAGED,
+        IDLE
     }state_type, prev_state_type;
 
     enum Weapon_state{
@@ -96,6 +101,7 @@ private:
 class Tracker_robot : public Entity{
 public:
     Texture* current_tex;
+    float opacity = 1.0f;
 
     enum Entity_state{
         RUN_LEFT = 0,
@@ -111,6 +117,26 @@ public:
 };
 
 
+class Beam{
+public:
+    glm::vec3 start;
+    float angle;
+    glm::vec3 end;
+
+    float width;
+    float age;
+    float lifetime;
+
+    Texture* texture;
+    float opacity = 1.0f;
+        
+    Rectangle mesh;
+
+    Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle);
+    void update_texture(float dt);
+    void draw(Shader& shader);
+};
+
 class Platform{
 public:
     Platform();
@@ -120,6 +146,7 @@ public:
 
     Texture* texture;
     int stretch_texture =1;
+    float opacity = 1.0f;
     Rectangle mesh;
 };
 
@@ -130,6 +157,7 @@ public:
     Rectangle mesh;
     Texture* texture;
     int stretch_texture =0;
+    float opacity = 1.0f;
 
     Background();
     void draw(Shader& shader);

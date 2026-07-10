@@ -9,13 +9,28 @@ uniform sampler2D tex;
 uniform int use_texture;
 uniform vec2 uvScale;
 
-void main()
-{
-    vec4 base_colour = vec4(outColor, 1.0f);
+uniform float fragment_opacity;
 
-    if(use_texture == 1){ //if there is texture use colour of texture
-        base_colour = texture(tex, TexCoord * uvScale);
+void main(){
+    vec4 final_colour;
+
+    if(use_texture == 1)
+    {
+        final_colour = texture(tex, TexCoord * uvScale);
     }
-    frag_colour = vec4(((another_colour* another_colour[3]) + base_colour* (1.0 - another_colour[3]))); //blend with "another_colour"
+    else
+    {
+        final_colour = vec4(outColor, 1.0);
+    }
 
+    // tint RGB only
+    final_colour.rgb =
+        (another_colour.rgb * another_colour.a) +
+        (final_colour.rgb * (1.0 - another_colour.a));
+
+    // preserve alpha
+    frag_colour = final_colour;
+
+    // apply fade
+    frag_colour.a *= fragment_opacity;
 }

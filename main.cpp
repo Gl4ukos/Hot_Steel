@@ -168,9 +168,10 @@ int main()
         // DRAWING
         // *************        
         player.draw(shader);  
-
         tracker_robot.draw(shader);
-
+        Beam sniper_beam(&tex_lib, player.mesh.transform.position, 0.0f);
+        sniper_beam.draw(shader);
+        // sniper_beam.update_texture(frameTime);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
