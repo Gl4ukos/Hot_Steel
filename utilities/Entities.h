@@ -69,11 +69,11 @@ public:
     Texture* sniper_tex_left[4];
     Texture* sniper_tex_right[5];
     Rectangle weapon_mesh;
-    glm::vec3 weapon_right_position_offset = glm::vec3(0.05f, 0.08f, 0.0f);
-    glm::vec3 weapon_left_position_offset = glm::vec3(-0.05f, 0.08f, 0.0f);
+    glm::vec3 weapon_right_position_offset = glm::vec3(0.12f, 0.1f, 0.0f);
+    glm::vec3 weapon_left_position_offset = glm::vec3(-0.12f, 0.1f, 0.0f);
 
-    glm::vec3 sniper_beam_offset_right = glm::vec3(0.27f, 0.04f, 0.5f);
-    glm::vec3 sniper_beam_offset_left = glm::vec3(-0.05f, 0.33f, 0.5f);
+    glm::vec3 sniper_beam_offset_right = glm::vec3(1.25, 0.09f, 0.5f);
+    glm::vec3 sniper_beam_offset_left = glm::vec3(-1.25, 0.1f, 0.5f);
 
 
     float opacity = 1.0f;
@@ -139,12 +139,11 @@ public:
     float width;
     float age;
     float lifetime;
+    float damage_lifetime;
     int is_active = 1;
 
     Texture* texture;
     float opacity = 1.0f;
-    glm::vec3 beam_right_position_offset = glm::vec3(0.05f, 0.08f, 0.0f);
-    glm::vec3 beam_left_position_offset = glm::vec3(-0.05f, 0.08f, 0.0f);
 
         
     Rectangle mesh;
@@ -152,7 +151,6 @@ public:
     Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle);
     void update_texture(float dt);
     void draw(Shader& shader);
-    bool hits(const Hitbox& box);
     bool is_dead();
 };
 

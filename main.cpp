@@ -121,19 +121,14 @@ int main()
         float x_diff = player.mesh.transform.position.x - tracker_robot.mesh.transform.position.x;
         float y_diff = player.mesh.transform.position.y - tracker_robot.mesh.transform.position.y;
         Movement_Control_Input tracker_robot_decision = tracker_robot.think(x_diff, y_diff);
-        // tracker_robot.update_movement_state(tracker_robot_decision, frameTime);
-        // tracker_robot.update_hitbox();
-        if(world.is_entity_shot(tracker_robot.get_hitbox())){
-            // std::cout<<"HIT\n";
-        }else{
-            // std::cout<<"MISS\n";
-        }
+        tracker_robot.update_movement_state(tracker_robot_decision, frameTime);
+        tracker_robot.update_hitbox();
+
 
         // **********************
         // UPDATING PROJECTILES
         // **********************
         world.update_projectiles(frameTime);
-
 
         // get collision displacement from environment
         glm::vec3 collision_displacement = world.get_total_collision_displacement(player.mesh.hitbox);
@@ -179,6 +174,10 @@ int main()
             }
         }
 
+        if(world.is_entity_shot(tracker_robot.get_hitbox())){
+            tracker_robot.mesh.transform.position = glm::vec3(0.0f);
+        }
+
 
 
         // *************
@@ -186,9 +185,17 @@ int main()
         // *************
         world.draw(shader);
         draw_hitbox(world.platforms[0].mesh.hitbox, shader);
+
+        for(Beam& beam : world.spawned_beams){
+            beam.mesh.update_hitbox();
+            draw_hitbox(beam.mesh.hitbox, shader);
+        }
+
         player.draw(shader);  
         draw_hitbox(player.mesh.hitbox, shader);
         tracker_robot.draw(shader);
+        draw_hitbox(tracker_robot.mesh.hitbox, shader);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();

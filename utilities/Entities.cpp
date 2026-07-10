@@ -66,7 +66,6 @@ void Entity::update_hitbox(){
     mesh.update_hitbox();
 }
 
-
 Hitbox Entity::get_hitbox(){
     return mesh.hitbox;
 }
@@ -94,12 +93,12 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     prev_weapon_state = READY;
     friction = 15;
     jumpsLeft=3;
-    // mesh.hitbox.offset_min = glm::vec2(0.14f, 0.0f); //percentage
-    // mesh.hitbox.offset_max = glm::vec2(0.12f, 0.03f); //percentage
+    mesh.hitbox.offset_min = glm::vec2(0.35f, 0.0f); //percentage
+    mesh.hitbox.offset_max = glm::vec2(0.35f, 0.03f); //percentage
     mesh.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
-    mesh.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);   
+    mesh.transform.scale = glm::vec3(0.4f, 0.4f, 1.0f);   
     
-    weapon_mesh.transform.scale = glm::vec3(0.55f, 0.55f, 1.0f);
+    weapon_mesh.transform.scale = glm::vec3(0.25f, 0.25f, 1.0f);
     weapon_mesh.transform.position = mesh.transform.position;
 
     tex_run_right[0] = &tex_lib->textures[PLAYER_RIGHT1];
@@ -309,19 +308,21 @@ void Kaelen_Voss::spawn_projectiles(World* world, Texture_Library* tex_lib){
 Beam::Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle)
 {
     lifetime = 2.0f;
+    damage_lifetime = 0.1f;
+
     age = 0.0f;
 
     width = 0.7f;
 
-    start = origin;
-    float length = 5.0f;
-
     texture = &tex_lib->textures[SNIPER_BEAM];
 
-    mesh.transform.position = start;
+    mesh.transform.position = origin;
     mesh.transform.rotation.z = angle;
-    mesh.transform.scale = glm::vec3(length, width, 1.0f);
+    mesh.transform.scale = glm::vec3(2.0f, width, 1.0f);
     mesh.additional_colour = glm::vec4(0.0f);
+
+    mesh.hitbox.offset_min = glm::vec2(0.0f, 0.43f); //percentage
+    mesh.hitbox.offset_max = glm::vec2(0.0f, 0.45f); //percentage
 }
 
 void Beam::draw(Shader& shader)
@@ -329,7 +330,8 @@ void Beam::draw(Shader& shader)
     shader.set_int("use_texture", texture != nullptr);
     shader.set_float("fragment_opacity", opacity);
 
-    if(texture)
+    if(texture)    // mesh.transform.scale = glm::vec3(2.0f, 0.4f, 1.0f);
+
     {
         texture->bind(0);
         shader.set_int("tex", 0);
@@ -342,7 +344,7 @@ void Beam::draw(Shader& shader)
 
 void Beam::update_texture(float dt)
 {
-    if(age > 0.0){
+    if(age > damage_lifetime){
         is_active = 0;
     }
     age += dt;
@@ -356,69 +358,6 @@ void Beam::update_texture(float dt)
 
 bool Beam::is_dead(){
     return age >= lifetime;
-}
-
-
-// i dont know how that works tbh
-bool Beam::hits(const Hitbox& box)
-{
-    if(!is_active){
-        return false;
-    }
-    glm::vec2 p1 = start;
-    glm::vec2 p2 = end;
-
-    float dx = p2.x - p1.x;
-    float dy = p2.y - p1.y;
-
-    float tmin = 0.0f;
-    
-    float tmax = 1.0f;
-
-
-    auto check = [&](float p, float q)
-    {
-        if(p == 0)
-        {
-            return q >= 0;
-        }
-
-        float t = q / p;
-
-        if(p < 0)
-        {
-            if(t > tmax)
-                return false;
-
-            if(t > tmin)
-                tmin = t;
-        }
-        else
-        {
-            if(t < tmin)
-                return false;
-
-            if(t < tmax)
-                tmax = t;
-        }
-
-        return true;
-    };
-
-    // left side
-    if(!check(-dx, p1.x - box.min.x))
-        return false;
-    // right side
-    if(!check(dx, box.max.x - p1.x))
-        return false;
-    // bottom
-    if(!check(-dy, p1.y - box.min.y))
-        return false;
-    // top
-    if(!check(dy, box.max.y - p1.y))
-        return false;
-
-    return true;
 }
 
 
@@ -439,8 +378,8 @@ Tracker_robot::Tracker_robot(Texture_Library* tex_lib) : Entity(){
     current_tex = &tex_lib->textures[TRACKER_IDLE];
     state_type = IDLE;
 
-    mesh.transform.scale = glm::vec3(0.4f, 0.4f, 1.0f);    
-    mesh.transform.position = glm::vec3(0.0f, -0.7f, 0.0f);
+    mesh.transform.scale = glm::vec3(0.3f, 0.3f, 1.0f);    
+    mesh.transform.position = glm::vec3(0.0f, -0.0f, 0.0f);
     mesh.hitbox.offset_min = glm::vec2(0.05f, 0.05f);
     mesh.hitbox.offset_max = glm::vec2(0.05f, 0.1f);
 }
@@ -554,8 +493,8 @@ Hitbox Platform::get_hitbox(){
 // BACKGROUND
 // ******************************
 Background::Background(){
-    mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.8f);
-    mesh.transform.scale = glm::vec3(5.0f, 5.0f, 1.0f);
+    mesh.transform.position = glm::vec3(-0.0f, -0.0f, 0.8f);
+    mesh.transform.scale = glm::vec3(2.0f, 2.0f, 1.0f);
     mesh.additional_colour = glm::vec4(0.2f, 0.2f, 0.2f, 0.2f);
 }
 
@@ -654,10 +593,15 @@ glm::vec3 World::get_total_collision_displacement(const Hitbox& a){
 }
  
 bool World::is_entity_shot(const Hitbox& hitbox){
+    glm::vec3 displacement(0.0f, 0.0f, 0.0f);
+
     for(Beam& beam : spawned_beams){
-        if(beam.hits(hitbox)){
-            return true;
+        if(beam.is_active){
+            displacement += get_collision_displacement(hitbox, beam.mesh.hitbox);
         }
     }    
-    return false;
+    if((displacement.x== 0.0 && displacement.y==0.0)){
+        return false;
+    }
+    return true;
 }
