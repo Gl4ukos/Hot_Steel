@@ -96,9 +96,9 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     mesh.hitbox.offset_min = glm::vec2(0.35f, 0.0f); //percentage
     mesh.hitbox.offset_max = glm::vec2(0.35f, 0.03f); //percentage
     mesh.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
-    mesh.transform.scale = glm::vec3(0.4f, 0.4f, 1.0f);   
+    mesh.transform.scale = glm::vec3(0.3f, 0.3f, 1.0f);   
     
-    weapon_mesh.transform.scale = glm::vec3(0.25f, 0.25f, 1.0f);
+    weapon_mesh.transform.scale = glm::vec3(0.2f, 0.2f, 1.0f);
     weapon_mesh.transform.position = mesh.transform.position;
 
     tex_run_right[0] = &tex_lib->textures[PLAYER_RIGHT1];
@@ -312,7 +312,7 @@ Beam::Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle)
 
     age = 0.0f;
 
-    width = 0.7f;
+    width = 0.4f;
 
     texture = &tex_lib->textures[SNIPER_BEAM];
 
@@ -378,7 +378,7 @@ Tracker_robot::Tracker_robot(Texture_Library* tex_lib) : Entity(){
     current_tex = &tex_lib->textures[TRACKER_IDLE];
     state_type = IDLE;
 
-    mesh.transform.scale = glm::vec3(0.3f, 0.3f, 1.0f);    
+    mesh.transform.scale = glm::vec3(0.2f, 0.2f, 1.0f);    
     mesh.transform.position = glm::vec3(0.0f, -0.0f, 0.0f);
     mesh.hitbox.offset_min = glm::vec2(0.05f, 0.05f);
     mesh.hitbox.offset_max = glm::vec2(0.05f, 0.1f);
