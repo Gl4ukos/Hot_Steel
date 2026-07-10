@@ -139,6 +139,7 @@ public:
     float width;
     float age;
     float lifetime;
+    int is_active = 1;
 
     Texture* texture;
     float opacity = 1.0f;
@@ -152,7 +153,6 @@ public:
     void update_texture(float dt);
     void draw(Shader& shader);
     bool hits(const Hitbox& box);
-    void draw_debug(Shader& shader);
     bool is_dead();
 };
 
@@ -193,8 +193,8 @@ public:
     glm::vec4 get_ambient_colour();
 
     Background background;
-    int platform_count = 6;
-    Platform platforms[6];  
+    int platform_count = 1;
+    Platform platforms[1];  
 
     std::vector<Beam> spawned_beams;
     float hitStop = 0.0f;

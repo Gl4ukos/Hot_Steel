@@ -4,6 +4,8 @@
 #include "Shader.h"
 
 
+
+
 struct Hitbox {
     glm::vec2 offset_min = glm::vec2(0.0f, 0.0f);
     glm::vec2 offset_max = glm::vec2(0.0f, 0.0f);
@@ -11,6 +13,7 @@ struct Hitbox {
     glm::vec3 min = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 max = glm::vec3(0.0f, 0.0f, 0.0f);
 };
+void draw_hitbox(const Hitbox& hb, Shader& shader);
 
 
 class Mesh{
@@ -79,10 +82,10 @@ class Rectangle : public Mesh{
 private:
     float vertices[48] = {
         //positions         //colors            //texture coords
-        -0.0f, +0.4f, 0.0f,   1.0f, 1.0f, 1.0f,     0.0f, 1.0f,       //top left
-         0.4f, +0.4f, 0.0f,   1.0f, 1.0f, 1.0f,     1.0f, 1.0f,       //top right
-        -0.0f, -0.0f, 0.0f,  0.2f, 0.2f, 0.2f,      0.0f, 0.0f,      //bot left
-        +0.4f, -0.0f, 0.0f,  0.2f, 0.2f, 0.2f,      1.0f, 0.0f     //bot right  
+        -0.5f, +0.5f, 0.0f,   1.0f, 1.0f, 1.0f,     0.0f, 1.0f,       //top left
+         0.5f, +0.5f, 0.0f,   1.0f, 1.0f, 1.0f,     1.0f, 1.0f,       //top right
+        -0.5f, -0.5f, 0.0f,  0.2f, 0.2f, 0.2f,      0.0f, 0.0f,      //bot left
+        +0.5f, -0.5f, 0.0f,  0.2f, 0.2f, 0.2f,      1.0f, 0.0f     //bot right  
     };
 
     //indices for rectangle<

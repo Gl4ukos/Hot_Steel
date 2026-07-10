@@ -12,7 +12,7 @@
 enum Texture_type {
     BACKGROUND,
     PLATFORM,
-    WALL,    
+    CEMENT,    
 
     PLAYER_RIGHT1,
     PLAYER_RIGHT2,

@@ -30,9 +30,9 @@ Texture_Library::Texture_Library(){
         std::cout << "Couldn't load background texture\n";
     }
 
-    if (!textures[PLATFORM].load("utilities/TextureLibrary/textures/platform.png", 0,0))
+    if (!textures[CEMENT].load("utilities/TextureLibrary/textures/materials/cement.jpg", 0,0))
     {
-        std::cout << "Couldn't load platform texture\n";
+        std::cout << "Couldn't load player texture\n";
     }
 
     stbi_set_flip_vertically_on_load(true); // inversion for png loading
@@ -136,7 +136,6 @@ Texture_Library::Texture_Library(){
     {
         std::cout << "Couldn't load player texture\n";
     }
-
 
     stbi_set_flip_vertically_on_load(false);
 

@@ -121,12 +121,12 @@ int main()
         float x_diff = player.mesh.transform.position.x - tracker_robot.mesh.transform.position.x;
         float y_diff = player.mesh.transform.position.y - tracker_robot.mesh.transform.position.y;
         Movement_Control_Input tracker_robot_decision = tracker_robot.think(x_diff, y_diff);
-        tracker_robot.update_movement_state(tracker_robot_decision, frameTime);
-        tracker_robot.update_hitbox();
+        // tracker_robot.update_movement_state(tracker_robot_decision, frameTime);
+        // tracker_robot.update_hitbox();
         if(world.is_entity_shot(tracker_robot.get_hitbox())){
-            std::cout<<"HIT\n";
+            // std::cout<<"HIT\n";
         }else{
-            std::cout<<"MISS\n";
+            // std::cout<<"MISS\n";
         }
 
         // **********************
@@ -185,7 +185,9 @@ int main()
         // DRAWING
         // *************
         world.draw(shader);
+        draw_hitbox(world.platforms[0].mesh.hitbox, shader);
         player.draw(shader);  
+        draw_hitbox(player.mesh.hitbox, shader);
         tracker_robot.draw(shader);
 
         glfwSwapBuffers(window);

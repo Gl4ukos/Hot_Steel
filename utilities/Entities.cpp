@@ -1,7 +1,6 @@
 #include "Entities.h"
 
 
-
 glm::vec3 get_collision_displacement(const Hitbox& a, const Hitbox& b)
 {
     glm::vec3 displacement(0.0f, 0.0f, 0.0f);
@@ -95,9 +94,11 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     prev_weapon_state = READY;
     friction = 15;
     jumpsLeft=3;
-    mesh.hitbox.offset_min = glm::vec2(0.14f, 0.0f); //percentage
-    mesh.hitbox.offset_max = glm::vec2(0.12f, 0.03f); //percentage
-    mesh.transform.scale = glm::vec3(0.55f, 0.7f, 1.0f);   
+    // mesh.hitbox.offset_min = glm::vec2(0.14f, 0.0f); //percentage
+    // mesh.hitbox.offset_max = glm::vec2(0.12f, 0.03f); //percentage
+    mesh.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
+    mesh.transform.scale = glm::vec3(1.0f, 1.0f, 1.0f);   
+    
     weapon_mesh.transform.scale = glm::vec3(0.55f, 0.55f, 1.0f);
     weapon_mesh.transform.position = mesh.transform.position;
 
@@ -341,6 +342,9 @@ void Beam::draw(Shader& shader)
 
 void Beam::update_texture(float dt)
 {
+    if(age > 0.0){
+        is_active = 0;
+    }
     age += dt;
 
     float t = age / lifetime;
@@ -358,6 +362,9 @@ bool Beam::is_dead(){
 // i dont know how that works tbh
 bool Beam::hits(const Hitbox& box)
 {
+    if(!is_active){
+        return false;
+    }
     glm::vec2 p1 = start;
     glm::vec2 p2 = end;
 
@@ -586,30 +593,15 @@ World::World(Texture_Library* tex_lib){
 
     background.texture = &tex_lib->textures[BACKGROUND];
 
-    platforms[0].texture = &tex_lib->textures[PLATFORM];
-    platforms[0].mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
-    platforms[0].mesh.transform.scale = glm::vec3(10.0f, 0.5f, 1.0f);
+    platforms[0].texture = &tex_lib->textures[CEMENT];
+    platforms[0].mesh.transform.position = glm::vec3(-0.0f, -0.95f, 0.0f);
+    platforms[0].mesh.transform.scale = glm::vec3(2.0f, 0.1f, 1.0f);
 
-    platforms[1].texture = nullptr;
-    platforms[1].mesh.transform.position = glm::vec3(-0.5f, -0.5f, 0.0f);
-    platforms[1].mesh.transform.scale = glm::vec3(1.0f, 0.2f, 1.0f);
-    
-    platforms[2].texture = nullptr;
-    platforms[2].mesh.transform.position = glm::vec3(-0.0f, -0.0f, 0.0f);
-    platforms[2].mesh.transform.scale = glm::vec3(1.0f, 0.2f, 1.0f);
-    
-    platforms[3].texture = nullptr;
-    platforms[3].mesh.transform.position = glm::vec3(0.5f, 0.5f, 0.0f);
-    platforms[3].mesh.transform.scale = glm::vec3(1.0f, 0.2f, 1.0f);
-    
-    platforms[4].texture = &tex_lib->textures[PLATFORM];
-    platforms[4].mesh.transform.position = glm::vec3(-1.0f, -1.0f, 0.0f);
-    platforms[4].mesh.transform.scale = glm::vec3(0.2f, 2.0f, 1.0f);
-    
-    platforms[5].texture = &tex_lib->textures[PLATFORM];
-    platforms[5].mesh.transform.position = glm::vec3(0.95f, -1.0f, 0.0f);
-    platforms[5].mesh.transform.scale = glm::vec3(0.2f, 2.0f, 1.0f);
+    // platforms[1].texture = nullptr;
+    // platforms[1].mesh.transform.position = glm::vec3(-0.5f, -0.5f, 0.0f);
+    // platforms[1].mesh.transform.scale = glm::vec3(1.0f, 0.2f, 1.0f);
 
+    
     for(int i = 0; i < platform_count; i++){
         platforms[i].update_hitbox();
     }

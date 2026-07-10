@@ -1,5 +1,29 @@
 #include "Meshes.h"
 
+
+// *********************************
+// DEBUG
+// *********************************
+
+void draw_hitbox(const Hitbox& hb, Shader& shader)
+{
+    Rectangle debugRect;
+
+    debugRect.transform.position = (hb.min + hb.max) * 0.5f;
+
+    debugRect.transform.scale = glm::vec3(
+        hb.max.x - hb.min.x,
+        hb.max.y - hb.min.y,
+        1.0f
+    );
+
+    debugRect.additional_colour = glm::vec4(1,0,0,1);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    debugRect.draw(shader, false);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
 // **********************************
 // Mesh
 // **********************************
