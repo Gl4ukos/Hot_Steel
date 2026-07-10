@@ -151,6 +151,8 @@ public:
     Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle);
     void update_texture(float dt);
     void draw(Shader& shader);
+    bool hits(const Hitbox& box);
+    void draw_debug(Shader& shader);
     bool is_dead();
 };
 
@@ -187,6 +189,7 @@ public:
     void draw(Shader& shader);
     void update_projectiles(float frameTime);
     glm::vec3 get_total_collision_displacement(const Hitbox& a);
+    bool is_entity_shot(const Hitbox& hitbox);
     glm::vec4 get_ambient_colour();
 
     Background background;

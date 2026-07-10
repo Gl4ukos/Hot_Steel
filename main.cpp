@@ -123,7 +123,11 @@ int main()
         Movement_Control_Input tracker_robot_decision = tracker_robot.think(x_diff, y_diff);
         tracker_robot.update_movement_state(tracker_robot_decision, frameTime);
         tracker_robot.update_hitbox();
-
+        if(world.is_entity_shot(tracker_robot.get_hitbox())){
+            std::cout<<"HIT\n";
+        }else{
+            std::cout<<"MISS\n";
+        }
 
         // **********************
         // UPDATING PROJECTILES

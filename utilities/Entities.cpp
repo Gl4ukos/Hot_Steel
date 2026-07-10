@@ -301,7 +301,6 @@ void Kaelen_Voss::spawn_projectiles(World* world, Texture_Library* tex_lib){
             world->spawned_beams.push_back(sniper_beam);
         }
         world->hitStop = 0.0f;
-
     }
 }
 
@@ -321,7 +320,6 @@ Beam::Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle)
     mesh.transform.position = start;
     mesh.transform.rotation.z = angle;
     mesh.transform.scale = glm::vec3(length, width, 1.0f);
-
     mesh.additional_colour = glm::vec4(0.0f);
 }
 
@@ -356,6 +354,65 @@ bool Beam::is_dead(){
     return age >= lifetime;
 }
 
+
+// i dont know how that works tbh
+bool Beam::hits(const Hitbox& box)
+{
+    glm::vec2 p1 = start;
+    glm::vec2 p2 = end;
+
+    float dx = p2.x - p1.x;
+    float dy = p2.y - p1.y;
+
+    float tmin = 0.0f;
+    
+    float tmax = 1.0f;
+
+
+    auto check = [&](float p, float q)
+    {
+        if(p == 0)
+        {
+            return q >= 0;
+        }
+
+        float t = q / p;
+
+        if(p < 0)
+        {
+            if(t > tmax)
+                return false;
+
+            if(t > tmin)
+                tmin = t;
+        }
+        else
+        {
+            if(t < tmin)
+                return false;
+
+            if(t < tmax)
+                tmax = t;
+        }
+
+        return true;
+    };
+
+    // left side
+    if(!check(-dx, p1.x - box.min.x))
+        return false;
+    // right side
+    if(!check(dx, box.max.x - p1.x))
+        return false;
+    // bottom
+    if(!check(-dy, p1.y - box.min.y))
+        return false;
+    // top
+    if(!check(dy, box.max.y - p1.y))
+        return false;
+
+    return true;
+}
 
 
 //**************************
@@ -604,3 +661,11 @@ glm::vec3 World::get_total_collision_displacement(const Hitbox& a){
     return displacement;
 }
  
+bool World::is_entity_shot(const Hitbox& hitbox){
+    for(Beam& beam : spawned_beams){
+        if(beam.hits(hitbox)){
+            return true;
+        }
+    }    
+    return false;
+}
