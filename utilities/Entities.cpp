@@ -300,6 +300,8 @@ void Kaelen_Voss::spawn_projectiles(World* world, Texture_Library* tex_lib){
             Beam sniper_beam(tex_lib, beam_pos, -3.14f);
             world->spawned_beams.push_back(sniper_beam);
         }
+        world->hitStop = 0.0f;
+
     }
 }
 

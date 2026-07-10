@@ -359,5 +359,18 @@ CMakeFiles/simulator.dir/main.cpp.o: /home/rook/opengl_project/main.cpp \
  /home/rook/opengl_project/utilities/Entities.h \
  /home/rook/opengl_project/utilities/Meshes.h \
  /home/rook/opengl_project/utilities/TextureLibrary/Textures.h \
- /usr/include/GLFW/glfw3.h /usr/include/GL/gl.h \
+ /usr/include/GLFW/glfw3.h /usr/include/GL/gl.h /usr/include/c++/9/thread \
+ /usr/include/c++/9/chrono /usr/include/c++/9/ratio \
+ /usr/include/c++/9/ctime /usr/include/c++/9/bits/parse_numbers.h \
+ /usr/include/c++/9/memory /usr/include/c++/9/bits/stl_raw_storage_iter.h \
+ /usr/include/c++/9/ext/concurrence.h \
+ /usr/include/c++/9/bits/unique_ptr.h \
+ /usr/include/c++/9/bits/shared_ptr.h \
+ /usr/include/c++/9/bits/shared_ptr_base.h \
+ /usr/include/c++/9/bits/allocated_ptr.h \
+ /usr/include/c++/9/bits/shared_ptr_atomic.h \
+ /usr/include/c++/9/bits/atomic_base.h \
+ /usr/include/c++/9/bits/atomic_lockfree_defines.h \
+ /usr/include/c++/9/backward/auto_ptr.h \
+ /usr/include/c++/9/pstl/glue_memory_defs.h \
  /home/rook/opengl_project/utilities/TextureLibrary/Textures.h

@@ -5,6 +5,8 @@
 #include "TextureLibrary/Textures.h"
 #include <vector>
 #include <algorithm>
+#include <thread>
+#include <chrono>
 
 
 class Movement_Control_Input{
@@ -192,7 +194,7 @@ public:
     Platform platforms[6];  
 
     std::vector<Beam> spawned_beams;
-    
+    float hitStop = 0.0f;
 };
 
 #endif

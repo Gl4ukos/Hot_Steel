@@ -21,7 +21,6 @@ int jumpsLeft = 3;
 bool spaceWasDown = false;
 Movement_Control_Input movement_control_input;
 
-
 void handle_key_input(GLFWwindow* window){
 
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
@@ -100,6 +99,12 @@ int main()
         lastFrameTime = currentTime;
         uint fps = 1 / frameTime;
         std::cout<< "\rFPS:"<<fps<<std::flush;
+
+        if(world.hitStop > 0.0f){
+            world.hitStop = std::max(0.0f, world.hitStop - frameTime);
+            continue;
+        }
+
 
         // *********************
         // UPDATING PLAYER
