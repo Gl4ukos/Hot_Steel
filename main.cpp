@@ -21,6 +21,7 @@ int jumpsLeft = 3;
 bool spaceWasDown = false;
 Movement_Control_Input movement_control_input;
 
+
 void handle_key_input(GLFWwindow* window){
 
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
@@ -59,6 +60,44 @@ void handle_key_input(GLFWwindow* window){
 
 }
 
+class Camera{
+public:
+    glm::vec3 pos = glm::vec3(0.0f);
+    glm::vec2 pos_limits_min = glm::vec2(-999.0f,-0.3f);
+    glm::vec2 pos_limits_max = glm::vec2(999.0f,10.0f);
+
+    glm::vec2 min_move_threshold = glm::vec2(-0.2f, -0.2f);
+    glm::vec2 max_move_threshold = glm::vec2(0.2f, 0.2f);
+
+    float forward_facing_distance = 0.5f;
+
+void update_camera_pos(const glm::vec3 player_pos, Shader& shader)
+{
+    glm::vec2 relative(     // Player position relative to the camera
+        player_pos.x - pos.x,
+        player_pos.y - pos.y
+    );
+    //calcing dead zone
+    if (relative.x > max_move_threshold.x){
+        pos.x = player_pos.x - max_move_threshold.x;
+    }
+    else if (relative.x < min_move_threshold.x){
+        pos.x = player_pos.x - min_move_threshold.x;
+    }
+    if (relative.y > max_move_threshold.y){
+        pos.y = player_pos.y - max_move_threshold.y;
+    }else if (relative.y < min_move_threshold.y){
+        pos.y = player_pos.y - min_move_threshold.y;
+    }
+
+    // Clamp camera to level limits
+    pos.x = std::clamp(pos.x, pos_limits_min.x, pos_limits_max.x);
+    pos.y = std::clamp(pos.y, pos_limits_min.y, pos_limits_max.y);
+
+    // Upload to shader
+    shader.set_vec3("camera_pos", pos);
+}
+};
 
 std::string load_file_to_string(std::string filename){
     std::ifstream file(filename);
@@ -89,6 +128,7 @@ int main()
     Kaelen_Voss player(&tex_lib);
     Tracker_robot tracker_robot(&tex_lib);
 
+    Camera camera;
 
     // MAIN LOOP
     shader.use();
@@ -183,18 +223,21 @@ int main()
         // *************
         // DRAWING
         // *************
-        world.draw(shader);
-        draw_hitbox(world.platforms[0].mesh.hitbox, shader);
+        camera.update_camera_pos(glm::vec3(player.mesh.transform.position.x, player.mesh.transform.position.y, 0.0f), shader);
+        world.draw(shader, camera.pos);
+        // for(int i =0; i<world.platform_count; i++){
+        //     draw_hitbox(world.platforms[i].mesh.hitbox, shader);
+        // }
 
         for(Beam& beam : world.spawned_beams){
             beam.mesh.update_hitbox();
-            draw_hitbox(beam.mesh.hitbox, shader);
+            // draw_hitbox(beam.mesh.hitbox, shader);
         }
 
         player.draw(shader);  
-        draw_hitbox(player.mesh.hitbox, shader);
+        // draw_hitbox(player.mesh.hitbox, shader);
         tracker_robot.draw(shader);
-        draw_hitbox(tracker_robot.mesh.hitbox, shader);
+        // draw_hitbox(tracker_robot.mesh.hitbox, shader);
 
 
         glfwSwapBuffers(window);

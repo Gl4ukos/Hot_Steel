@@ -307,7 +307,7 @@ void Kaelen_Voss::spawn_projectiles(World* world, Texture_Library* tex_lib){
 
 Beam::Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle)
 {
-    lifetime = 2.0f;
+    lifetime = 0.8f;
     damage_lifetime = 0.1f;
 
     age = 0.0f;
@@ -533,12 +533,24 @@ World::World(Texture_Library* tex_lib){
     background.texture = &tex_lib->textures[BACKGROUND];
 
     platforms[0].texture = &tex_lib->textures[CEMENT];
-    platforms[0].mesh.transform.position = glm::vec3(-0.0f, -0.95f, 0.0f);
-    platforms[0].mesh.transform.scale = glm::vec3(2.0f, 0.1f, 1.0f);
+    platforms[0].mesh.transform.position = glm::vec3(-0.0f, -1.45f, 0.0f);
+    platforms[0].mesh.transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
 
-    // platforms[1].texture = nullptr;
-    // platforms[1].mesh.transform.position = glm::vec3(-0.5f, -0.5f, 0.0f);
-    // platforms[1].mesh.transform.scale = glm::vec3(1.0f, 0.2f, 1.0f);
+    platforms[1].texture = &tex_lib->textures[CEMENT];
+    platforms[1].mesh.transform.position = glm::vec3(2.0f, -1.45f, 0.0f);
+    platforms[1].mesh.transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
+
+    platforms[2].texture = &tex_lib->textures[CEMENT];
+    platforms[2].mesh.transform.position = glm::vec3(-2.0f, -1.45f, 0.0f);
+    platforms[2].mesh.transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
+
+    platforms[3].texture = &tex_lib->textures[CEMENT];
+    platforms[3].mesh.transform.position = glm::vec3(4.0f, -1.45f, 0.0f);
+    platforms[3].mesh.transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
+
+    platforms[4].texture = &tex_lib->textures[CEMENT];
+    platforms[4].mesh.transform.position = glm::vec3(-4.0f, -1.45f, 0.0f);
+    platforms[4].mesh.transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
 
     
     for(int i = 0; i < platform_count; i++){
@@ -551,9 +563,13 @@ glm::vec4 World::get_ambient_colour(){
     return background.mesh.additional_colour;
 }
 
-void World::draw(Shader& shader){
-    background.cycle_colour();
-    background.draw(shader);
+void World::draw(Shader& shader, glm::vec3 camera_pos){
+    if(background_static){
+        shader.set_vec3("camera_pos",glm::vec3(0.0f));
+        background.cycle_colour();
+        background.draw(shader);
+        shader.set_vec3("camera_pos",camera_pos);
+    }
 
     for(int i=0; i<platform_count; i++){
         platforms[i].mesh.additional_colour = background.mesh.additional_colour;

@@ -42,7 +42,7 @@ public:
     int stretch_texture= 0;
     float jump_cooldown = 0.2f;
     float jumpTimer = 0.0f;
-    float shoot_cooldown = 0.5f;
+    float shoot_cooldown = 0.2f;
     float shootTimer = 0.0f;
     float mass;
     float elasticity_factor;
@@ -184,18 +184,20 @@ public:
 class World{
 public:
     World(Texture_Library* tex_lib);
-    void draw(Shader& shader);
+    void draw(Shader& shader, glm::vec3 camera_pos);
     void update_projectiles(float frameTime);
     glm::vec3 get_total_collision_displacement(const Hitbox& a);
     bool is_entity_shot(const Hitbox& hitbox);
     glm::vec4 get_ambient_colour();
 
     Background background;
-    int platform_count = 1;
-    Platform platforms[1];  
+    Platform platforms[5];  
+    int platform_count = (sizeof(platforms)/sizeof(Platform));
+
 
     std::vector<Beam> spawned_beams;
     float hitStop = 0.0f;
+    int background_static =1;
 };
 
 #endif
