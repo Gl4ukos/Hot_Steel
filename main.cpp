@@ -126,7 +126,7 @@ int main()
 
     World world(&tex_lib);
     Kaelen_Voss player(&tex_lib);
-    Tracker_bot tracker_bot(&tex_lib);
+    Swarm swarm(&tex_lib);
 
     Camera camera;
 
@@ -158,12 +158,14 @@ int main()
         // UPDATING tracker_bot
         // **********************
 
-        float x_diff = player.mesh.transform.position.x - tracker_bot.mesh.transform.position.x;
-        float y_diff = player.mesh.transform.position.y - tracker_bot.mesh.transform.position.y;
-        Movement_Control_Input tracker_bot_decision = tracker_bot.think(x_diff, y_diff);
-        tracker_bot.update_movement_state(tracker_bot_decision, frameTime);
-        tracker_bot.update_hitbox();
-
+        for(size_t i=0; i<swarm.tracker_bots.size(); i++){
+            float x_diff = player.mesh.transform.position.x - swarm.tracker_bots[i].mesh.transform.position.x;
+            float y_diff = player.mesh.transform.position.y - swarm.tracker_bots[i].mesh.transform.position.y;
+            Movement_Control_Input tracker_bot_decision = swarm.tracker_bots[i].think(x_diff, y_diff);
+            swarm.tracker_bots[i].update_movement_state(tracker_bot_decision, frameTime);
+            swarm.tracker_bots[i].update_hitbox();
+        }
+        
 
         // **********************
         // UPDATING PROJECTILES
@@ -199,24 +201,37 @@ int main()
         //     }
         // }
 
-        // checking for tracker_bot collision with environmnet and applying displacement
-        collision_displacement = world.get_total_collision_displacement(tracker_bot.mesh.hitbox);
-        if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){ //in case of collision, then displace accordingly
-            tracker_bot.mesh.transform.position += collision_displacement;
-            if(collision_displacement.y > 0.0){
-                tracker_bot.mesh.velocity.y = 0.0f;
-                tracker_bot.jumpsLeft = 1;
-            }else if(collision_displacement.y <0.0){
-                tracker_bot.mesh.velocity.y = 0.0f;
+        // checking for tracker_bot swarm collision with environmnet and applying displacement
+        for (Tracker_bot& tracker_bot : swarm.tracker_bots){
+            collision_displacement = world.get_total_collision_displacement(tracker_bot.mesh.hitbox);
+            if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){ //in case of collision, then displace accordingly
+                tracker_bot.mesh.transform.position += collision_displacement;
+                if(collision_displacement.y > 0.0){
+                    tracker_bot.mesh.velocity.y = 0.0f;
+                    tracker_bot.jumpsLeft = 1;
+                }else if(collision_displacement.y <0.0){
+                    tracker_bot.mesh.velocity.y = 0.0f;
+                }
+                if(collision_displacement.x != 0.0){
+                    tracker_bot.mesh.velocity.x = 0.0f;
+                }
             }
-            if(collision_displacement.x != 0.0){
-                tracker_bot.mesh.velocity.x = 0.0f;
-            }
-        }
 
-        if(world.is_entity_shot(tracker_bot.get_hitbox())){
-            tracker_bot.mesh.transform.position = glm::vec3(0.0f);
+            if(world.is_entity_shot(tracker_bot.get_hitbox())){
+                tracker_bot.hp = 0;
+            }
         }
+        swarm.update_vitals();
+
+        //spawn new trackerbots
+        if(swarm.spawn_timer > swarm.spawn_cooldown){
+            swarm.spawn_timer = 0.0f;
+            int randomNum = rand() % 5;
+            if(randomNum < 4){
+                swarm.spawn_tracker_bot();
+            }
+        }
+        swarm.spawn_timer += frameTime;
 
 
 
@@ -236,9 +251,8 @@ int main()
 
         player.draw(shader);  
         // draw_hitbox(player.mesh.hitbox, shader);
-        tracker_bot.draw(shader);
-        // draw_hitbox(tracker_bot.mesh.hitbox, shader);
 
+        swarm.draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

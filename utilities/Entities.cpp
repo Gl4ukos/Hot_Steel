@@ -362,6 +362,47 @@ bool Beam::is_dead(){
 
 
 //**************************
+//  Swarm
+//  ***********************/
+Swarm::Swarm(Texture_Library* tex_lib){
+    this->tex_lib = tex_lib;
+}
+
+void Swarm::update_movement_state(Movement_Control_Input input, float frameTime){
+    for (int i=0; i<tracker_bots.size(); i++){
+        tracker_bots[i].update_movement_state(input, frameTime);
+    }
+}
+void Swarm::draw(Shader& shader){
+    for(int i=0; i<tracker_bots.size(); i++){
+        tracker_bots[i].draw(shader);
+    }
+}
+
+void Swarm::spawn_tracker_bot(){
+    if(tracker_bots.size()>max_tracker_bots){return;}
+    tracker_bots.emplace_back(tex_lib);
+    Tracker_bot& bot = tracker_bots.back();
+    bot.mesh.transform.position = glm::vec3(-4.2f, -0.5f, 0.0f);
+}   
+void Swarm::spawn_tracker_bot(glm::vec3 position){
+    if(tracker_bots.size()>max_tracker_bots){return;}
+    tracker_bots.emplace_back(tex_lib);
+    Tracker_bot& bot = tracker_bots.back();
+    bot.mesh.transform.position = position;
+}
+
+void Swarm::update_vitals(){
+    for(int i=0; i<tracker_bots.size(); i++){
+        if(tracker_bots[i].hp <= 0){
+            tracker_bots.erase(tracker_bots.begin()+i);
+        }
+    }
+}
+
+
+
+//**************************
 //  Tracker_bot
 //  ***********************/
 Tracker_bot::Tracker_bot(Texture_Library* tex_lib) : Entity(){

@@ -115,6 +115,7 @@ class Tracker_bot : public Entity{
 public:
     Texture* current_tex;
     float opacity = 1.0f;
+    int hp = 20;
 
     enum Entity_state{
         RUN_LEFT = 0,
@@ -125,8 +126,25 @@ public:
     Tracker_bot(Texture_Library* tex_lib);
     Movement_Control_Input think(float x_diff, float y_diff);
     void update_movement_state(Movement_Control_Input input, float frameTime);
-    void move();
     void draw(Shader& shader);
+};
+
+
+class Swarm{
+    public:
+
+        int max_tracker_bots = 20;
+        Texture_Library* tex_lib = nullptr;
+        std::vector<Tracker_bot> tracker_bots;
+        float spawn_timer = 0.0f;
+        float spawn_cooldown = 2.0f;
+
+        Swarm(Texture_Library* tex_lib);
+        void spawn_tracker_bot();
+        void spawn_tracker_bot(glm::vec3 position);
+        void update_movement_state(Movement_Control_Input input, float frameTime);
+        void draw(Shader& shader);
+        void update_vitals();
 };
 
 
