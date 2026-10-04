@@ -111,7 +111,7 @@ private:
     void update_texture();
 };
 
-class Tracker_robot : public Entity{
+class Tracker_bot : public Entity{
 public:
     Texture* current_tex;
     float opacity = 1.0f;
@@ -122,7 +122,7 @@ public:
         IDLE = 2
     }state_type, prev_state_type;
 
-    Tracker_robot(Texture_Library* tex_lib);
+    Tracker_bot(Texture_Library* tex_lib);
     Movement_Control_Input think(float x_diff, float y_diff);
     void update_movement_state(Movement_Control_Input input, float frameTime);
     void move();
@@ -191,7 +191,7 @@ public:
     glm::vec4 get_ambient_colour();
 
     Background background;
-    Platform platforms[5];  
+    Platform platforms[13];  
     int platform_count = (sizeof(platforms)/sizeof(Platform));
 
 

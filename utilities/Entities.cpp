@@ -362,9 +362,9 @@ bool Beam::is_dead(){
 
 
 //**************************
-//  Tracker_robot
+//  Tracker_bot
 //  ***********************/
-Tracker_robot::Tracker_robot(Texture_Library* tex_lib) : Entity(){
+Tracker_bot::Tracker_bot(Texture_Library* tex_lib) : Entity(){
     mass = 10;
     elasticity_factor = 0.0;
     vertical_speed_cap = 4.0;
@@ -385,7 +385,7 @@ Tracker_robot::Tracker_robot(Texture_Library* tex_lib) : Entity(){
 }
 
 
-void Tracker_robot::update_movement_state(Movement_Control_Input input, float frameTime){
+void Tracker_bot::update_movement_state(Movement_Control_Input input, float frameTime){
     mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
 
     if(input.left){
@@ -429,7 +429,7 @@ void Tracker_robot::update_movement_state(Movement_Control_Input input, float fr
     mesh.velocity.x = std::max(std::min(mesh.velocity.x, horizontal_speed_cap), -horizontal_speed_cap);
 }
 
-Movement_Control_Input Tracker_robot::think(float x_diff, float y_diff){
+Movement_Control_Input Tracker_bot::think(float x_diff, float y_diff){
     Movement_Control_Input decision;
     decision.right = 0;
     decision.left = 0;
@@ -450,7 +450,7 @@ Movement_Control_Input Tracker_robot::think(float x_diff, float y_diff){
     return decision;
 }
 
-void Tracker_robot::draw (Shader& shader){
+void Tracker_bot::draw (Shader& shader){
     shader.set_int("use_texture", current_tex != nullptr ? 1:0);
     shader.set_float("fragment_opacity", opacity);
     if(current_tex){
@@ -551,6 +551,39 @@ World::World(Texture_Library* tex_lib){
     platforms[4].texture = &tex_lib->textures[CEMENT];
     platforms[4].mesh.transform.position = glm::vec3(-4.0f, -1.45f, 0.0f);
     platforms[4].mesh.transform.scale = glm::vec3(2.0f, 1.0f, 1.0f);
+
+    platforms[5].texture = &tex_lib->textures[CEMENT];
+    platforms[5].mesh.transform.position = glm::vec3(-1.2f, -0.4f, 0.0f);
+    platforms[5].mesh.transform.scale = glm::vec3(1.0f, 0.1f, 1.0f);
+
+    platforms[6].texture = &tex_lib->textures[CEMENT];
+    platforms[6].mesh.transform.position = glm::vec3(1.2f, -0.4f, 0.0f);
+    platforms[6].mesh.transform.scale = glm::vec3(1.0f, 0.1f, 1.0f);
+
+    platforms[7].texture = &tex_lib->textures[CEMENT];
+    platforms[7].mesh.transform.position = glm::vec3(-2.2f, -0.0f, 0.0f);
+    platforms[7].mesh.transform.scale = glm::vec3(0.7f, 0.1f, 1.0f);
+
+    platforms[8].texture = &tex_lib->textures[CEMENT];
+    platforms[8].mesh.transform.position = glm::vec3(2.2f, -0.0f, 0.0f);
+    platforms[8].mesh.transform.scale = glm::vec3(0.7f, 0.1f, 1.0f);
+
+    platforms[9].texture = &tex_lib->textures[CEMENT];
+    platforms[9].mesh.transform.position = glm::vec3(-3.2f, -0.1f, 0.0f);
+    platforms[9].mesh.transform.scale = glm::vec3(0.7f, 0.1f, 1.0f);
+
+    platforms[10].texture = &tex_lib->textures[CEMENT];
+    platforms[10].mesh.transform.position = glm::vec3(3.2f, -0.1f, 0.0f);
+    platforms[10].mesh.transform.scale = glm::vec3(0.7f, 0.1f, 1.0f);
+
+    platforms[11].texture = &tex_lib->textures[CEMENT];
+    platforms[11].mesh.transform.position = glm::vec3(-4.2f, -0.5f, 0.0f);
+    platforms[11].mesh.transform.scale = glm::vec3(0.7f, 0.1f, 1.0f);
+
+    platforms[12].texture = &tex_lib->textures[CEMENT];
+    platforms[12].mesh.transform.position = glm::vec3(4.2f, -0.5f, 0.0f);
+    platforms[12].mesh.transform.scale = glm::vec3(0.7f, 0.1f, 1.0f);
+
 
     
     for(int i = 0; i < platform_count; i++){

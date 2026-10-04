@@ -126,7 +126,7 @@ int main()
 
     World world(&tex_lib);
     Kaelen_Voss player(&tex_lib);
-    Tracker_robot tracker_robot(&tex_lib);
+    Tracker_bot tracker_bot(&tex_lib);
 
     Camera camera;
 
@@ -155,14 +155,14 @@ int main()
         player.mesh.update_hitbox();
 
         // **********************
-        // UPDATING tracker_robot
+        // UPDATING tracker_bot
         // **********************
 
-        float x_diff = player.mesh.transform.position.x - tracker_robot.mesh.transform.position.x;
-        float y_diff = player.mesh.transform.position.y - tracker_robot.mesh.transform.position.y;
-        Movement_Control_Input tracker_robot_decision = tracker_robot.think(x_diff, y_diff);
-        tracker_robot.update_movement_state(tracker_robot_decision, frameTime);
-        tracker_robot.update_hitbox();
+        float x_diff = player.mesh.transform.position.x - tracker_bot.mesh.transform.position.x;
+        float y_diff = player.mesh.transform.position.y - tracker_bot.mesh.transform.position.y;
+        Movement_Control_Input tracker_bot_decision = tracker_bot.think(x_diff, y_diff);
+        tracker_bot.update_movement_state(tracker_bot_decision, frameTime);
+        tracker_bot.update_hitbox();
 
 
         // **********************
@@ -187,7 +187,7 @@ int main()
         }
 
         // get collision displacement from player and tracker robot and apply
-        // collision_displacement = get_collision_displacement(player.mesh.hitbox, tracker_robot.mesh.hitbox);
+        // collision_displacement = get_collision_displacement(player.mesh.hitbox, tracker_bot.mesh.hitbox);
         // if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){ //in case of collision, then displace accordingly
         //     player.mesh.transform.position += collision_displacement;
         //     if(collision_displacement.y != 0.0){
@@ -199,23 +199,23 @@ int main()
         //     }
         // }
 
-        // checking for tracker_robot collision with environmnet and applying displacement
-        collision_displacement = world.get_total_collision_displacement(tracker_robot.mesh.hitbox);
+        // checking for tracker_bot collision with environmnet and applying displacement
+        collision_displacement = world.get_total_collision_displacement(tracker_bot.mesh.hitbox);
         if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){ //in case of collision, then displace accordingly
-            tracker_robot.mesh.transform.position += collision_displacement;
+            tracker_bot.mesh.transform.position += collision_displacement;
             if(collision_displacement.y > 0.0){
-                tracker_robot.mesh.velocity.y = 0.0f;
-                tracker_robot.jumpsLeft = 1;
+                tracker_bot.mesh.velocity.y = 0.0f;
+                tracker_bot.jumpsLeft = 1;
             }else if(collision_displacement.y <0.0){
-                tracker_robot.mesh.velocity.y = 0.0f;
+                tracker_bot.mesh.velocity.y = 0.0f;
             }
             if(collision_displacement.x != 0.0){
-                tracker_robot.mesh.velocity.x = 0.0f;
+                tracker_bot.mesh.velocity.x = 0.0f;
             }
         }
 
-        if(world.is_entity_shot(tracker_robot.get_hitbox())){
-            tracker_robot.mesh.transform.position = glm::vec3(0.0f);
+        if(world.is_entity_shot(tracker_bot.get_hitbox())){
+            tracker_bot.mesh.transform.position = glm::vec3(0.0f);
         }
 
 
@@ -236,8 +236,8 @@ int main()
 
         player.draw(shader);  
         // draw_hitbox(player.mesh.hitbox, shader);
-        tracker_robot.draw(shader);
-        // draw_hitbox(tracker_robot.mesh.hitbox, shader);
+        tracker_bot.draw(shader);
+        // draw_hitbox(tracker_bot.mesh.hitbox, shader);
 
 
         glfwSwapBuffers(window);
