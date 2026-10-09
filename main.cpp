@@ -106,8 +106,8 @@ std::string load_file_to_string(std::string filename){
     return buffer.str();
 }
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1400;
+const unsigned int SCR_HEIGHT = 800;
 
 GLFWwindow* initialise_glfw();
 float frameTime;

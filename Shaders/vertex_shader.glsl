@@ -6,6 +6,9 @@ layout (location = 2) in vec2 aTexCoord; //texture coords, position 2
 uniform mat4 model;
 uniform vec3 camera_pos;
 
+vec4 scaling = vec4(0.6f, 0.9f, 1.0f, 1.0f) ;
+
+vec4 worldPos;
 out vec3 outColor;
 out vec2 TexCoord;
 
@@ -14,8 +17,7 @@ void main()
 {
     vec3 Pos = aPos; 
 
-    gl_Position = (model * vec4(Pos, 1.0) - vec4(camera_pos, 0.0f));
-
+    gl_Position = (scaling) * (model * vec4(Pos, 1.0) - vec4(camera_pos, 0.0f));
     outColor = aColor; // set ourColor to the input color we got from the vertex data
     TexCoord = aTexCoord;
 }   

@@ -27,4 +27,5 @@ Type:
     -> Add Kaelen crouch animation
 
     -> Add camera offset in the direction Kaelen faces
-    -> Broaden vision/window
+
+    -> Kaelen gets stuck on the ground when crouching and moving
