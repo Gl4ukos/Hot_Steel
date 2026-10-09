@@ -250,7 +250,7 @@ int main()
         }
 
         player.draw(shader);  
-        // draw_hitbox(player.mesh.hitbox, shader);
+        draw_hitbox(player.mesh.hitbox, shader);
 
         swarm.draw(shader);
 

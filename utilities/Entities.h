@@ -87,13 +87,19 @@ public:
         RIGHT
     }facing_direction, prev_facing_direction;
 
-    enum Entity_state{
+    enum Posture_state{
+        UPRIGHT,
+        AIRBORNE,
+        CROUCHING
+    }posture_state, prev_posture_state;
+
+    enum Movement_state{
         RUNNING, 
         ASCENDING,
         DESCENDING,
-        DAMAGED,
+        SLIDING,
         IDLE
-    }state_type, prev_state_type;
+    }movement_state, prev_movement_state;
 
     enum Weapon_state{
         INACTIVE,

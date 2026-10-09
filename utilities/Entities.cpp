@@ -87,8 +87,10 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     jump_boost = 3.2;
     facing_direction = RIGHT;
     prev_facing_direction = RIGHT;
-    state_type = IDLE;
-    prev_state_type = IDLE;
+    posture_state = UPRIGHT;
+    prev_posture_state = UPRIGHT;
+    movement_state = IDLE;
+    prev_movement_state = IDLE;
     weapon_state = READY;
     prev_weapon_state = READY;
     friction = 15;
@@ -177,7 +179,10 @@ void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float fram
     jumpTimer += frameTime;
 
     if(input.down){
-        mesh.velocity.y = -jump_boost;
+        // mesh.velocity.y = -jump_boost;
+        posture_state = CROUCHING;
+    }else{
+        posture_state = UPRIGHT;
     }
 
     if(input.shoot){
@@ -203,22 +208,26 @@ void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float fram
     mesh.velocity += mesh.acceleration * frameTime;
     mesh.velocity.x = std::max(std::min(mesh.velocity.x, horizontal_speed_cap), -horizontal_speed_cap);
 
+
+    prev_movement_state = movement_state;
+    prev_facing_direction = facing_direction;
+    prev_posture_state = posture_state;
+    if(mesh.velocity.x > 0.2){
+        facing_direction = RIGHT;
+        movement_state = RUNNING;
+    }else if(mesh.velocity.x < -0.2){
+        facing_direction = LEFT;
+        movement_state = RUNNING;
+    }else{
+        movement_state = IDLE;
+    }
+
 }
 
 void Kaelen_Voss::update_texture(){
-    prev_state_type = state_type;
-    prev_facing_direction = facing_direction;
-    if(mesh.velocity.x > 0.2){
-        facing_direction = RIGHT;
-        state_type = RUNNING;
-    }else if(mesh.velocity.x < -0.2){
-        facing_direction = LEFT;
-        state_type = RUNNING;
-    }else{
-        state_type = IDLE;
-    }
 
-    if(state_type == RUNNING){
+
+    if(movement_state == RUNNING){
         if(facing_direction == RIGHT){
             if(prev_facing_direction == RIGHT){
                 texture_duration +=1;
@@ -292,6 +301,7 @@ void Kaelen_Voss::spawn_projectiles(World* world, Texture_Library* tex_lib){
         if(facing_direction == RIGHT){
             glm::vec3 beam_pos = mesh.transform.position;
             beam_pos += sniper_beam_offset_right;
+            std::cout<<"pos: "<< mesh.transform.position[1] <<"\n";
             Beam sniper_beam(tex_lib, beam_pos, 0.0f);
             world->spawned_beams.push_back(sniper_beam);
         }else{

@@ -11,7 +11,6 @@ Type:
 
 
     TODO:
-    -> Fix state transision for Kaelen
 
     -> Split entities into entities-world-enemies/hivemind
 
