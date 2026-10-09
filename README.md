@@ -11,6 +11,8 @@ Type:
 
 
     TODO:
+    -> Add Kaelen airborne state
+    -> Add kaelen crouch state
 
     -> Split entities into entities-world-enemies/hivemind
 

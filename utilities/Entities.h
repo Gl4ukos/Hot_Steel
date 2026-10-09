@@ -90,7 +90,8 @@ public:
     enum Posture_state{
         UPRIGHT,
         AIRBORNE,
-        CROUCHING
+        CROUCHING,
+        AIR_DIVING
     }posture_state, prev_posture_state;
 
     enum Movement_state{
@@ -109,7 +110,7 @@ public:
     }weapon_state, prev_weapon_state;
 
     Kaelen_Voss(Texture_Library* tex_lib);
-    void update_movement_state(Movement_Control_Input input, float frameTime);
+    void update_movement_state(Movement_Control_Input input, int grounded, float frameTime);
     void move();
     void spawn_projectiles(World* world, Texture_Library* tex_lib);
     void draw(Shader& shader);

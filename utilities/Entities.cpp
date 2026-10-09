@@ -152,7 +152,7 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     current_weapon_tex= sniper_tex_right[0];
 }
 
-void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float frameTime){
+void Kaelen_Voss::update_movement_state(Movement_Control_Input input, int grounded, float frameTime){
     mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
 
     if(input.left){
@@ -178,8 +178,22 @@ void Kaelen_Voss::update_movement_state(Movement_Control_Input input, float fram
     }
     jumpTimer += frameTime;
 
+    if(grounded){
+        if(input.down){
+            posture_state = CROUCHING;
+        }else{
+            posture_state = UPRIGHT;
+        }
+    }else{
+        if(input.down){
+            posture_state = AIR_DIVING;
+        }else{
+            posture_state = AIRBORNE;
+        }
+    }
+
     if(input.down){
-        // mesh.velocity.y = -jump_boost;
+        mesh.velocity.y = -jump_boost;
         posture_state = CROUCHING;
     }else{
         posture_state = UPRIGHT;
@@ -301,7 +315,6 @@ void Kaelen_Voss::spawn_projectiles(World* world, Texture_Library* tex_lib){
         if(facing_direction == RIGHT){
             glm::vec3 beam_pos = mesh.transform.position;
             beam_pos += sniper_beam_offset_right;
-            std::cout<<"pos: "<< mesh.transform.position[1] <<"\n";
             Beam sniper_beam(tex_lib, beam_pos, 0.0f);
             world->spawned_beams.push_back(sniper_beam);
         }else{

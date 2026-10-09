@@ -112,6 +112,7 @@ const unsigned int SCR_HEIGHT = 800;
 GLFWwindow* initialise_glfw();
 float frameTime;
 double lastFrameTime = glfwGetTime();
+int player_grounded = 1;
 int main()
 {
     //setting up
@@ -150,7 +151,7 @@ int main()
         // UPDATING PLAYER
         // *********************
         handle_key_input(window);  
-        player.update_movement_state(movement_control_input, frameTime);  
+        player.update_movement_state(movement_control_input, player_grounded, frameTime);  
         player.spawn_projectiles(&world, &tex_lib); 
         player.mesh.update_hitbox();
 
@@ -174,17 +175,20 @@ int main()
 
         // get collision displacement from environment
         glm::vec3 collision_displacement = world.get_total_collision_displacement(player.mesh.hitbox);
+        player_grounded = 0;// kalou kakou
         // apply collision displacement to player
         if(collision_displacement.x != 0.0 || collision_displacement.y != 0.0){
             player.mesh.transform.position += collision_displacement;
             if(collision_displacement.y > 0.0){
-                player.mesh.velocity.y = 0.0f;
+                player.mesh.velocity.y = -0.1f;
                 player.jumpsLeft = 3;
-            }else if(collision_displacement.y < 0.0){
-                player.mesh.velocity.y = 0.0f;
+                player_grounded = 1;
             }
             if(collision_displacement.x != 0.0){
                 player.mesh.velocity.x = 0.0f;
+                player_grounded = 1;
+                player.jumpsLeft +=1;
+                player.mesh.velocity.y *= 0.2;
             }
         }
 
@@ -232,8 +236,6 @@ int main()
             }
         }
         swarm.spawn_timer += frameTime;
-
-
 
         // *************
         // DRAWING
