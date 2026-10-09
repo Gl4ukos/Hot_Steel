@@ -188,9 +188,13 @@ int main()
                 player.mesh.velocity.x = 0.0f;
                 player_grounded = 1;
                 player.jumpsLeft +=1;
-                player.mesh.velocity.y *= 0.2;
+                if(player.mesh.velocity.y<0){
+                    player.mesh.velocity.y *= 0.4;
+                }
             }
         }
+        player.mesh.update_hitbox(); //updating it a second time to apply the changes from the displacement
+
 
         // get collision displacement from player and tracker robot and apply
         // collision_displacement = get_collision_displacement(player.mesh.hitbox, tracker_bot.mesh.hitbox);
@@ -224,6 +228,8 @@ int main()
             if(world.is_entity_shot(tracker_bot.get_hitbox())){
                 tracker_bot.hp = 0;
             }
+
+            tracker_bot.update_hitbox();//updating it a second time to apply the changes from the displacement
         }
         swarm.update_vitals();
 
@@ -252,7 +258,6 @@ int main()
         }
 
         player.draw(shader);  
-        draw_hitbox(player.mesh.hitbox, shader);
 
         swarm.draw(shader);
 

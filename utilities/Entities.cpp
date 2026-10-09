@@ -307,6 +307,7 @@ void Kaelen_Voss::draw(Shader& shader){
     }
     weapon_mesh.draw(shader, stretch_texture);
     shader.set_int("use_texture", 0);
+
 }
 
 
