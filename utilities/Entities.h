@@ -71,9 +71,13 @@ public:
     Rectangle weapon_mesh;
     glm::vec3 weapon_right_position_offset = glm::vec3(0.12f, 0.08f, 0.0f);
     glm::vec3 weapon_left_position_offset = glm::vec3(-0.12f, 0.08f, 0.0f);
+    glm::vec3 weapon_low_right_position_offset = glm::vec3(0.0f, -0.08f, 0.0f);
+    glm::vec3 weapon_low_left_position_offset = glm::vec3(0.0f, -0.08f, 0.0f);
 
-    glm::vec3 sniper_beam_offset_right = glm::vec3(1.25, 0.07f, 0.5f);
-    glm::vec3 sniper_beam_offset_left = glm::vec3(-1.25, 0.08f, 0.5f);
+    glm::vec3 sniper_beam_offset_right = glm::vec3(1.22, 0.07f, 0.5f);
+    glm::vec3 sniper_beam_offset_left = glm::vec3(-1.22, 0.08f, 0.5f);
+    glm::vec3 sniper_beam_offset_low_right = glm::vec3(0.0f, -0.03f, 0.5f);
+    glm::vec3 sniper_beam_offset_low_left = glm::vec3(0.0f, -0.03f, 0.5f);
 
 
     float opacity = 1.0f;

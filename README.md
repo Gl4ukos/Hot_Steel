@@ -11,8 +11,6 @@ Type:
 
 
     TODO:
-    -> Lower sniper and beam position when crouching.
-
 
     -> Split entities into entities-world-enemies/hivemind
 

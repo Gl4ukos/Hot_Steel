@@ -259,6 +259,9 @@ void Kaelen_Voss::update_texture(){
             }
             current_weapon_tex = sniper_tex_right[0];
             weapon_mesh.transform.position = mesh.transform.position + weapon_right_position_offset;
+            if(posture_state == CROUCHING){
+                weapon_mesh.transform.position += weapon_low_right_position_offset;
+            }
         }else{
             if(prev_facing_direction == LEFT){
                 texture_duration +=1;
@@ -276,15 +279,24 @@ void Kaelen_Voss::update_texture(){
             }
             current_weapon_tex = sniper_tex_left[0];
             weapon_mesh.transform.position = mesh.transform.position + weapon_left_position_offset;
+            if(posture_state == CROUCHING){
+                weapon_mesh.transform.position += weapon_low_left_position_offset;
+            }
         }
     }else{
         if(facing_direction == LEFT){
             current_weapon_tex = sniper_tex_left[0];
             weapon_mesh.transform.position = mesh.transform.position + weapon_left_position_offset;
+            if(posture_state == CROUCHING){
+                weapon_mesh.transform.position += weapon_low_left_position_offset;
+            }
 
         }else if(facing_direction == RIGHT){
             current_weapon_tex = sniper_tex_right[0];
             weapon_mesh.transform.position = mesh.transform.position + weapon_right_position_offset;
+            if(posture_state == CROUCHING){
+                weapon_mesh.transform.position += weapon_low_right_position_offset;
+            }
         }
     }
 
@@ -316,11 +328,17 @@ void Kaelen_Voss::spawn_projectiles(World* world, Texture_Library* tex_lib){
         if(facing_direction == RIGHT){
             glm::vec3 beam_pos = mesh.transform.position;
             beam_pos += sniper_beam_offset_right;
+            if(posture_state == CROUCHING){
+                beam_pos += sniper_beam_offset_low_right;
+            }
             Beam sniper_beam(tex_lib, beam_pos, 0.0f);
             world->spawned_beams.push_back(sniper_beam);
         }else{
             glm::vec3 beam_pos = mesh.transform.position;
             beam_pos += sniper_beam_offset_left;
+            if(posture_state == CROUCHING){
+                beam_pos += sniper_beam_offset_low_left;
+            }
             Beam sniper_beam(tex_lib, beam_pos, -3.14f);
             world->spawned_beams.push_back(sniper_beam);
         }
