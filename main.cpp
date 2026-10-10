@@ -153,7 +153,7 @@ int main()
         handle_key_input(window);  
         player.update_movement_state(movement_control_input, player_grounded, frameTime);  
         player.spawn_projectiles(&world, &tex_lib); 
-        player.mesh.update_hitbox();
+        player.update_hitbox();
 
         // **********************
         // UPDATING tracker_bot
@@ -254,10 +254,11 @@ int main()
 
         for(Beam& beam : world.spawned_beams){
             beam.mesh.update_hitbox();
-            // draw_hitbox(beam.mesh.hitbox, shader);
+            draw_hitbox(beam.mesh.hitbox, shader);
         }
 
         player.draw(shader);  
+        draw_hitbox(player.mesh.hitbox, shader);
 
         swarm.draw(shader);
 

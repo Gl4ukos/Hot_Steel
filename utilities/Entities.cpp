@@ -95,8 +95,7 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     prev_weapon_state = READY;
     friction = 15;
     jumpsLeft=3;
-    mesh.hitbox.offset_min = glm::vec2(0.35f, 0.0f); //percentage
-    mesh.hitbox.offset_max = glm::vec2(0.35f, 0.03f); //percentage
+
     mesh.transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     mesh.transform.scale = glm::vec3(0.3f, 0.3f, 1.0f);   
     
@@ -151,6 +150,19 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     current_tex = tex_idle[0];
     current_weapon_tex= sniper_tex_right[0];
 }
+
+void Kaelen_Voss::update_hitbox(){
+    if(posture_state == CROUCHING){
+        mesh.hitbox.offset_min = hitbox_offset_min_alternate;
+        mesh.hitbox.offset_max = hitbox_offset_max_alternate;
+
+    }else{
+        mesh.hitbox.offset_min = hitbox_offset_min_default;
+        mesh.hitbox.offset_max = hitbox_offset_max_default;
+    }
+    mesh.update_hitbox();
+}
+
 
 void Kaelen_Voss::update_movement_state(Movement_Control_Input input, int grounded, float frameTime){
     mesh.acceleration = glm::vec3(0.0f, gravity, 0.0f);
