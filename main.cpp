@@ -130,6 +130,8 @@ int main()
     Swarm swarm(&tex_lib);
 
     Camera camera;
+    float camera_offset_x = 0.8f;
+    float camera_offset_y = 0.0f;
 
     // MAIN LOOP
     shader.use();
@@ -246,7 +248,14 @@ int main()
         // *************
         // DRAWING
         // *************
-        camera.update_camera_pos(glm::vec3(player.mesh.transform.position.x, player.mesh.transform.position.y, 0.0f), shader);
+        float camera_x = player.mesh.transform.position.x;
+        float camera_y = player.mesh.transform.position.y;
+        if(player.facing_direction == RIGHT){
+            camera_x += camera_offset_x;
+        }else if(player.facing_direction == LEFT){
+            camera_x -= camera_offset_x;
+        }
+        camera.update_camera_pos(glm::vec3(camera_x, camera_y, 0.0f), shader);
         world.draw(shader, camera.pos);
         // for(int i =0; i<world.platform_count; i++){
         //     draw_hitbox(world.platforms[i].mesh.hitbox, shader);

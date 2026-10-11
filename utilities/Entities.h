@@ -56,6 +56,34 @@ public:
     int jumpsLeft;
 };
 
+
+enum Facing_direction{
+    LEFT,
+    RIGHT
+};
+
+enum Posture_state{
+    UPRIGHT,
+    AIRBORNE,
+    CROUCHING,
+    AIR_DIVING
+};
+
+enum Movement_state{
+    RUNNING, 
+    ASCENDING,
+    DESCENDING,
+    SLIDING,
+    IDLE
+};
+
+enum Weapon_state{
+    INACTIVE,
+    READY,
+    SHOOTING,
+    RELOADING
+};
+
 class Kaelen_Voss : public Entity{
 public:
     Texture* current_tex;
@@ -74,48 +102,31 @@ public:
     glm::vec3 weapon_low_right_position_offset = glm::vec3(0.0f, -0.15f, 0.0f);
     glm::vec3 weapon_low_left_position_offset = glm::vec3(0.0f, -0.15f, 0.0f);
 
-    glm::vec3 sniper_beam_offset_right = glm::vec3(1.22, 0.07f, 0.5f);
-    glm::vec3 sniper_beam_offset_left = glm::vec3(-1.22, 0.08f, 0.5f);
+    glm::vec3 sniper_beam_offset_right = glm::vec3(1.98f, 0.07f, 0.5f);
+    glm::vec3 sniper_beam_offset_left = glm::vec3(-1.98f, 0.08f, 0.5f);
     glm::vec3 sniper_beam_offset_low_right = glm::vec3(0.0f, -0.095f, 0.5f);
     glm::vec3 sniper_beam_offset_low_left = glm::vec3(0.0f, -0.09f, 0.5f);
 
     glm::vec2 hitbox_offset_min_default = glm::vec2(0.35f, 0.0f); //percentage
-    glm::vec2 hitbox_offset_min_alternate = glm::vec2(0.20f, 0.0f); //percentage
+    glm::vec2 hitbox_offset_min_alternate_right = glm::vec2(0.20f, 0.0f); //percentage
+    glm::vec2 hitbox_offset_min_alternate_left = glm::vec2(-0.05f, 0.0f); //percentage
     glm::vec2 hitbox_offset_max_default = glm::vec2(0.35f, 0.03f); //percentage
-    glm::vec2 hitbox_offset_max_alternate = glm::vec2(-0.05f, 0.7f); //percentage
-    
+    glm::vec2 hitbox_offset_max_alternate_left = glm::vec2(+0.20f, 0.7f); //percentage
+    glm::vec2 hitbox_offset_max_alternate_right = glm::vec2(-0.05f, 0.7f); //percentage
+
     float opacity = 1.0f;
     int texture_duration = 0;
     const int max_texture_duration = 4;
     int current_tex_index = 0;
     glm::vec3 control_input = glm::vec3(0.0f);
 
-    enum Facing_direction{
-        LEFT,
-        RIGHT
-    }facing_direction, prev_facing_direction;
+    Facing_direction facing_direction, prev_facing_direction;
 
-    enum Posture_state{
-        UPRIGHT,
-        AIRBORNE,
-        CROUCHING,
-        AIR_DIVING
-    }posture_state, prev_posture_state;
+    Posture_state posture_state, prev_posture_state;
 
-    enum Movement_state{
-        RUNNING, 
-        ASCENDING,
-        DESCENDING,
-        SLIDING,
-        IDLE
-    }movement_state, prev_movement_state;
+    Movement_state movement_state, prev_movement_state;
 
-    enum Weapon_state{
-        INACTIVE,
-        READY,
-        SHOOTING,
-        RELOADING
-    }weapon_state, prev_weapon_state;
+    Weapon_state weapon_state, prev_weapon_state;
 
     Kaelen_Voss(Texture_Library* tex_lib);
     void update_movement_state(Movement_Control_Input input, int grounded, float frameTime);

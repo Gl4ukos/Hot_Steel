@@ -153,9 +153,14 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
 
 void Kaelen_Voss::update_hitbox(){
     if(posture_state == CROUCHING){
-        mesh.hitbox.offset_min = hitbox_offset_min_alternate;
-        mesh.hitbox.offset_max = hitbox_offset_max_alternate;
-
+        if(facing_direction == RIGHT){
+            mesh.hitbox.offset_min = hitbox_offset_min_alternate_right;
+            mesh.hitbox.offset_max = hitbox_offset_max_alternate_right;
+        }else if(facing_direction == LEFT){
+            mesh.hitbox.offset_min = hitbox_offset_min_alternate_left;
+            mesh.hitbox.offset_max = hitbox_offset_max_alternate_left;
+        }
+        
     }else{
         mesh.hitbox.offset_min = hitbox_offset_min_default;
         mesh.hitbox.offset_max = hitbox_offset_max_default;
@@ -370,9 +375,9 @@ Beam::Beam(Texture_Library* tex_lib, glm::vec3 origin, float angle)
 
     texture = &tex_lib->textures[SNIPER_BEAM];
 
-    mesh.transform.position = origin;
+    mesh.transform.position = origin ;
     mesh.transform.rotation.z = angle;
-    mesh.transform.scale = glm::vec3(2.0f, width, 1.0f);
+    mesh.transform.scale = glm::vec3(3.5f, width, 1.0f);
     mesh.additional_colour = glm::vec4(0.0f);
 
     mesh.hitbox.offset_min = glm::vec2(0.0f, 0.43f); //percentage
