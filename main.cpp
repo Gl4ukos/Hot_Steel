@@ -70,6 +70,9 @@ public:
     glm::vec2 max_move_threshold = glm::vec2(0.2f, 0.2f);
 
     float forward_facing_distance = 0.5f;
+    float look_ahead =0.0f;
+    float look_ahead_distance = 0.9f;
+    float smoothness = 12.0f;
 
 void update_camera_pos(const glm::vec3 player_pos, Shader& shader)
 {
@@ -130,8 +133,6 @@ int main()
     Swarm swarm(&tex_lib);
 
     Camera camera;
-    float camera_offset_x = 0.8f;
-    float camera_offset_y = 0.0f;
 
     // MAIN LOOP
     shader.use();
@@ -250,12 +251,21 @@ int main()
         // *************
         float camera_x = player.mesh.transform.position.x;
         float camera_y = player.mesh.transform.position.y;
-        if(player.facing_direction == RIGHT){
-            camera_x += camera_offset_x;
-        }else if(player.facing_direction == LEFT){
-            camera_x -= camera_offset_x;
+
+        float target_look_ahead = 0.0f;
+        if (player.facing_direction == RIGHT) {
+            target_look_ahead = camera.look_ahead_distance;
+        } else {
+            target_look_ahead = -camera.look_ahead_distance;
         }
-        camera.update_camera_pos(glm::vec3(camera_x, camera_y, 0.0f), shader);
+
+        float t = 1.0f - exp(-camera.smoothness * frameTime);
+        t *= t;
+        camera.look_ahead += (target_look_ahead - camera.look_ahead) * t;
+        glm::vec3 target_pos = player.mesh.transform.position;
+        target_pos.x += camera.look_ahead;
+
+        camera.update_camera_pos(target_pos, shader);
         world.draw(shader, camera.pos);
         // for(int i =0; i<world.platform_count; i++){
         //     draw_hitbox(world.platforms[i].mesh.hitbox, shader);

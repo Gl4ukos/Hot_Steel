@@ -25,5 +25,3 @@ Type:
 
     -> Add Kaelen crouch animation
 
-    -> Add camera offset in the direction Kaelen faces
-

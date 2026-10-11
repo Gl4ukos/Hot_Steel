@@ -81,7 +81,7 @@ Kaelen_Voss::Kaelen_Voss(Texture_Library* tex_lib){
     mass = 10;
     elasticity_factor = 0.0;
     vertical_speed_cap = 4.0;
-    horizontal_speed_cap = 2.0;
+    horizontal_speed_cap = 3.0;
     vertical_acc = 30;
     horizontal_acc = 20;
     jump_boost = 3.2;
