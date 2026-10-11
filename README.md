@@ -11,6 +11,15 @@ Type:
 
 
     TODO:
+
+    -> add sliding mechanics
+
+    -> Add momentum and acceleration when moving sideways
+
+    -> Add dashing mechanics
+
+    -> Add dynamic jumping height control
+
     -> Split entities into entities-world-enemies/hivemind
 
     -> Make world editor
